@@ -13,7 +13,7 @@ oflayn ishlaydigan, serversiz veb-sayt (0003).
 2. `lessons/qoidalar.md` — takrorlanmasligi kerak boʻlgan xatolar.
 3. `memory/` dagi eng yangi fayl — qayerda toʻxtaganimiz.
 4. `discovery/` — ochiq savollar (boʻsh boʻlishi mumkin).
-5. `decisions/` — 0001 dan 0038 gacha. **Hammasi majburiy va bahsga tushmaydi.**
+5. `decisions/` — 0001 dan 0047 gacha. **Hammasi majburiy va bahsga tushmaydi.**
 6. `prds/daftar-prd.md` — mahsulot chegarasi.
 7. Oʻz qismingiz speci: `prds/kirim-chiqim.md`, `prds/qarz-daftari.md`,
    `prds/oylik-hisobot.md`, `prds/dashboard.md`.
@@ -36,6 +36,7 @@ oflayn ishlaydigan, serversiz veb-sayt (0003).
 - Oylik hisobotda oʻtgan oy bilan solishtirish (0019).
 - Rus tili, krill yozuvi, til tanlash sozlamasi (0009).
 - Kelajakdagi sana bilan yozuv (0034).
+- Kasrli kurs; yuqoriga yoki pastga majburiy yaxlitlash (0042).
 
 Roʻyxatda yoʻq narsani «foydali boʻlardi» deb qoʻshmang. Kerak boʻlsa — avval qaror.
 
@@ -43,16 +44,31 @@ Roʻyxatda yoʻq narsani «foydali boʻlardi» deb qoʻshmang. Kerak boʻlsa —
 
 **Texnika**
 - Stek: TypeScript + React + IndexedDB; backend yoʻq (0008).
-- Oflayn ishlaydigan PWA veb-sayt; statik hosting Netlify yoki Vercel (0003, 0025).
+- Build: Vite (PWA `vite-plugin-pwa` bilan); unit/integratsiya testlari: Vitest + fake-indexeddb;
+  E2E testlar: Playwright (0040).
+- Oflayn ishlaydigan PWA veb-sayt; statik hosting **Vercel** — GitHub repozitoriysiga push
+  qilinganda avtomatik deploy (0003, 0025, 0046).
 - Hamma maʼlumot faqat foydalanuvchi qurilmasida (0004).
 - Interfeys faqat oʻzbekcha, lotin yozuvida (0009).
 - Pul summalari butun sonda saqlanadi: dollar sentda, soʻm soʻmda (0008, 0033).
+- Har yozuv va qarz toʻlovi `yaratilgan` vaqt maydoni bilan saqlanadi va u zaxira fayliga
+  kiradi. Bu texnik tartib maydoni: koʻrsatilmaydi, tahrirlashda oʻzgarmaydi va foydalanuvchi
+  koʻradigan `sana` dan ayri (0047).
 
 **Pul va valyuta**
 - Ikkita hisob: naqd va karta. Formada standart — **karta** (0011, 0035).
 - Ikkita valyuta: soʻm va dollar. Formada standart — **soʻm** (0026, 0023).
 - Kurs faqat dollar tanlanganda soʻraladi va oʻshanda majburiy (0023).
-- Kurs = **1 dollar necha soʻm** (0023).
+- Kurs = **1 dollar necha soʻm**; butun soʻmda kiritiladi va saqlanadi, kasr yoʻq (0023, 0042).
+- Valyuta aylantirilganda natija **eng yaqin** butun birlikka yaxlitlanadi — dollarda sentga,
+  soʻmda soʻmga (0042).
+- «Oxirgi kurs» — eng kech **sanali** yozuv yoki toʻlovdagi kurs; bir xil sanada oxirgi
+  kiritilgani gʻolib — buni `yaratilgan` maydoni aniqlaydi (0044, 0047). U saqlanmaydi: har
+  safar yozuv va toʻlovlardan hisoblanadi, demak yozuv tahrirlansa yoki oʻchirilsa oʻz-oʻzidan
+  toʻgʻrilanadi (0045).
+- Saqlanadigan yagona kurs qiymati — «≈ jami soʻmda» uchun qoʻlda soʻralgani; u sanasi bilan
+  saqlanadi, zaxira fayliga `kurslar` bloki boʻlib kiradi va hisobda teng qatnashadi
+  (0043, 0044, 0045).
 - Summa: soʻmda butun son, dollarda ikki kasr. Nol saqlanmaydi, manfiy kiritilmaydi (0033).
 - Sana faqat bugun yoki undan oldin — yozuv, qarz va toʻlovda bir xil (0034).
 - Aralash valyutada qoldiqlar alohida qatorda; «≈ jami soʻmda» faqat taxminiy qator (0023).
@@ -66,7 +82,8 @@ Roʻyxatda yoʻq narsani «foydali boʻlardi» deb qoʻshmang. Kerak boʻlsa —
   har qarzning oʻz qoldigʻi bilan aniqlanadi (0037, 0016).
 - Ochiq qarzi bor kontakt oʻchirilmaydi (0030).
 - Import: avval joriy maʼlumot avtomatik faylga chiqariladi; zaxira saqlanmasa import
-  bajarilmaydi (0027).
+  bajarilmaydi (0027). Tasdiq — foydalanuvchi oʻsha faylni qaytarib tanlaydi va ilova uni
+  joriy maʼlumotga solishtiradi; boshqa tasdiq yoʻli qurilmaydi (0041).
 
 **Tayyorlik**
 - Daftar tayyor sanaladi, qachonki toʻrt qism ishlasa va testlari oʻtsa (0022).

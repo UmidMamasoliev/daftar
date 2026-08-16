@@ -15,3 +15,7 @@ stekda yoziladi — 0022 boʻyicha ular tayyorlik gate'i. IndexedDB bilan ishlas
 haqiqiy brauzer yoki uning oʻrnini bosuvchi muhit talab qiladi; qaysi test vositasi ishlatilishi
 specda aniqlanadi. Pul summalari kasrsiz butun sonda (eng kichik birlikda) saqlanadi — bu
 yaxlitlash xatolarini oldini oladi va specda qayd etiladi.
+
+YOPILDI: Build va test vositasi `0040-vositalar-vite-vitest-playwright.md` da tanlandi — Vite
+(build va PWA), Vitest + fake-indexeddb (unit va integratsiya), Playwright (haqiqiy brauzerda
+E2E).

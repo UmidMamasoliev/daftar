@@ -15,3 +15,6 @@ Nimani oʻzgartiradi: `platform/` dagi loyiha statik fayllarga yigʻiladigan (bu
 kerak — bu 0008 dagi stek bilan mos. Backend yoʻqligi saqlanadi: hosting faqat fayl tarqatadi,
 hech narsa hisoblamaydi va hech narsa saqlamaydi, yaʼni 0004 (maʼlumot faqat qurilmada)
 buzilmaydi. HTTPS PWA uchun majburiy va ikkala xizmatda ham tayyor keladi.
+
+YOPILDI: Aniq xizmat `0046-hosting-vercel.md` da tanlandi — **Vercel**; GitHub repozitoriysi
+`github.com/UmidMamasoliev/daftar` ga push qilinganda avtomatik deploy.

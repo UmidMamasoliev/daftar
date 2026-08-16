@@ -35,8 +35,9 @@ bir xil.
    ajratib koʻrsatiladi (naqd: 1 200 000 soʻm va 100 $) — hisob valyutaga boʻlinmaydi (0023).
 7. Aralash valyutali joylarda qoldiqlar alohida qatorda turadi, tagida oxirgi kiritilgan kurs
    boʻyicha «≈ jami soʻmda» taxminiy qatori boʻladi va uning taxminiyligi koʻrinadi (0023).
-   Biror valyutaning kursi hali kiritilmagan boʻlsa, ilova taxminiy jamini hisoblashdan oldin
-   kursni soʻraydi (0023).
+   «Oxirgi kurs» — eng kech sanali yozuv yoki toʻlovdagi kurs (0044); u saqlanmaydi, har safar
+   hisoblanadi (0045). Biror valyutaning kursi hali kiritilmagan boʻlsa, ilova taxminiy jamini
+   hisoblashdan oldin kursni soʻraydi va oʻsha javob sanasi bilan saqlanadi (0023, 0043).
 
 ### Kirim-chiqim yozuvlari
 
@@ -211,7 +212,7 @@ Mahsulot darajasidagi mezonlar — hammasi sanab boʻladigan:
 | 0022 | Tayyorlik mezoni — testlar |
 | 0023 | Valyuta modeli |
 | 0024 | Zaxira eslatmasi |
-| 0025 | Hosting: Netlify yoki Vercel |
+| 0025 | Hosting: statik sayt, bepul tarif, avtomatik deploy (xizmat — 0046) |
 | 0026 | Valyutalar: soʻm va dollar |
 | 0027 | Import: avval zaxira, keyin ustiga yozish |
 | 0028 | Kategoriyalar roʻyxatining aniq nomlari |
@@ -225,6 +226,15 @@ Mahsulot darajasidagi mezonlar — hammasi sanab boʻladigan:
 | 0036 | Dashboardda naqd va karta qatorlari |
 | 0037 | Kontakt qoldigʻi: netto, valyutalar alohida |
 | 0038 | Hisobotda kategoriya va qarz qatorlari valyuta boʻyicha |
+| 0039 | Qaysi agent qaysi hujjatni yozadi |
+| 0040 | Vositalar: Vite, Vitest + fake-indexeddb, Playwright |
+| 0041 | Zaxira tasdigʻi — faylni qaytarib tanlash |
+| 0042 | Kurs butun soʻmda; aylantirish eng yaqiniga |
+| 0043 | Qoʻlda soʻralgan kurs saqlanadi va faylga kiradi |
+| 0044 | «Oxirgi kurs» eng kech sanali yozuvdan olinadi |
+| 0045 | «Oxirgi kurs» saqlanmaydi — hisoblanadi |
+| 0046 | Hosting: Vercel |
+| 0047 | Yozuv va toʻlovda «yaratilgan» vaqt maydoni |
 
 ## Ochiq savollar
 

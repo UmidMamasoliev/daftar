@@ -2,7 +2,7 @@
 
 Sana: 2026-08-16. Asos: `prds/daftar-prd.md` (26–28-bandlar, va shu featurega tegishli 3, 6, 7,
 15a, 26a, 30-bandlar). Qarorlar: 0006, 0011, 0017, 0018, 0020, 0023, 0024, 0026, 0032, 0035,
-0036.
+0036, 0042, 0043, 0044, 0045.
 
 Nima uchun: Bu — ilova ochilganda koʻrinadigan birinchi va eng koʻp koʻriladigan ekran.
 Foydalanuvchi bir qarashda pul qanchaligini va oy qanday ketayotganini koʻradi, keyin bitta
@@ -39,6 +39,15 @@ tugma bilan yangi yozuv qoʻshadi.
     koʻrinadi. (PRD 7; 0023)
 11. Biror valyutaning kursi hali kiritilmagan boʻlsa, ilova taxminiy jamini hisoblashdan oldin
     kursni soʻraydi. (PRD 7; 0023)
+11a. Soʻralgan kurs sanasi bilan saqlanadi — soʻrov bir marta boʻladi, ilova qayta ochilganda
+    takrorlanmaydi. Kurs zaxira fayliga kiradi va import bilan tiklanadi. Kurs butun soʻmda.
+    (0042, 0043, 0045)
+11b. Bu yerdagi «oxirgi kiritilgan kurs» — eng kech **sanali** yozuv yoki toʻlovdagi kurs (bir xil
+    sanada oxirgi kiritilgani gʻolib); qoʻlda soʻralgan kurs kiritilgan kundagi qiymat sifatida
+    qatnashadi. (0044)
+11c. Bu qiymat saqlanmaydi — qator har koʻrsatilganda joriy yozuv va toʻlovlardan hisoblanadi.
+    Yozuv tahrirlansa yoki oʻchirilsa «≈ jami soʻmda» keyingi koʻrinishida yangi holatdan
+    chiqadi. (0045)
 12. «Joriy oy» — kalendar oy. (PRD 22; 0018)
 
 ### Yozuvlarga oʻtish
@@ -79,6 +88,8 @@ tugma bilan yangi yozuv qoʻshadi.
 13. «≈ jami soʻmda» qatori taxminiy ekani belgilangan holda koʻrinadi.
 14. Dollar kursi hech qachon kiritilmagan holatda taxminiy jami hisoblanishidan oldin kurs
     soʻraladi; kiritilgach jami toʻliq chiqadi.
+14a. Kurs bir marta kiritilgach ilova qayta ochilganda uni qayta soʻramaydi (0043).
+14b. Kurs soʻrovi maydoniga kasrli qiymat kiritilmaydi — faqat butun soʻm (0042).
 15. Hech qachon eksport qilinmagan daftarda zaxira eslatmasi koʻrinadi.
 16. Eksport qilingandan keyin eslatma yoʻqoladi.
 17. Oxirgi eksportdan 30 kundan kam oʻtgan boʻlsa eslatma koʻrinmaydi.

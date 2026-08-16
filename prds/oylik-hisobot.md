@@ -1,7 +1,7 @@
 # Oylik hisobot
 
 Sana: 2026-08-16. Asos: `prds/daftar-prd.md` (22–25-bandlar, va shu featurega tegishli 6, 7,
-15-bandlar). Qarorlar: 0013, 0017, 0018, 0019, 0021, 0023, 0026, 0038.
+15-bandlar). Qarorlar: 0013, 0017, 0018, 0019, 0021, 0023, 0026, 0038, 0042, 0043, 0044, 0045.
 
 Nima uchun: Foydalanuvchi oy oxirida «pul qayerga ketdi» degan savolga javob oladi. Kirim va
 chiqim yigʻindisi, ular orasidagi farq va kategoriyalar ajratmasi bir ekranda turadi; qarz esa
@@ -37,6 +37,14 @@ alohida qatorda, chunki u sarflangan pul emas.
    koʻrinadi. (PRD 7; 0023)
 10. Biror valyutaning kursi hali kiritilmagan boʻlsa, ilova taxminiy jamini hisoblashdan oldin
     kursni soʻraydi. (PRD 7; 0023)
+10a. Soʻralgan kurs sanasi bilan saqlanadi — soʻrov bir marta boʻladi, ilova qayta ochilganda
+    takrorlanmaydi. Kurs butun soʻmda va zaxira fayliga kiradi. (0042, 0043, 0045)
+10b. Bu yerdagi «oxirgi kiritilgan kurs» — eng kech **sanali** yozuv yoki toʻlovdagi kurs (bir xil
+    sanada oxirgi kiritilgani gʻolib); qoʻlda soʻralgan kurs kiritilgan kundagi qiymat sifatida
+    qatnashadi. Hisobot davri bilan bogʻliq emas: oʻtgan oy hisobotida ham eng yangi maʼlum kurs
+    ishlatiladi. (0044)
+10c. Bu qiymat saqlanmaydi — hisobot har ochilganda joriy yozuv va toʻlovlardan hisoblanadi.
+    (0045)
 
 ## Nima QILMAYDI
 

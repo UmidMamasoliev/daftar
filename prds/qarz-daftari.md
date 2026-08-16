@@ -2,7 +2,7 @@
 
 Sana: 2026-08-16. Asos: `prds/daftar-prd.md` (16–21-bandlar, va shu featurega tegishli 6, 8, 9,
 12, 21-bandlar). Qarorlar: 0015, 0016, 0017, 0023, 0026, 0029, 0030, 0031, 0033, 0034, 0035,
-0037.
+0037, 0042, 0043, 0044, 0045, 0047.
 
 Nima uchun: Foydalanuvchi «falonchiga qancha qoldi» degan savolga aniq javob oladi. Qarz
 haqiqatda boʻlib-boʻlib toʻlanadi va esdan chiqadi; daftar kim bilan qanday hisobi borligini,
@@ -38,6 +38,10 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
 10. Qarz oʻz valyutasida yuritiladi: dollar qarzining qoldigʻi dollarda turadi. Toʻlov boshqa
     valyutada kelsa, toʻlov paytida kiritilgan kurs boʻyicha qarz valyutasiga aylantirilib
     qoldiqdan ayiriladi. (PRD 20; 0023)
+10a. Aylantirish natijasi eng yaqin butun birlikka yaxlitlanadi: dollarda — eng yaqin sentga
+    (0,005 $ dan kami pastga, koʻpi yuqoriga), soʻmda — eng yaqin soʻmga. Yuqoriga yoki pastga
+    majburiy yaxlitlash yoʻq. Masalan 100 001 soʻm toʻlov 12 500 kurs bilan 8,00 $ boʻlib
+    ayiriladi. (0042)
 11. Qarz operatsiyalari pul qoldigʻiga taʼsir qiladi: qarzga berilgan pul qoʻldan chiqadi,
     olingan qarz qoʻlga kiradi. (PRD 21; 0017)
 11a. Qarz va toʻlov formasida hisob tanlanadi, standart — **karta**; naqd kerak boʻlsa
@@ -52,6 +56,14 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
 14. Qarz berish, qarz olish va qarz toʻlovi sanasi faqat bugungi yoki undan oldingi kun.
     (PRD 9; 0034)
 15. Kurs maydoniga **1 dollar necha soʻm** ekani kiritiladi. (PRD 12; 0023)
+15a. Kurs — butun son, soʻmda; kurs maydoni kasr qabul qilmaydi. Bu yozuv formasidagi kurs
+    bilan bir xil qoida. (PRD 12; 0042)
+15b. Toʻlovda kiritilgan kurs ham «oxirgi kurs» hisobiga kiradi — yozuvdagi kurs bilan bir xil
+    qoidada: eng kech sanali gʻolib, bir xil sanada oxirgi kiritilgani. «Oxirgi kurs» alohida
+    saqlanmaydi, u har safar yozuv va toʻlovlardan hisoblanadi. (0043, 0044, 0045)
+15c. Shu hisob uchun har qarz toʻlovi, xuddi yozuv kabi, `yaratilgan` vaqti bilan saqlanadi va
+    bu vaqt zaxira fayliga kiradi. U texnik maydon: koʻrsatilmaydi, kiritilmaydi va toʻlov
+    tahrirlanganda oʻzgarmaydi. (0047)
 
 ## Nima QILMAYDI
 
@@ -64,6 +76,8 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
 - Qarzlar boʻyicha qidiruv va filtr. (0002)
 - Qarz oʻzgarish tarixi va audit izi. (0014)
 - Kelajakdagi sana bilan qarz yoki toʻlov. (0034)
+- Kasrli kurs kiritish — kurs faqat butun soʻmda. (0042)
+- Aylantirishni yuqoriga yoki pastga majburiy yaxlitlash. (0042)
 
 ## Qanday tekshiramiz
 
@@ -79,6 +93,10 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
 8. Toʻlov oʻchirilsa qoldiq darhol oʻsha summaga ortadi.
 9. Toʻlov oʻchirilgach «qaytarish» tugmasi koʻrinadi; bosilsa toʻlov ham, qoldiq ham tiklanadi.
 10. 100 $ qarz berilib, toʻlov 625 000 soʻm va kurs 12 500 bilan kiritilsa, qoldiq 50 $ boʻladi.
+10a. Butun sentga tushmaydigan aylantirish eng yaqiniga yaxlitlanadi: 12 500 kurs bilan
+    100 001 soʻm toʻlov 8,00 $ boʻlib ayiriladi (pastga), 100 100 soʻm toʻlov esa 8,01 $ boʻlib
+    ayiriladi (yuqoriga) (0042).
+10b. Kurs maydoniga kasrli qiymat kiritilmaydi; saqlangan kurs butun son boʻlib turadi (0042).
 11. Shu holatda qoldiq dollarda koʻrsatiladi, soʻmda emas.
 12. Dollardagi qarzga dollarda toʻlov kiritilsa kurs soʻralmaydi.
 13. Qarz berilganda tanlangan hisob qoldigʻi shu summaga kamayadi.
@@ -102,9 +120,18 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
 
 ## Ochiq savollar
 
-Yoʻq. Bu spec yozilayotganda ikkita savol chiqdi va ikkalasi ham hal qilindi:
+Bu spec yozilayotganda ikkita savol chiqdi va ikkalasi ham hal qilindi:
 
 1. Qarz operatsiyasi qaysi hisobga tegadi → **0035**: formada tanlanadi, standart karta
    (11a-band).
 2. Kontaktning «umumiy qoldigʻi» qanday hisoblanadi → **0037**: yoʻnalishlar netto, valyutalar
    alohida (7a-band); netto qarz yopilishiga taʼsir qilmaydi (7b-band).
+
+Keyinroq, `prds/zaxira.md` yozilayotganda chiqqan kurs savoli ham yopildi → **0042**: kurs butun
+soʻmda, aylantirish eng yaqiniga yaxlitlanadi (10a, 15a-bandlar).
+
+**Ochiq — bu qism qurilishidan OLDIN javob kerak:** yaxlitlashdan qoladigan 1–2 sentlik «dum»
+qarzni «yopilgan» sanashga xalaqit beradimi (0016 «qoldiq nolga yetganda qarz yopilgan» deydi,
+8-band). 0042 buni ataylab hal qilmadi — u faqat yaxlitlash qoidasini belgilaydi. Savol
+`discovery/yaxlitlash-dumi-qarzni-yopadimi.md` da turibdi va **javobsiz**; spec bu yerda hech
+qanday xulosa chiqarmaydi.

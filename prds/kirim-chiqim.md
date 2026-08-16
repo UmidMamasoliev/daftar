@@ -1,7 +1,8 @@
 # Kirim-chiqim yozuvlari
 
 Sana: 2026-08-16. Asos: `prds/daftar-prd.md` (8–15-bandlar, va shu featurega tegishli 5, 6-band).
-Qarorlar: 0011, 0012, 0013, 0014, 0023, 0026, 0028, 0029, 0032, 0033, 0034.
+Qarorlar: 0011, 0012, 0013, 0014, 0023, 0026, 0028, 0029, 0032, 0033, 0034, 0042, 0043, 0044,
+0045, 0047.
 
 Nima uchun: Foydalanuvchi pulning har harakatini — kirimni ham, chiqimni ham — bir necha
 soniyada yozib qoʻyadi va qoʻlidagi hamda kartadagi pul qanchaligini bilib turadi. Bu daftarning
@@ -24,6 +25,26 @@ poydevori: qolgan uch qism (qarz daftari, oylik hisobot, dashboard) shu yozuvlar
 6. Valyuta formada tayyor turadi, standart — **soʻm**. Tegilmasa kurs soʻralmaydi. Boshqa
    valyuta tanlansa, kurs maydoni ochiladi va oʻsha holatda majburiy boʻladi. (PRD 12; 0023)
 6a. Kurs maydoniga **1 dollar necha soʻm** ekani kiritiladi. (PRD 12; 0023)
+6b. Kurs — butun son, soʻmda (masalan 12 500). Kurs maydoni kasr qabul qilmaydi va saqlashda ham
+   butun soʻm boʻlib turadi. (PRD 12; 0042)
+6c. Kiritilgan kurs yozuvning ichida saqlanadi. «≈ jami soʻmda» qatori uchun ishlatiladigan
+   «oxirgi kurs» esa alohida saqlanmaydi — u kerak boʻlganda yozuvlar va qarz toʻlovlaridagi
+   kurslardan hisoblab topiladi. Bu kurs tarixi emas: hisob natijasi bitta qiymat. (0045; 0043,
+   0002)
+6d. Hisob qoidasi: «oxirgi kurs» — eng kech **sanali** yozuv yoki qarz toʻlovidagi kurs. Yozuv
+   sanasi hisoblanadi, kiritish vaqti emas; yaʼni oʻtgan sanaga kiritilgan yozuvning kursi
+   bugungi qiymatni bosib ketmaydi. (0044)
+6e. Bir xil sanada bir nechta kurs boʻlsa, oʻsha sananing **oxirgi kiritilgani** gʻolib. Buning
+   uchun har yozuv va toʻlov `yaratilgan` vaqti bilan saqlanadi — «oxirgi kiritilgani» aynan shu
+   maydondan aniqlanadi. (0044, 0047)
+6f. «≈ jami soʻmda» uchun qoʻlda soʻralgan kurs ham shu hisobda teng qatnashadi — u kiritilgan
+   kundagi qiymat sifatida. Uning ortida yozuv boʻlmagani uchun u sanasi bilan saqlanadi; bu
+   daftarda saqlanadigan yagona kurs qiymati. (0044, 0045; 0023, 0043)
+6g. Kursli yozuv yoki toʻlov tahrirlansa yoxud oʻchirilsa, «oxirgi kurs» va «≈ jami soʻmda»
+   qatori yangi holatdan qayta hisoblanadi — hech qayerda eski nusxa qolmaydi. (0045; 0014)
+6h. `yaratilgan` — texnik maydon: foydalanuvchiga koʻrsatilmaydi, u kirita olmaydi va yozuv
+   tahrirlanganda oʻzgarmaydi. Foydalanuvchi koʻradigan va oʻzgartira oladigan sana — 2-banddagi
+   `sana`. Bu oʻzgarish tarixi emas (0014). (0047)
 7. Valyutalar ikkita: **soʻm** va **dollar**. (PRD 6; 0026)
 
 ### Yozuvlar ekrani, tahrirlash va oʻchirish
@@ -54,6 +75,7 @@ poydevori: qolgan uch qism (qarz daftari, oylik hisobot, dashboard) shu yozuvlar
 - Soʻmda tiyin kiritish; nol yoki manfiy summa. (0033)
 - Soʻm va dollardan boshqa valyuta; valyuta qoʻshish yoki tahrirlash. (0026)
 - Kursni internetdan avtomatik olish; kurs tarixini saqlash. (0002, 0010)
+- Kasrli kurs kiritish — kurs faqat butun soʻmda. (0042)
 - Yangi hisob qoʻshish yoki mavjudini oʻchirish. (0011)
 - Yozuvning oʻzgarish tarixi, audit izi, «oy yopish» holati. (0014)
 - Oʻchirishdan oldin tasdiq oynasi — uning oʻrnida «qaytarish» tugmasi ishlaydi. (0029)
@@ -92,10 +114,33 @@ poydevori: qolgan uch qism (qarz daftari, oylik hisobot, dashboard) shu yozuvlar
 20. «Yozuvlar» ekranida oʻchirilgan yozuv uchun ham «qaytarish» tugmasi ishlaydi.
 21. Dollardagi yozuvda kurs «1 dollar necha soʻm» sifatida saqlanadi: masalan 100 $ va kurs
     12 500 kiritilsa, yozuvning soʻmdagi qiymati 1 250 000 boʻladi.
+22. Kurs maydoniga kasrli qiymat (masalan 12 500,25) kiritilmaydi; saqlangan kurs butun son
+    boʻlib turadi (0042).
+23. Dollardagi yozuv kursi bilan saqlangach, «≈ jami soʻmda» qatori uchun kurs alohida
+    soʻralmaydi — oxirgi kurs ishlatiladi (0023, 0043).
+23a. Bugungi sanali yozuv 12 500 kurs bilan saqlangandan keyin oʻtgan sanaga 12 000 kursli yozuv
+    kiritilsa, «oxirgi kurs» 12 500 boʻlib qoladi (0044).
+23b. Eng kech sanali yozuv sifatida 12 800 kursli yozuv kiritilsa, «oxirgi kurs» 12 800 ga
+    oʻtadi (0044).
+23c. Bir xil sanada 12 500, keyin 12 600 kursli ikkita yozuv kiritilsa, «oxirgi kurs»
+    12 600 boʻladi (0044).
+23d. «≈ jami soʻmda» uchun qoʻlda kurs soʻralib javob berilgach, u kiritilgan kundagi qiymat
+    sifatida qatnashadi: oʻsha kundan oldingi sanali yozuv uni almashtirmaydi, oʻsha kunda
+    kiritilgan keyingi kurs esa almashtiradi (0044).
+23e. Eng kech sanali kursli yozuv oʻchirilsa, «≈ jami soʻmda» qatori qolgan yozuvlardan qayta
+    hisoblanadi — oxirgi kurs undan oldingi eng kech sanali yozuvnikiga oʻtadi (0045).
+23f. Eng kech sanali yozuvning kursi tahrirlanib boshqa qiymatga oʻzgartirilsa, «≈ jami soʻmda»
+    darhol yangi kurs bilan hisoblanadi (0045; 0014).
+23g. Daftarda birorta ham kursli yozuv qolmasa, «≈ jami soʻmda» uchun qoʻlda soʻralgan kurs
+    ishlatiladi; u ham boʻlmasa kurs soʻraladi (0045; 0023).
+23h. Saqlangan har yozuvda `yaratilgan` vaqti boʻladi; bir xil sanada ketma-ket kiritilgan
+    ikkita yozuvning `yaratilgan` qiymatlari har xil va tartibi kiritish tartibiga mos (0047).
+23i. Bir xil sanadagi ikkita kursli yozuvdan **birinchisi** tahrirlansa, gʻolib kurs baribir
+    keyin kiritilganiniki boʻlib qoladi — tahrir `yaratilgan` ni oʻzgartirmaydi (0047).
 
 ## Ochiq savollar
 
-Yoʻq. Bu spec yozilayotganda uchta savol chiqdi va hammasi hal qilindi:
+Bu spec yozilayotganda uchta savol chiqdi va hammasi hal qilindi:
 
 1. Eski yozuvga qanday yetib boriladi → **0032**: alohida «yozuvlar» ekrani (PRD 15a). Shu
    bilan PRD 13-band bajariladigan boʻldi.
@@ -104,3 +149,24 @@ Yoʻq. Bu spec yozilayotganda uchta savol chiqdi va hammasi hal qilindi:
 3. Kelajakdagi sana mumkinmi → **0034**: yoʻq, faqat bugun va undan oldin.
 
 Kurs yoʻnalishi ham tasdiqlandi va 0023 ga yozildi: «1 dollar necha soʻm».
+
+2026-08-16 da kursga tegishli yana ikkita savol yopildi va spec ularga moslandi: **0042** — kurs
+butun soʻmda kiritiladi va saqlanadi (6b-band), aylantirishda eng yaqiniga yaxlitlanadi;
+**0043** — kiritilgan kurs «oxirgi kurs» sifatida saqlanadi va «≈ jami soʻmda» qatorida
+ishlatiladi (6c-band).
+
+Shu kunning oʻzida uchinchi savol ham yopildi: «oxirgi kurs» qaysi kiritishdan yangilanadi →
+**0044**: eng kech sanali yozuv yoki toʻlovdagi kurs; bir xil sanada oxirgi kiritilgani gʻolib;
+qoʻlda soʻralgan kurs esa kiritilgan kundagi qiymat sifatida qatnashadi (6d–6f-bandlar,
+23a–23d-mezonlar).
+
+Toʻrtinchi savol ham oʻsha kuni yopildi: «oxirgi kurs» qanday saqlanadi → **0045**: saqlanmaydi,
+yozuv va toʻlovlardan hisoblab topiladi; faqat qoʻlda soʻralgan kurs sanasi bilan saqlanadi
+(6c, 6f, 6g-bandlar, 23e–23g-mezonlar).
+
+Beshinchi savol ham oʻsha kuni yopildi: bir xil sanadagi kurslardan qaysi biri «oxirgi
+kiritilgani» ekani nimadan aniqlanadi → **0047**: har yozuv va qarz toʻlovi `yaratilgan` vaqt
+maydoni bilan saqlanadi, u faylga kiradi va tahrirlashda oʻzgarmaydi (6e, 6h-bandlar,
+23h–23i-mezonlar).
+
+Bu specda ochiq savol qolmadi.
