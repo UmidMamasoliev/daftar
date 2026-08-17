@@ -1,6 +1,7 @@
 # Uslub — rang va shakl qoidalari
 
-Sana: 2026-08-17. Asos: `prds/daftar-prd.md`, qarorlar 0003, 0009, 0011, 0023, 0026, 0033, 0034.
+Sana: 2026-08-17. Asos: `prds/daftar-prd.md`, qarorlar 0003, 0009, 0011, 0023, 0026, 0033, 0034,
+0063.
 
 Bu fayl butun daftar uchun bitta joyda turadi: har ekranda rang, oʻlcham va boʻshliq qaytadan
 oʻylanmaydi. Ekran tavsiflari (`design/kirim-chiqim.md` va keyingilari) shu yerdagi nomlarga
@@ -72,6 +73,21 @@ Manfiy son kiritilmaydi (0033) — `−` faqat koʻrsatishdagi ishora, kiritishd
 bilan keladi** (maydon tagidagi qator), summa esa har doim ishora bilan keladi. Qizil rang
 yolgʻiz oʻzi hech qachon xabar tashimaydi.
 
+### Qarz yoʻnalishi qanday ajratiladi
+
+Qarz raqamlari ham xuddi shu uch belgi bilan koʻrsatiladi — yangi rang qoʻshilmaydi. Maʼnosi
+bitta: **pul menga keladimi yoki mendan ketadimi**.
+
+| Holat | Ishora va rang | Soʻz |
+|---|---|---|
+| Men qarz berdim — pul menga qaytadi | `+`, `kirim` | «olaman» (netto), «Berdim» (qarz va forma) |
+| Men qarz oldim — pul mendan ketadi | `−`, `chiqim` | «beraman» (netto), «Oldim» (qarz va forma) |
+| Netto aynan nol, lekin ochiq qarz bor | ishorasiz, `matn` | «hisob teng» |
+
+Bitta istisno: **qarz toʻlovining summasi rang olmaydi** (`matn`) va oldida faqat `−` turadi.
+U yerda `−` «qarz qoldigʻidan ayirildi» degani, pul chiqimi degani emas — «berdim» qarziga
+kelgan toʻlov aslida pulni hisobga qoʻshadi. Toʻliq tavsif: `design/qarz-daftari.md`.
+
 ## Matn oʻlchamlari
 
 Asos 16 px. 13 px dan kichik matn yoʻq.
@@ -134,6 +150,78 @@ Qadam — 4 px. Ishlatiladigan qiymatlar: 4, 8, 12, 16, 24, 32.
 - Roʻyxat qatorining ichki chekkasi: 12 px yuqori-past, 16 px yon.
 - Pastda turgan panel balandligi 72 px; roʻyxat oxiriga shuncha boʻsh joy qoʻshiladi, oxirgi
   qator panel tagida qolmasin.
+
+## Navigatsiya paneli — VAQTINCHALIK (0063)
+
+**Bu boʻlim vaqtinchalik.** Dashboard 3.10 da qurilganda bosh sahifa oʻsha boʻladi va panel
+qayta koʻriladi (0063). Shu belgi olib tashlanmaguncha frontend uni vaqtinchalik deb biladi:
+ekran tavsiflarida «bosh sahifa» deyilgan joylar hozircha shu panel bilan almashtiriladi.
+
+### Nima koʻrinadi
+
+Ekranning eng pastida yopishib turgan panel, ichida teng enli boʻlaklar — faqat soʻz, ikonka
+yoʻq (ikonka kutubxonasi yoʻq):
+
+| Boʻlak | Qayerga olib boradi |
+|---|---|
+| **«Yozuv»** | «Yangi yozuv» formasi (`design/kirim-chiqim.md` 1-boʻlim) |
+| **«Yozuvlar»** | «Yozuvlar» ekrani (oʻsha fayl, 2-boʻlim) |
+| **«Qarz daftari»** | «Qarz daftari» — kontaktlar roʻyxati (`design/qarz-daftari.md` 1-boʻlim) |
+
+Keyingi qismlar tayyor boʻlganda shu panelga **«Hisobot»** va **«Zaxira»** boʻlaklari xuddi shu
+naqshda qoʻshiladi. Boshqa boʻlak qoʻshilmaydi.
+
+### Oʻlchamlari va rangi
+
+| Nima | Qiymat |
+|---|---|
+| Panel foni | `yuza` |
+| Panel ustidagi chiziq | 1 px `chegara` |
+| Panel balandligi | 56 px + qurilmaning pastki xavfsiz zonasi |
+| Boʻlak | eni teng (panel eniga boʻlinadi), bosiladigan joyi butun boʻlak — kamida 44 px baland |
+| Matn | `kichik` (14 px) |
+| **Faol boʻlim** | matni `harakat`, qalinligi 600 |
+| Faol boʻlmagan boʻlim | matni `matn-ikkinchi`, qalinligi 400 |
+| Bosilgan holat | fon 8 % ga toʻqlashadi (umumiy qoida), oʻlcham oʻzgarmaydi |
+| Fokus | 2 px `harakat` halqa (umumiy qoida) |
+
+Faol holat **faqat rang bilan** koʻrsatilmaydi: qalinlik ham oʻzgaradi — rang koʻrmaydigan odam
+ham qaysi boʻlimda turganini bilsin (uslubning umumiy qoidasi).
+
+### Qayerda koʻrinadi, qayerda yoʻq
+
+- **Koʻrinadi:** «Yozuvlar», «Qarz daftari», «Kontakt» sahifasi. «Kontakt» da faol boʻlim —
+  **«Qarz daftari»**.
+- **Koʻrinmaydi:** `×` bilan ochiladigan forma ekranlarida («Yangi yozuv», «Yozuvni
+  tahrirlash», «Yangi qarz», «Qarzni tahrirlash», «Toʻlov») va forma ichidan ochiladigan
+  «Kategoriyalar» ekranida. U yerda pastda **«Saqlash»** yoki **«＋ Yangi kategoriya»** paneli
+  turadi — ikkita panel ustma-ust qoʻyilmaydi, forma esa bitta ish uchun ochiladi va `×` bilan
+  yopiladi.
+- **Navigatsiya boʻlimining oʻz ekranida «‹ Orqaga» havolasi boʻlmaydi** — qaytadigan ekran
+  yoʻq. Ichkariga kirilgan ekranlarda («Kontakt») «‹ Orqaga» oʻz joyida qoladi.
+
+### Pastdagi panellar tartibi
+
+Bir ekranda uchtagacha qatlam boʻlishi mumkin, pastdan yuqoriga:
+
+1. Navigatsiya paneli (56 px + xavfsiz zona) — eng pastda.
+2. Ekranning asosiy tugma paneli (72 px), masalan «＋ Yangi kontakt», «＋ Yangi qarz».
+3. «Qaytarish» paneli — hammasining ustida, pastdagi eng yaqin paneldan 16 px yuqorida.
+
+Roʻyxat oxiriga qoʻshiladigan boʻsh joy shu qatlamlar yigʻindisiga teng: navigatsiya paneli
+bor ekranda 56 px + xavfsiz zona, asosiy tugma paneli ham boʻlsa yana 72 px. Oxirgi qator hech
+qachon panel ostida qolmaydi.
+
+### Ilova ochilganda va forma yopilganda
+
+- Ilova ochilganda **«Yozuvlar»** ekrani koʻrinadi (dashboard qurilgach bosh sahifa uni
+  almashtiradi).
+- **«Yozuv»** boʻlagi bosilganda «Yangi yozuv» formasi ochiladi; `×` bosilsa ham, «Saqlash»
+  bosilsa ham **«Yozuvlar»** ekrani ochiladi — odam saqlagan yozuvini darhol koʻradi.
+  Boshqa joydan ochilgan forma esa oʻzi kelgan ekranga qaytadi (`design/kirim-chiqim.md`
+  qoidasi oʻzgarmaydi).
+- Boʻlaklar orasida oʻtishda animatsiya yoʻq (uslubning umumiy qoidasi) — ekran darhol
+  almashadi.
 
 ## Son, sana va valyuta formati
 

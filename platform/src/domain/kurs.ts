@@ -8,7 +8,7 @@
 // Shundan kelib chiqadi: kursli yozuv oʻchirilsa yoki tahrirlansa, qiymat oʻz-oʻzidan
 // toʻgʻrilanadi — hech qayerda eski nusxa qolmaydi (0045; mezon 23e, 23f).
 
-import type { KursManbai, Yozuv } from './turlar.ts'
+import type { KursManbai, Tolov, Yozuv } from './turlar.ts'
 
 /** Dollardagi yozuvlardan kurs manbalarini ajratib oladi. */
 export function yozuvlardanKurslar(yozuvlar: readonly Yozuv[]): KursManbai[] {
@@ -16,6 +16,23 @@ export function yozuvlardanKurslar(yozuvlar: readonly Yozuv[]): KursManbai[] {
   for (const yozuv of yozuvlar) {
     if (yozuv.valyuta === 'dollar') {
       manbalar.push({ kurs: yozuv.kurs, sana: yozuv.sana, yaratilgan: yozuv.yaratilgan })
+    }
+  }
+  return manbalar
+}
+
+/**
+ * Qarz toʻlovlaridan kurs manbalarini ajratib oladi (spec 15b-band; 0044, 0045).
+ *
+ * Faqat boshqa valyutadagi toʻlovda kurs boʻladi — qarz valyutasidagi toʻlovda kurs
+ * soʻralmaydi (mezon 12), demak u manbaga ham kirmaydi. Yozuv kursi bilan farqi yoʻq:
+ * ikkalasi bir xil qoidada solishtiriladi.
+ */
+export function tolovlardanKurslar(tolovlar: readonly Tolov[]): KursManbai[] {
+  const manbalar: KursManbai[] = []
+  for (const tolov of tolovlar) {
+    if (tolov.kurs !== undefined) {
+      manbalar.push({ kurs: tolov.kurs, sana: tolov.sana, yaratilgan: tolov.yaratilgan })
     }
   }
   return manbalar

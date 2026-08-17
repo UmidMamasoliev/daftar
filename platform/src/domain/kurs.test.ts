@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
-import { oxirgiKurs, yozuvlardanKurslar } from './kurs.ts'
-import type { KursManbai, Yozuv } from './turlar.ts'
+import { oxirgiKurs, tolovlardanKurslar, yozuvlardanKurslar } from './kurs.ts'
+import type { KursManbai, Tolov, Yozuv } from './turlar.ts'
 
 /** Kurs manbai yasaydi: kurs, operatsiya sanasi va daftarga tushgan vaqti. */
 function manba(kurs: number, sana: string, yaratilgan: string): KursManbai {
@@ -124,5 +124,71 @@ describe('oxirgiKurs — yozuv oʻzgarganda qayta hisob (0045; mezon 23e, 23f, 2
     const tahrirlangan = { ...kunBirinchi, kurs: 12900 }
 
     expect(oxirgiKurs(yozuvlardanKurslar([tahrirlangan, kunIkkinchi]))).toBe(12600)
+  })
+})
+
+// ─── Qarz toʻlovlari kurslari (0044, 0045; spec 15b-band) ───
+
+/** Boshqa valyutada toʻlangan qarz toʻlovi — kursi bilan. */
+function kursliTolov(id: string, kurs: number, sana: string, yaratilgan: string): Tolov {
+  return {
+    id,
+    yaratilgan,
+    qarzId: 'q1',
+    summa: 625000,
+    valyuta: 'som',
+    kurs,
+    sana,
+    hisob: 'karta',
+  }
+}
+
+/** Qarz valyutasidagi toʻlov — kurssiz (mezon 12). */
+function kurssizTolov(id: string, sana: string, yaratilgan: string): Tolov {
+  return {
+    id,
+    yaratilgan,
+    qarzId: 'q1',
+    summa: 5000,
+    valyuta: 'dollar',
+    sana,
+    hisob: 'karta',
+  }
+}
+
+describe('tolovlardanKurslar (0044, 0045; spec 15b-band)', () => {
+  it('kursli toʻlov manba boʻladi', () => {
+    const tolov = kursliTolov('t1', 12500, '2026-08-17', '2026-08-17T09:00:00.000Z')
+
+    expect(tolovlardanKurslar([tolov])).toEqual([
+      { kurs: 12500, sana: '2026-08-17', yaratilgan: '2026-08-17T09:00:00.000Z' },
+    ])
+  })
+
+  it('kurssiz toʻlov manbaga kirmaydi', () => {
+    expect(tolovlardanKurslar([kurssizTolov('t2', '2026-08-17', '2026-08-17T09:00:00.000Z')])).toEqual(
+      [],
+    )
+  })
+
+  it('spec 15b — toʻlov kursi yozuv kursi bilan bir xil qoidada solishtiriladi', () => {
+    const yozuv = dollarYozuv('y1', 12500, '2026-08-16', '2026-08-16T09:00:00.000Z')
+    const tolov = kursliTolov('t1', 12800, '2026-08-17', '2026-08-17T09:00:00.000Z')
+
+    expect(oxirgiKurs([...yozuvlardanKurslar([yozuv]), ...tolovlardanKurslar([tolov])])).toBe(12800)
+  })
+
+  it('oʻtgan sanali toʻlov bugungi kursni bosmaydi (0044)', () => {
+    const yozuv = dollarYozuv('y1', 12500, '2026-08-17', '2026-08-17T09:00:00.000Z')
+    const tolov = kursliTolov('t1', 11000, '2026-08-10', '2026-08-17T10:00:00.000Z')
+
+    expect(oxirgiKurs([...yozuvlardanKurslar([yozuv]), ...tolovlardanKurslar([tolov])])).toBe(12500)
+  })
+
+  it('bir xil sanada oxirgi kiritilgan toʻlov gʻolib (0044, 0047)', () => {
+    const yozuv = dollarYozuv('y1', 12500, '2026-08-17', '2026-08-17T09:00:00.000Z')
+    const tolov = kursliTolov('t1', 12900, '2026-08-17', '2026-08-17T09:30:00.000Z')
+
+    expect(oxirgiKurs([...yozuvlardanKurslar([yozuv]), ...tolovlardanKurslar([tolov])])).toBe(12900)
   })
 })

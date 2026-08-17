@@ -6,8 +6,8 @@
 // «Xato holatlari»): notoʻgʻri belgi maydonga umuman tushmaydi (0033, 0042; mezon 4b, 4d, 22).
 
 import { kunMatni } from '../domain/sana.ts'
-import type { Hisob, Valyuta, YozuvTuri } from '../domain/turlar.ts'
-import { FORMA } from './matnlar.ts'
+import type { Hisob, QarzYonalishi, Tolov, Valyuta, YozuvTuri } from '../domain/turlar.ts'
+import { FORMA, NETTO } from './matnlar.ts'
 
 const OYLAR = [
   'yanvar',
@@ -137,13 +137,101 @@ export function summaKorinishi(yozuv: {
   summa: number
   valyuta: Valyuta
 }): string {
-  const ishora = ISHORA[yozuv.turi]
-  if (yozuv.valyuta === 'som') {
-    return `${ishora}${minglikBoshliq(String(yozuv.summa))} ${FORMA.somSozi}`
+  return `${ISHORA[yozuv.turi]}${pulMatni(yozuv.summa, yozuv.valyuta)}`
+}
+
+/**
+ * Summa **ishorasiz**, valyuta soʻzi bilan: `700 000 soʻm`, `50,00 $`.
+ *
+ * Uslub: «Son, sana va valyuta formati» — soʻmda tiyin yoʻq, dollarda ikki kasr va
+ * kasr belgisi vergul; minglik ajratish ikkala valyutada ham faqat butun qismga tegadi.
+ * Manfiy son bu yerga kelmaydi: ishora har doim chaqiruvchi tomonda qoʻyiladi.
+ */
+export function pulMatni(summa: number, valyuta: Valyuta): string {
+  const musbat = Math.abs(summa)
+  if (valyuta === 'som') {
+    return `${minglikBoshliq(String(musbat))} ${FORMA.somSozi}`
   }
-  const butun = Math.floor(yozuv.summa / 100)
-  const sent = yozuv.summa - butun * 100
-  return `${ishora}${minglikBoshliq(String(butun))},${String(sent).padStart(2, '0')} ${FORMA.dollarBelgisi}`
+  const butun = Math.floor(musbat / 100)
+  const sent = musbat - butun * 100
+  return `${minglikBoshliq(String(butun))},${String(sent).padStart(2, '0')} ${FORMA.dollarBelgisi}`
+}
+
+/**
+ * Netto qatoridagi soʻz (dizayn 0-boʻlim): musbat — kontakt menga qarzdor, manfiy — men
+ * unga, nol — hisob teng, lekin ochiq qarz bor (mezon 15e).
+ */
+export function nettoSozi(netto: number): string {
+  if (netto > 0) {
+    return NETTO.olaman
+  }
+  return netto < 0 ? NETTO.beraman : NETTO.hisobTeng
+}
+
+/** Netto summasi ishorasi bilan: `+700 000 soʻm`, `−50,00 $`, nolda ishorasiz `0,00 $`. */
+export function nettoMatni(netto: number, valyuta: Valyuta): string {
+  const ishora = netto > 0 ? ISHORA.kirim : netto < 0 ? ISHORA.chiqim : ''
+  return `${ishora}${pulMatni(netto, valyuta)}`
+}
+
+/**
+ * Netto raqamining rang sinfi. Uslub: rang yolgʻiz maʼno tashimaydi — soʻz va ishora ham
+ * bor (`nettoSozi`, `nettoMatni`), shuning uchun nolda rang umuman qoʻyilmaydi.
+ */
+export function nettoSinfi(netto: number): string {
+  if (netto > 0) {
+    return 'kirim'
+  }
+  return netto < 0 ? 'chiqim' : ''
+}
+
+/**
+ * Qarz kartochkasidagi joriy qoldiq (dizayn 0-boʻlim).
+ *
+ * Ishora **yoʻnalishdan** olinadi, raqamdan emas: qoldiq hech qachon manfiy boʻlmaydi
+ * (0061), lekin «berdim» qarzida pul menga qaytadi (`+`, `kirim`), «oldim» qarzida
+ * mendan ketadi (`−`, `chiqim`) — uslub: «Qarz yoʻnalishi qanday ajratiladi».
+ */
+export function qarzQoldigiMatni(
+  qoldiq: number,
+  valyuta: Valyuta,
+  yonalishi: QarzYonalishi,
+): string {
+  const ishora = yonalishi === 'berdim' ? ISHORA.kirim : ISHORA.chiqim
+  return `${ishora}${pulMatni(qoldiq, valyuta)}`
+}
+
+/** Qarz kartochkasidagi qoldiq rangi: «berdim» — `kirim`, «oldim» — `chiqim`. */
+export function qarzQoldigiSinfi(yonalishi: QarzYonalishi): string {
+  return yonalishi === 'berdim' ? 'kirim' : 'chiqim'
+}
+
+/**
+ * Toʻlov qatoridagi summa: qarz valyutasida, har doim `−` bilan va **rangsiz**.
+ *
+ * `−` bu yerda «qarz qoldigʻidan ayirildi» degani, pul chiqimi degani emas — shuning
+ * uchun rang qoʻyilmaydi (dizayn 0-boʻlim, «Toʻlov qatori»).
+ */
+export function tolovMatni(summa: number, valyuta: Valyuta): string {
+  return `${ISHORA.chiqim}${pulMatni(summa, valyuta)}`
+}
+
+/** Kursning toʻliq yozilishi (uslub): `1 $ = 12 500 soʻm`. */
+export function kursMatni(kurs: number): string {
+  return `1 ${FORMA.dollarBelgisi} = ${minglikBoshliq(String(kurs))} ${FORMA.somSozi}`
+}
+
+/**
+ * Toʻlov qatorining ikkinchi qatori (dizayn 0-boʻlim): hisob nomi; toʻlov **boshqa
+ * valyutada** kelgan boʻlsa kiritilgan summa va kurs ham, orasida ` · `:
+ * `Karta · 625 000 soʻm · 1 $ = 12 500 soʻm`.
+ */
+export function tolovTafsiloti(tolov: Tolov, qarzValyutasi: Valyuta): string {
+  const nom = hisobNomi(tolov.hisob)
+  if (tolov.valyuta === qarzValyutasi || tolov.kurs === undefined) {
+    return nom
+  }
+  return `${nom} · ${pulMatni(tolov.summa, tolov.valyuta)} · ${kursMatni(tolov.kurs)}`
 }
 
 /** Hisob nomi ekranda: «Karta», «Naqd» (0011). */

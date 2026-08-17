@@ -3,16 +3,17 @@
 Sana: 2026-08-17. Asos: `prds/kirim-chiqim.md`. Rang, oʻlcham va boʻshliq — `design/uslub.md`
 (bu yerda ular nom bilan ataladi: `matn-ikkinchi`, `chip`, `asosiy tugma`).
 Qarorlar: 0009, 0011, 0012, 0013, 0014, 0023, 0026, 0028, 0029, 0032, 0033, 0034, 0042, 0047,
-0048, 0049, 0050, 0051, 0057.
+0048, 0049, 0050, 0051, 0057, 0063.
 
 Uchta ekran: **Yangi yozuv** (kiritish formasi), **Yozuvlar** (toʻliq roʻyxat),
 **Kategoriyalar** (boshqaruv).
 
 Ekrandagi matnlar shu faylda aynan yozilgan — frontend oʻshani koʻchiradi, oʻzgartirmaydi.
 
-**Navigatsiya:** «Yangi yozuv» va «Yozuvlar» ekranlariga bosh sahifadan (dashboard) kiriladi,
-«Kategoriyalar» ga esa «Yangi yozuv» formasidan. Keyingi qismlar (qarz daftari, oylik hisobot)
-qoʻshilganda navigatsiya kengayadi.
+**Navigatsiya:** dashboard qurilgunicha «Yangi yozuv» va «Yozuvlar» ekranlariga pastdagi
+**vaqtinchalik navigatsiya panelidan** kiriladi — **«Yozuv»** va **«Yozuvlar»** boʻlaklari
+(0063; tavsifi `design/uslub.md`). «Kategoriyalar» ga esa «Yangi yozuv» formasidan. Dashboard
+3.10 da kelganda bosh sahifa oʻsha boʻladi va navigatsiya qayta koʻriladi.
 
 ---
 
@@ -74,7 +75,8 @@ qurilmaydi.
 Kundalik holat: soʻmdagi chiqim, kartadan, bugungi sana bilan.
 
 1. Bosh sahifadagi **«＋ Yozuv»** tugmasi — forma ochiladi, kursor summada, raqam klaviaturasi
-   ochiq.
+   ochiq. (Vaqtinchalik: pastdagi navigatsiya panelining **«Yozuv»** boʻlagi, 0063 — qadamlar
+   soni oʻzgarmaydi.)
 2. Summani teradi.
 3. **«Chiqim»** ni bosadi.
 4. Kategoriya chipini bosadi.
@@ -202,7 +204,9 @@ Bu ekranda **«Oʻchirish» tugmasi yoʻq** — oʻchirish «Yozuvlar» ekranida
 
 ### Nima koʻrinadi
 
-Yuqorida panel: chapda matn-havola **«‹ Orqaga»**, oʻrtada sarlavha **«Yozuvlar»**.
+Yuqorida panel: oʻrtada sarlavha **«Yozuvlar»**. **Vaqtinchalik (0063):** bu ekran pastki
+navigatsiyaning oʻz boʻlimi, shuning uchun chapda **«‹ Orqaga»** havolasi yoʻq — qaytadigan
+ekran yoʻq. Dashboard (3.10) qurilgach, u yerdan kirilganda «‹ Orqaga» qaytadi.
 
 Ostida — kunlarga guruhlangan roʻyxat, pastga uzluksiz aylantiriladi (0032).
 
@@ -265,6 +269,8 @@ bilan yopiladi.
 - Ekrandan chiqib ketilsa yoki ilova yopilsa panel yoʻqoladi va oʻchirish yakuniy boʻladi.
 - Panel «Yozuvlar» ekranida ham, bosh sahifadagi qisqa roʻyxatda ham bir xil koʻrinadi va bir
   xil ishlaydi (0029, 20-mezon).
+- **Vaqtinchalik (0063):** panel pastdagi navigatsiya panelining ustida turadi — qatlamlar
+  tartibi `design/uslub.md` dagi navigatsiya boʻlimida.
 
 ### Boʻsh holat
 
@@ -274,7 +280,12 @@ Hali bitta ham yozuv yoʻq boʻlsa, ekranning oʻrtasidan biroz yuqorida ikkita 
 - `kichik`, `matn-ikkinchi`: **«Birinchi yozuvni bosh sahifadagi «＋ Yozuv» tugmasi bilan
   qoʻshasiz.»**
 
-Bu holatda ham qoʻshish tugmasi qoʻyilmaydi (u bosh sahifada). Hamma yozuv oʻchirilganda ham
+**Vaqtinchalik (0063):** dashboard qurilgunicha ikkinchi qator boshqacha yoziladi — **«Birinchi
+yozuvni pastdagi «Yozuv» boʻlimi bilan qoʻshasiz.»** Bosh sahifa paydo boʻlganda yuqoridagi
+asosiy matn qaytadi.
+
+Bu holatda ham qoʻshish tugmasi qoʻyilmaydi (u bosh sahifada, hozircha — navigatsiya
+panelida). Hamma yozuv oʻchirilganda ham
 xuddi shu holat koʻrinadi; agar «qaytarish» paneli turgan boʻlsa, u boʻsh holat ustida turadi.
 
 ---

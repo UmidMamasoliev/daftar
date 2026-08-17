@@ -9,10 +9,11 @@ export const BAZA_NOMI = 'daftar'
 
 /**
  * Sxema versiyasi. Yangi ombor qoʻshilganda bittaga oshadi.
- * 1 → 2: `kategoriyalar` ombori qoʻshildi (T3; 0013, 0028). Eski `yozuvlar` ombori
- * va undagi maʼlumot tegilmaydi.
+ * 1 → 2: `kategoriyalar` ombori qoʻshildi (T3; 0013, 0028).
+ * 2 → 3: qarz daftari omborlari qoʻshildi — `kontaktlar`, `qarzlar`, `tolovlar`
+ * (Q1; 0015, 0016). Eski omborlar va ulardagi maʼlumot ikkala qadamda ham tegilmaydi.
  */
-export const BAZA_VERSIYASI = 2
+export const BAZA_VERSIYASI = 3
 
 /** Kirim-chiqim yozuvlari ombori. */
 export const YOZUVLAR_OMBORI = 'yozuvlar'
@@ -20,8 +21,23 @@ export const YOZUVLAR_OMBORI = 'yozuvlar'
 /** Kategoriyalar ombori: tayyor roʻyxat va foydalanuvchi qoʻshganlari (0013, 0028). */
 export const KATEGORIYALAR_OMBORI = 'kategoriyalar'
 
+/** Kontaktlar ombori: qarz kimga bogʻlanishi (0015, 0031). */
+export const KONTAKTLAR_OMBORI = 'kontaktlar'
+
+/** Qarzlar ombori: har qarz bitta kontaktga bogʻlanadi (0015). */
+export const QARZLAR_OMBORI = 'qarzlar'
+
+/** Qarz toʻlovlari ombori: qoldiq shulardan hisoblanadi (0016). */
+export const TOLOVLAR_OMBORI = 'tolovlar'
+
 /** Bazadagi hamma omborlar — tozalash va yangilash shu roʻyxatdan yuradi. */
-const OMBORLAR = [YOZUVLAR_OMBORI, KATEGORIYALAR_OMBORI]
+const OMBORLAR = [
+  YOZUVLAR_OMBORI,
+  KATEGORIYALAR_OMBORI,
+  KONTAKTLAR_OMBORI,
+  QARZLAR_OMBORI,
+  TOLOVLAR_OMBORI,
+]
 
 let ochiq: IDBDatabase | null = null
 
@@ -46,6 +62,19 @@ export function bazaniOch(): Promise<IDBDatabase> {
         const ombor = baza.createObjectStore(KATEGORIYALAR_OMBORI, { keyPath: 'id' })
         // Kirim va chiqim roʻyxatlari alohida oʻqiladi (mezon 16).
         ombor.createIndex('turi', 'turi', { unique: false })
+      }
+      if (!baza.objectStoreNames.contains(KONTAKTLAR_OMBORI)) {
+        baza.createObjectStore(KONTAKTLAR_OMBORI, { keyPath: 'id' })
+      }
+      if (!baza.objectStoreNames.contains(QARZLAR_OMBORI)) {
+        const ombor = baza.createObjectStore(QARZLAR_OMBORI, { keyPath: 'id' })
+        // Kontakt ostidagi qarzlar shu indeks bilan oʻqiladi (mezon 3, 4).
+        ombor.createIndex('kontaktId', 'kontaktId', { unique: false })
+      }
+      if (!baza.objectStoreNames.contains(TOLOVLAR_OMBORI)) {
+        const ombor = baza.createObjectStore(TOLOVLAR_OMBORI, { keyPath: 'id' })
+        // Qarz qoldigʻi oʻz toʻlovlaridan hisoblanadi (mezon 5, 7).
+        ombor.createIndex('qarzId', 'qarzId', { unique: false })
       }
     }
 
@@ -91,6 +120,35 @@ export async function omborda<T>(
     }
     sorov.onerror = () => {
       xato(sorov.error ?? new Error('Bazadagi soʻrov bajarilmadi.'))
+    }
+    amal.onabort = () => {
+      xato(amal.error ?? new Error('Bazadagi amal bekor qilindi.'))
+    }
+  })
+}
+
+/**
+ * Bir nechta soʻrovni **bitta amalda** (transaction) bajaradi va tugashini kutadi.
+ *
+ * Qarz daftarida bu zarur: kontakt oʻchirilganda uning qarzlari va toʻlovlari ham ketadi
+ * (0030). Har biri alohida amal boʻlsa, oʻrtada uzilish sodir boʻlganda kontaktsiz qarz
+ * qolib ketardi — u ekranda koʻrinmasdi, lekin hisob qoldigʻida turaverardi. Bitta amalda
+ * esa yo hammasi bajariladi, yo hech biri.
+ */
+export async function amalda(
+  omborNomlari: readonly string[],
+  rejim: IDBTransactionMode,
+  ish: (amal: IDBTransaction) => void,
+): Promise<void> {
+  const baza = await bazaniOch()
+  return new Promise<void>((bajarildi, xato) => {
+    const amal = baza.transaction([...omborNomlari], rejim)
+    ish(amal)
+    amal.oncomplete = () => {
+      bajarildi()
+    }
+    amal.onerror = () => {
+      xato(amal.error ?? new Error('Bazadagi amal bajarilmadi.'))
     }
     amal.onabort = () => {
       xato(amal.error ?? new Error('Bazadagi amal bekor qilindi.'))

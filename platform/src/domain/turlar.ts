@@ -94,6 +94,147 @@ export type Kategoriya = {
   yaratilgan?: string
 }
 
+/** Qarzning ikki yoʻnalishi: men berdim va men oldim (0015). */
+export const QARZ_YONALISHLARI = ['berdim', 'oldim'] as const
+export type QarzYonalishi = (typeof QARZ_YONALISHLARI)[number]
+
+/**
+ * Qarz yopilish chegarasi — qarzning **oʻz valyutasida**, eng kichik birlikda (0052).
+ *
+ * Qoldiq shu chegaradan oshmasa qarz yopilgan sanaladi: dollarda ≤ 1 sent,
+ * soʻmda ≤ 100 soʻm. Chegara 0042 dagi yaxlitlashdan qoladigan «dum» uchun.
+ * Holat maydoni yaratilmaydi — yopiqlik har safar qoldiqdan hisoblanadi (0016).
+ */
+export const YOPILISH_CHEGARASI: Record<Valyuta, number> = { som: 100, dollar: 1 }
+
+/** Hali saqlanmagan kontakt: ism majburiy, telefon ixtiyoriy (0031). */
+export type YangiKontakt = {
+  ism: string
+  /** Boʻsh boʻlsa maydon umuman boʻlmaydi. Format tekshirilmaydi (0031). */
+  telefon?: string
+}
+
+/**
+ * Bazada turgan kontakt (0015, 0031).
+ *
+ * `yaratilgan` — texnik tartib maydoni (0047 naqshi): roʻyxatdagi tartib shundan
+ * chiqadi (qoʻshilish tartibi), foydalanuvchiga koʻrsatilmaydi.
+ */
+export type Kontakt = YangiKontakt & { id: string; yaratilgan: string }
+
+/** Kontakt formasidagi qiymatlar — ikkala maydon ham matn (0031). */
+export type KontaktFormasi = { ism: string; telefon: string }
+
+/**
+ * Hali saqlanmagan, lekin tekshiruvdan oʻtgan qarz.
+ *
+ * Qarzda **kurs yoʻq**: qarz oʻz valyutasida yuritiladi va qoldigʻi ham oʻsha valyutada
+ * qoladi (0023). Kurs faqat boshqa valyutadagi toʻlovda soʻraladi va oʻsha toʻlovda
+ * saqlanadi. `summa` — butun son, valyutaning eng kichik birligida (0008, 0033).
+ */
+export type YangiQarz = {
+  kontaktId: string
+  yonalishi: QarzYonalishi
+  summa: number
+  valyuta: Valyuta
+  sana: string
+  hisob: Hisob
+}
+
+/** Bazada turgan qarz; `yaratilgan` — tahrirda oʻzgarmaydigan texnik maydon (0047). */
+export type Qarz = YangiQarz & { id: string; yaratilgan: string }
+
+/**
+ * Qarz formasidagi qiymatlar. `yonalishi` boshida boʻsh — standart yoʻq (0050 ruhi).
+ * Qarzda **izoh maydoni yoʻq** (0059) — yozuv formasidan shu bilan farq qiladi.
+ */
+export type QarzFormasi = {
+  kontaktId: string
+  yonalishi: QarzYonalishi | ''
+  summa: string
+  sana: string
+  hisob: Hisob
+  valyuta: Valyuta
+}
+
+/**
+ * Hali saqlanmagan, lekin tekshiruvdan oʻtgan qarz toʻlovi (0016, 0023).
+ *
+ * `kurs` **faqat** toʻlov valyutasi qarz valyutasidan farq qilganda boʻladi: oʻshanda
+ * toʻlov shu kurs bilan qarz valyutasiga aylantirilib qoldiqdan ayiriladi (0023, 0042).
+ * Bir xil valyutadagi toʻlovda maydon umuman boʻlmaydi (mezon 12).
+ */
+export type YangiTolov = {
+  qarzId: string
+  summa: number
+  valyuta: Valyuta
+  kurs?: number
+  sana: string
+  hisob: Hisob
+}
+
+/** Bazada turgan toʻlov; `yaratilgan` majburiy (0047; spec 15c-band). */
+export type Tolov = YangiTolov & { id: string; yaratilgan: string }
+
+/** Toʻlov formasidagi qiymatlar. `kurs` boshqa valyuta tanlanganda majburiy. */
+export type TolovFormasi = {
+  qarzId: string
+  summa: string
+  sana: string
+  hisob: Hisob
+  valyuta: Valyuta
+  kurs: string
+}
+
+/**
+ * Kontakt kartasidagi bitta netto qatori (0037, 0056).
+ *
+ * `netto` — **ochiq** qarzlar boʻyicha «berdim» va «oldim» farqi, valyutaning eng kichik
+ * birligida: musbat — kontakt menga qarzdor, manfiy — men unga qarzdorman, nol — hisob
+ * teng. Qator faqat oʻsha valyutada ochiq qarz boʻlganda yasaladi (mezon 15d, 15f).
+ */
+export type NettoQatori = { valyuta: Valyuta; netto: number }
+
+/** Bitta qarzning ekranga tayyor holati: toʻlovlari, qoldigʻi va yopiqligi (0016). */
+export type QarzHolati = {
+  qarz: Qarz
+  tolovlar: Tolov[]
+  /** Qarz valyutasida, eng kichik birlikda; saqlanmaydi — har safar hisoblanadi. */
+  qoldiq: number
+  /** Shu qarzga toʻlangan yigʻindi, qarz valyutasida (0059 9b2 xato matni uchun). */
+  tolangan: number
+  /** `qoldiq` 0052 dagi chegaradan oshmasa `true`. */
+  yopiq: boolean
+}
+
+/** Kontakt kartasi: kontakt, uning qarzlari holati va netto qatorlari (0015, 0037). */
+export type KontaktHolati = {
+  kontakt: Kontakt
+  qarzlar: QarzHolati[]
+  netto: NettoQatori[]
+  /** 0030 uchun: ochiq qarzi bor kontakt oʻchirilmaydi (chegara ichidagisi toʻsiq emas). */
+  ochiqQarziBormi: boolean
+}
+
+/**
+ * Oʻchirilgan kontaktning butun izi — «qaytarish» uchun (0029, 0030; mezon 18).
+ * Kontakt bilan birga uning qarz tarixi ham oʻchadi va birga qaytadi.
+ */
+export type OchirilganKontakt = {
+  kontakt: Kontakt
+  qarzlar: Qarz[]
+  tolovlar: Tolov[]
+}
+
+/**
+ * Oʻchirilgan qarz va uning toʻlovlari — «qaytarish» uchun (0059; 0029, 0048 naqshi).
+ * Qarz oʻchirilsa toʻlovlari ham birga oʻchadi va qaytarishda birga qaytadi.
+ */
+export type OchirilganQarz = {
+  qarz: Qarz
+  tolovlar: Tolov[]
+}
+
 /** Bitta valyutadagi qoldiq — eng kichik birlikda (soʻm, sent). */
 export type ValyutaQoldigi = { som: number; dollar: number }
 
@@ -129,6 +270,10 @@ export type XatoMaydoni =
   | 'valyuta'
   | 'kurs'
   | 'nom'
+  | 'ism'
+  | 'yonalishi'
+  | 'kontaktId'
+  | 'qarzId'
 
 /** Xato kodlari roʻyxati — testlar va forma shu kodlarga tayanadi, matnga emas. */
 export type XatoKodi =
@@ -155,6 +300,19 @@ export type XatoKodi =
   | 'kategoriya-yashirilgan'
   | 'kategoriya-turi'
   | 'kategoriya-topilmadi'
+  | 'kontakt-ism-bosh'
+  | 'kontakt-bosh'
+  | 'kontakt-topilmadi'
+  | 'kontakt-ochiq-qarz'
+  | 'yonalish-bosh'
+  | 'yonalish-notogri'
+  | 'qarz-topilmadi'
+  | 'qarz-yopiq'
+  | 'qarz-valyuta-ozgarmas'
+  | 'qarz-kontakt-ozgarmas'
+  | 'qarz-summa-tolovdan-kam'
+  | 'tolov-ortiqcha'
+  | 'tolov-nol-aylanma'
 
 /** Bitta xato: qaysi maydon, qaysi kod va odamga koʻrsatiladigan sabab. */
 export type Xato = {

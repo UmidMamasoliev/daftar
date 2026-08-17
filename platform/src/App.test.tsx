@@ -46,12 +46,24 @@ function qatorTugmasi(nom: string, tugmaNomi: string): HTMLElement {
   return within(qator).getByRole('button', { name: tugmaNomi })
 }
 
+/**
+ * «Yangi yozuv» formasini ochadi.
+ *
+ * Ilova «Yozuvlar» bilan ochiladi (0063), formaga esa pastdagi **vaqtinchalik**
+ * navigatsiya panelining «Yozuv» boʻlagidan kiriladi.
+ */
+async function formaniOchdi(odam: ReturnType<typeof userEvent.setup>): Promise<void> {
+  await odam.click(await screen.findByRole('button', { name: 'Yozuv' }))
+  await screen.findByRole('heading', { name: 'Yangi yozuv', level: 1 })
+}
+
 /** Formani toʻldirib saqlaydi — koʻp testga kerak boʻlgan tayyorgarlik. */
 async function yozuvQoshdi(
   odam: ReturnType<typeof userEvent.setup>,
   summa: string,
   kategoriya: string | RegExp = 'oziq-ovqat',
 ): Promise<void> {
+  await formaniOchdi(odam)
   await odam.click(await screen.findByRole('button', { name: 'Chiqim' }))
   await odam.type(screen.getByLabelText('Summa'), summa)
   await odam.click(await screen.findByRole('button', { name: kategoriya }))
@@ -83,6 +95,7 @@ it('kirim turida faqat kirim kategoriyalari koʻrinadi (mezon 16)', async () => 
   const odam = userEvent.setup()
   render(<App />)
 
+  await formaniOchdi(odam)
   await odam.click(await screen.findByRole('button', { name: 'Kirim' }))
   expect(await screen.findByRole('button', { name: 'oylik' })).toBeDefined()
   expect(screen.queryByRole('button', { name: 'oziq-ovqat' })).toBeNull()
@@ -99,15 +112,19 @@ it('yangi yozuv roʻyxatda darhol koʻrinadi', async () => {
   expect(screen.getByRole('heading', { name: 'Bugun', level: 2 })).toBeDefined()
 })
 
-it('`×` bosilsa roʻyxat ekrani ochiladi, «‹ Orqaga» esa formaga qaytaradi', async () => {
+it('ilova «Yozuvlar» bilan ochiladi; «Yozuv» boʻlagi formani ochadi, `×` qaytaradi (0063)', async () => {
   const odam = userEvent.setup()
   render(<App />)
 
+  expect(await screen.findByRole('heading', { name: 'Yozuvlar', level: 1 })).toBeDefined()
+
+  await formaniOchdi(odam)
+  // Forma ekranida navigatsiya paneli koʻrinmaydi (dizayn: «Qayerda koʻrinadi»).
+  expect(screen.queryByRole('navigation')).toBeNull()
+
   await odam.click(tugma('Yopish'))
   expect(screen.getByRole('heading', { name: 'Yozuvlar', level: 1 })).toBeDefined()
-
-  await odam.click(tugma('‹ Orqaga'))
-  expect(screen.getByRole('heading', { name: 'Yangi yozuv', level: 1 })).toBeDefined()
+  expect(screen.getByRole('navigation')).toBeDefined()
 })
 
 it('roʻyxatdagi qator tahrirlash formasini toʻldirilgan holda ochadi (mezon 18)', async () => {
@@ -148,7 +165,7 @@ it('mezon 14c, 14d — yashirilgan kategoriyali yozuv tahrirlanganda chip tanlan
   await yozuvQoshdi(odam, '45000')
 
   // Kategoriya ekran orqali yashiriladi — yozuv oʻz joyida qoladi (0013).
-  await odam.click(tugma('‹ Orqaga'))
+  await formaniOchdi(odam)
   await odam.click(tugma('Boshqarish'))
   await odam.click(qatorTugmasi('oziq-ovqat', 'Yashirish'))
   await screen.findByText('Yashirilgan')
@@ -198,6 +215,7 @@ it('«Boshqarish» kategoriyalar ekranini formadagi tur bilan ochadi', async () 
   const odam = userEvent.setup()
   render(<App />)
 
+  await formaniOchdi(odam)
   await odam.click(await screen.findByRole('button', { name: 'Kirim' }))
   await odam.click(tugma('Boshqarish'))
 
@@ -211,6 +229,7 @@ it('qaytilganda forma toʻldirilgan holicha turadi', async () => {
   const odam = userEvent.setup()
   render(<App />)
 
+  await formaniOchdi(odam)
   await odam.click(await screen.findByRole('button', { name: 'Chiqim' }))
   await odam.type(screen.getByLabelText('Summa'), '45000')
   await odam.type(screen.getByLabelText('Izoh'), 'nonushta')
@@ -227,6 +246,7 @@ it('qoʻshilgan kategoriya formadagi chiplarda darhol paydo boʻladi (mezon 13)'
   const odam = userEvent.setup()
   render(<App />)
 
+  await formaniOchdi(odam)
   await odam.click(await screen.findByRole('button', { name: 'Chiqim' }))
   await odam.click(tugma('Boshqarish'))
   await odam.click(tugma('＋ Yangi kategoriya'))
@@ -247,6 +267,7 @@ it('yashirilgan kategoriya formadagi chiplardan darhol yoʻqoladi (mezon 14)', a
   const odam = userEvent.setup()
   render(<App />)
 
+  await formaniOchdi(odam)
   await odam.click(await screen.findByRole('button', { name: 'Chiqim' }))
   expect(await chipniKut('kiyim')).toBeDefined()
 
@@ -273,6 +294,7 @@ it('tanlangan kategoriya yashirilib qaytilsa tanlov bekor boʻladi', async () =>
   const odam = userEvent.setup()
   render(<App />)
 
+  await formaniOchdi(odam)
   await odam.click(await screen.findByRole('button', { name: 'Chiqim' }))
   await odam.click(await chipniKut('oziq-ovqat'))
   expect((await chipniKut('oziq-ovqat')).getAttribute('aria-pressed')).toBe('true')
@@ -282,8 +304,11 @@ it('tanlangan kategoriya yashirilib qaytilsa tanlov bekor boʻladi', async () =>
   await screen.findByText('Yashirilgan')
   await odam.click(tugma('‹ Orqaga'))
 
+  // «‹ Orqaga» doʻkon navbatini kutadi (0057 poygasi), shuning uchun natija kutiladi.
+  expect(
+    await screen.findByText('Tanlangan kategoriya yashirildi — boshqasini tanlang.'),
+  ).toBeDefined()
   expect(screen.queryByRole('button', { name: 'oziq-ovqat' })).toBeNull()
-  expect(screen.getByText('Tanlangan kategoriya yashirildi — boshqasini tanlang.')).toBeDefined()
 
   // «Saqlash» odatdagi xatoni beradi va yozuv saqlanmaydi.
   await odam.type(screen.getByLabelText('Summa'), '45000')
@@ -296,6 +321,7 @@ it('yashirib, keyin «Koʻrsatish» bilan qaytarilsa tanlov joyida qoladi', asyn
   const odam = userEvent.setup()
   render(<App />)
 
+  await formaniOchdi(odam)
   await odam.click(await screen.findByRole('button', { name: 'Chiqim' }))
   await odam.click(await chipniKut('oziq-ovqat'))
 
@@ -316,6 +342,7 @@ it('yashirilgan nom bilan qoʻshishga urinish rad etiladi (mezon 14a, 14b)', asy
   const odam = userEvent.setup()
   render(<App />)
 
+  await formaniOchdi(odam)
   await odam.click(await screen.findByRole('button', { name: 'Chiqim' }))
   await odam.click(tugma('Boshqarish'))
 
@@ -346,10 +373,12 @@ it('panel turganda boshqa ekranga oʻtilsa oʻchirish yakuniy boʻladi (mezon 12
 
   await odam.hover(qator)
   await odam.click(tugma('Oʻchirish'))
-  expect(screen.getByText('Yozuv oʻchirildi')).toBeDefined()
+  // Panel doʻkon oʻchirishni tugatgandan keyin chiqadi (KELISHUV 8-boʻlim).
+  expect(await screen.findByText('Yozuv oʻchirildi')).toBeDefined()
 
-  await odam.click(tugma('‹ Orqaga'))
-  await odam.click(tugma('Yopish'))
+  // Boshqa boʻlimga oʻtib qaytiladi — panel yoʻqoladi (0063 navigatsiyasi bilan).
+  await odam.click(tugma('Qarz daftari'))
+  await odam.click(tugma('Yozuvlar'))
 
   expect(screen.queryByText('Yozuv oʻchirildi')).toBeNull()
   expect(screen.queryByRole('button', { name: 'QAYTARISH' })).toBeNull()

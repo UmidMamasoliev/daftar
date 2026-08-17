@@ -1,8 +1,9 @@
 # Qarz daftari
 
-Sana: 2026-08-16. Asos: `prds/daftar-prd.md` (16–21-bandlar, va shu featurega tegishli 6, 8, 9,
-12, 21-bandlar). Qarorlar: 0015, 0016, 0017, 0023, 0026, 0029, 0030, 0031, 0033, 0034, 0035,
-0037, 0042, 0043, 0044, 0045, 0047, 0048, 0049, 0052, 0056.
+Sana: 2026-08-16 (oxirgi qoʻshimcha: 2026-08-17). Asos: `prds/daftar-prd.md` (16–21-bandlar, va
+shu featurega tegishli 6, 8, 9, 12, 21-bandlar). Qarorlar: 0014, 0015, 0016, 0017, 0023, 0026,
+0029, 0030, 0031, 0033, 0034, 0035, 0037, 0042, 0043, 0044, 0045, 0047, 0048, 0049, 0052, 0056,
+0059, 0060, 0061, 0062.
 
 Nima uchun: Foydalanuvchi «falonchiga qancha qoldi» degan savolga aniq javob oladi. Qarz
 haqiqatda boʻlib-boʻlib toʻlanadi va esdan chiqadi; daftar kim bilan qanday hisobi borligini,
@@ -15,6 +16,12 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
 1. Kontaktlar roʻyxatini yuritadi (doʻst, qarindosh). Kontaktlar daftar ichida qoʻlda
    yaratiladi. (PRD 16; 0015)
 2. Kontakt ikki maydondan iborat: ism (majburiy) va telefon raqami (ixtiyoriy). (PRD 16; 0031)
+2a. Kontakt **tahrirlanadi**: ism ham, telefon ham oʻzgartiriladi. Ism boʻsh yoki faqat
+   boʻshliqdan iborat boʻlsa saqlanmaydi va sabab koʻrsatiladi — eski ism joyida qoladi; chekka
+   boʻshliqlar kesib saqlanadi (qoʻshish qoidasining aynan oʻzi). Telefon boʻshatilishi mumkin
+   va formati tekshirilmaydi. Bir xil ism tahrirda ham xato emas. (0060; 0015, 0031)
+2b. Tahrir kontaktning qarzlariga, toʻlovlariga va qoldiqlariga tegmaydi; oʻzgarish tarixi
+   saqlanmaydi. (0060; 0014)
 3. Ochiq qarzi bor kontakt oʻchirilmaydi. «Ochiq» degani 8a-banddagi chegaradan yuqori qoldiq:
    chegara ichida yopilgan qarz kontaktni ushlab turmaydi. (PRD 16; 0030, 0052)
 4. Hamma qarzi yopilgan kontakt esa yopilgan qarz tarixi bilan birga oʻchadi. (PRD 16; 0030)
@@ -25,6 +32,10 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
 
 6. Har qarz bitta kontaktga bogʻlanadi. Ikki yoʻnalish bor: men qarz berdim va men qarz oldim.
    (PRD 17; 0015)
+6a. Yoʻnalish uchun **standart qiymat yoʻq**: «Yangi qarz» formasi ochilganda na «Berdim», na
+   «Oldim» tanlangan boʻladi. Yoʻnalish tanlanmasa qarz saqlanmaydi va sabab koʻrsatiladi.
+   Hisob (**karta**) va valyuta (**soʻm**) standartlari oʻz joyida qoladi. (0062; 0050, 0035,
+   0023)
 7. Kontakt ostida uning hamma qarzi va umumiy qoldigʻi koʻrinadi. (PRD 18; 0015)
 7a. Qoldiq har valyuta uchun bitta raqam: **ochiq** qarzlar boʻyicha «berdim» va «oldim» oʻzaro
    ayiriladi (netto), valyutalar aralashtirilmaydi. Raqam yoʻnalish bilan koʻrsatiladi — kim
@@ -49,6 +60,28 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
    (PRD 19; 0029)
 9a. «Qaytarish» tugmasi **7 soniya** turadi — yozuvdagi bilan bir xil muddat; kontakt
    oʻchirishda ham shu muddat (5-band). (0048)
+9b. **Qarzning oʻzi ham tahrirlanadi**: summa, sana, hisob va yoʻnalish erkin oʻzgaradi.
+   Oʻzgarishdan keyin qarz qoldigʻi, yopiqlik (8a), netto va hisob qoldiqlari darhol qayta
+   hisoblanadi; oʻzgarish tarixi saqlanmaydi (0014) va `yaratilgan` maydoni tegilmaydi (0047).
+   (0059)
+9b1. **Valyuta — istisno:** valyuta faqat **toʻlovi yoʻq** qarzda oʻzgartiriladi. Toʻlovi bor
+   qarzda urinish rad etiladi va sabab koʻrsatiladi (xabar matni `design/` da); qarz oʻz
+   valyutasida qoladi. Sababi: toʻlovlar toʻlov paytidagi kursda aylantirilgan (10-band) va
+   kurs tarixi saqlanmaydi (0045). (0059; 0023, 0042)
+9b2. **Yangi summa toʻlovlardan kichik boʻlsa** (0061e — 10b ning teskari tomoni): tahrirdagi
+   summa shu qarzga toʻlangan yigʻindidan (qarz valyutasida, 10a boʻyicha aylantirilgan) past
+   qilinsa —
+   - farq 8a-banddagi chegara **ichida** boʻlsa (dollarda ≤ 1 sent, soʻmda ≤ 100 soʻm) — tahrir
+     qabul qilinadi, qarz yopilgan holatga tushadi va qoldiq nol koʻrsatiladi;
+   - farq chegaradan **koʻp** boʻlsa — tahrir rad etiladi, qarz eski holatida qoladi va xato
+     toʻlangan yigʻindini aytadi (matni `design/` da).
+   Toʻlovlar bu tekshiruvda avtomatik oʻchirilmaydi va kesilmaydi — ortiqcha toʻlovni odam
+   oʻzi oʻchiradi (9-band). (0061; 0052, 0059)
+9c. **Qarzning oʻzi oʻchiriladi**: tasdiq soʻralmaydi, qarz darhol oʻchadi va **7 soniyalik**
+   «qaytarish» tugmasi turadi — 9-banddagi naqshning aynan oʻzi. (0059; 0029, 0048)
+9c1. Qarz oʻchirilganda uning **hamma toʻlovi ham birga oʻchadi**; «qaytarish» bosilsa qarz ham,
+   toʻlovlari ham birga qaytadi. Ikkala holatda ham hisob qoldiqlari va netto darhol qayta
+   hisoblanadi. (0059)
 10. Qarz oʻz valyutasida yuritiladi: dollar qarzining qoldigʻi dollarda turadi. Toʻlov boshqa
     valyutada kelsa, toʻlov paytida kiritilgan kurs boʻyicha qarz valyutasiga aylantirilib
     qoldiqdan ayiriladi. (PRD 20; 0023)
@@ -56,6 +89,25 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
     (0,005 $ dan kami pastga, koʻpi yuqoriga), soʻmda — eng yaqin soʻmga. Yuqoriga yoki pastga
     majburiy yaxlitlash yoʻq. Masalan 100 001 soʻm toʻlov 12 500 kurs bilan 8,00 $ boʻlib
     ayiriladi. (0042)
+10b. **Toʻlov qarz qoldigʻidan katta boʻlsa.** Solishtirish toʻlovning qarz valyutasiga
+    **aylantirilgan** qiymati bilan olib boriladi (10, 10a-bandlar):
+    - aylantirilgan qiymat qoldiqdan 8a-banddagi chegaradan (dollarda 1 sent, soʻmda 100 soʻm)
+      **koʻp** oshsa — toʻlov saqlanmaydi, xato koʻrsatiladi; qarz qoldigʻi ham, hisob qoldigʻi
+      ham oʻzgarmaydi;
+    - **chegara ichida** oshsa — toʻlov qabul qilinadi, qarz 8a boʻyicha yopiladi va qarz
+      qoldigʻi **nol** boʻlib koʻrsatiladi. Manfiy qoldiq hech qayerda chizilmaydi;
+    - hisob qoldigʻiga esa **haqiqiy toʻlov summasi** tushadi — chegara pul harakatini
+      tuzatmaydi (7a2-band). (0061; 0052, 0017, 0035, 0056)
+10c. **Aylantirilgan qiymat nolga aylansa** (masalan 1 soʻm 12 500 kurs bilan) toʻlov
+    saqlanmaydi va xato koʻrsatiladi; hisob qoldigʻi ham oʻzgarmaydi. (0061; 0033, 0042)
+10d. **Toʻlov faqat ochiq qarzga qoʻshiladi:** yopilgan qarz kartochkasida «＋ Toʻlov» yoʻq.
+    Toʻlov oʻchirilib qarz yana ochiq boʻlsa tugma oʻzi qaytadi — yopiqlik holat maydoni emas
+    (8b). (0061)
+10e. Toʻlov formasida **ikkita yordam qatori** boʻladi: (1) pul qaysi hisobga tushishi yoki
+    qaysi hisobdan chiqishi — yoʻnalish qarzdan olinadi, hisob chipi almashtirilsa matn ham
+    oʻzgaradi; (2) boshqa valyutadagi toʻlovda qarzdan ayiriladigan summa qarz valyutasida,
+    summa va kurs toʻldirilgan zahoti (10a dagi yaxlitlash bilan bir xil raqam). Matnlari
+    `design/qarz-daftari.md` 4-boʻlimida. (0061)
 11. Qarz operatsiyalari pul qoldigʻiga taʼsir qiladi: qarzga berilgan pul qoʻldan chiqadi,
     olingan qarz qoʻlga kiradi. (PRD 21; 0017)
 11a. Qarz va toʻlov formasida hisob tanlanadi, standart — **karta**; naqd kerak boʻlsa
@@ -81,8 +133,13 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
     qoidada: eng kech sanali gʻolib, bir xil sanada oxirgi kiritilgani. «Oxirgi kurs» alohida
     saqlanmaydi, u har safar yozuv va toʻlovlardan hisoblanadi. (0043, 0044, 0045)
 15c. Shu hisob uchun har qarz toʻlovi, xuddi yozuv kabi, `yaratilgan` vaqti bilan saqlanadi va
-    bu vaqt zaxira fayliga kiradi. U texnik maydon: koʻrsatilmaydi, kiritilmaydi va toʻlov
-    tahrirlanganda oʻzgarmaydi. (0047)
+    bu vaqt zaxira fayliga kiradi. U texnik maydon: koʻrsatilmaydi va kiritilmaydi; qarz
+    tahrirlanganda ham oʻzgarmaydi (9b). Toʻlovning oʻzi tahrirlanmaydi — u oʻchiriladi va
+    kerak boʻlsa qaytadan kiritiladi (9-band). (0047)
+15d. **Qarzning oʻzi kurs manbai emas.** «Oxirgi kurs» faqat yozuv va toʻlovlardan hisoblanadi
+    (15b). Shuning uchun «Yangi qarz» formasida kurs maydoni yoʻq — dollar tanlanganda ham:
+    qarz oʻz valyutasida yuritiladi (10-band) va qarz kiritilganda hech narsa aylantirilmaydi.
+    Bu qaror emas, 0044 ning oʻqilishi. (0044, 0045)
 
 ## Nima QILMAYDI
 
@@ -93,7 +150,15 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
 - Qarz summasini oylik hisobotdagi «jami kirim» va «jami chiqim» ichiga qoʻshish. (PRD 25; 0017)
 - Qarzni kategoriyaga bogʻlash. (0017)
 - Qarzlar boʻyicha qidiruv va filtr. (0002)
-- Qarz oʻzgarish tarixi va audit izi. (0014)
+- Qarz va kontaktning oʻzgarish tarixi, audit izi. (0014; 0059, 0060)
+- Toʻlovi bor qarzning valyutasini oʻzgartirish. (0059)
+- **Toʻlovning oʻzini tahrirlash** — toʻlov faqat oʻchiriladi va kerak boʻlsa qaytadan
+  kiritiladi; tahrir rejimi yoʻq (9-band; 0029, 0048).
+- Qarz summasi tahrirlanganda ortiqcha toʻlovlarni ilovaning oʻzi oʻchirishi yoki kesishi.
+  (0061; 9b2-band)
+- Yopilgan qarzga yangi toʻlov qoʻshish. (0061)
+- Manfiy qarz qoldigʻi — hech qayerda hisoblanmaydi ham, koʻrsatilmaydi ham. (0061)
+- Qarz formasida kurs maydoni — qarz kurs manbai emas. (0044; 15d-band)
 - Kelajakdagi sana bilan qarz yoki toʻlov. (0034)
 - Kasrli kurs kiritish — kurs faqat butun soʻmda. (0042)
 - Nol yoki manfiy kurs bilan toʻlov. (0049)
@@ -154,6 +219,77 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
 21. Qarz va toʻlov sanasi tanlagichida ertangi kun tanlanmaydi.
 22. Internet oʻchirilgan holda qarz va toʻlov saqlanadi va ilova qayta ochilganda joyida turadi.
 
+**Kontaktni tahrirlash (2a, 2b-bandlar; 0060):**
+
+23. Kontakt ismi tahrirlanib saqlanadi va roʻyxatda yangi ism boʻyicha alifbodagi oʻz oʻrniga
+    oʻtadi.
+24. Kontakt telefoni tahrirlanadi; boʻshatilsa telefon qatori yoʻqoladi va kontakt saqlanaveradi.
+25. Ism boʻsh (yoki faqat boʻshliq) qilib saqlashga urinilsa saqlanmaydi, sabab koʻrsatiladi va
+    eski ism joyida qoladi.
+26. Tahrirdan keyin kontaktning qarzlari, toʻlovlari, nettosi va hisob qoldiqlari oʻzgarmaydi.
+
+**Qarzni tahrirlash (9b, 9b1-bandlar; 0059):**
+
+27. 1 000 000 soʻm qarzda 300 000 soʻm toʻlov bor; qarz summasi 800 000 ga tahrirlansa qoldiq
+    500 000 soʻm boʻladi.
+28. «Berdim» qarzi «Oldim» ga tahrirlansa, hisob qoldigʻi summaning ikki barobariga oʻzgaradi
+    (avvalgi taʼsir bekor boʻlib teskarisi qoʻllanadi) va netto qarama-qarshi tomonga oʻtadi.
+29. Qarz hisobi «karta» dan «naqd» ga tahrirlansa, karta qoldigʻi tahrirdan oldingi holatga
+    qaytadi, naqd qoldigʻi shu summaga oʻzgaradi, ikkalasining yigʻindisi esa oʻzgarmaydi.
+30. Qarz sanasi tahrirlansa kartochka roʻyxatda yangi sana boʻyicha oʻz oʻrniga oʻtadi;
+    `yaratilgan` maydoni oʻzgarmaydi (0047).
+31. Toʻlovi yoʻq qarzning valyutasi soʻmdan dollarga oʻzgartiriladi va qoldiq dollarda
+    koʻrsatiladi.
+32. Toʻlovi bor qarzda valyutani oʻzgartirish urinishi rad etiladi, sabab koʻrsatiladi va qarz
+    oʻz valyutasida qoladi.
+33. 1 000 000 soʻm qarzda 300 000 soʻm toʻlov bor; qarz summasi 300 000 ga tahrirlansa qoldiq
+    nol boʻladi va qarz oʻsha zahoti «Yopilgan» boʻlib koʻrinadi — yopiqlik qaytadan
+    hisoblanadi (8b).
+33a. Oʻsha qarz summasi 299 899 ga tahrirlansa (toʻlangandan 101 soʻm past) tahrir rad etiladi,
+    xato toʻlangan yigʻindini aytadi va qarz summasi 1 000 000 soʻmligicha qoladi (9b2).
+33b. Oʻsha qarz summasi 299 900 ga tahrirlansa (farq 100 soʻm — chegara ichida) tahrir qabul
+    qilinadi, qarz yopilgan boʻlib koʻrinadi va qoldiq nol koʻrsatiladi (9b2; 8a).
+33c. 50,00 $ toʻlangan dollar qarzining summasi 49,99 $ ga tahrirlansa qabul qilinadi (farq
+    1 sent), 49,98 $ ga tahrirlansa rad etiladi (9b2; 8a).
+33d. 33a va 33c dagi rad etilgan tahrirlardan keyin hisob qoldiqlari, netto va toʻlovlar
+    roʻyxati oʻzgarmaydi.
+
+**Qarzni oʻchirish (9c, 9c1-bandlar; 0059):**
+
+34. Qarz oʻchirilsa uning hamma toʻlovi ham roʻyxatdan yoʻqoladi; netto va hisob qoldiqlari qarz
+    umuman kiritilmagandagi holatga qaytadi.
+35. Oʻchirilgach «qaytarish» bosilsa qarz ham, toʻlovlari ham qaytadi va qoldiqlar oʻchirishdan
+    oldingi holatga tiklanadi.
+36. «Qaytarish» qarzda ham 7 soniya turadi; 7 soniyadan keyin tugma yoʻqoladi va qarz qaytmaydi
+    (0048).
+
+**Toʻlov qoidalari (10b–10e-bandlar; 0061):**
+
+37. 700 000 soʻm qoldiqli qarzga 700 100 soʻm toʻlov qabul qilinadi: qarz yopiladi, qoldiq nol
+    koʻrsatiladi, hisob qoldigʻiga 700 100 soʻm tushadi.
+38. Oʻsha qarzga 700 101 soʻm toʻlov saqlanmaydi: xato koʻrsatiladi, qarz qoldigʻi 700 000 soʻm
+    boʻlib qoladi, hisob qoldigʻi oʻzgarmaydi.
+39. 50,00 $ qoldiqli qarzga 50,01 $ toʻlov qabul qilinadi (qoldiq 0,00 $, hisobga 50,01 $
+    tushadi); 50,02 $ toʻlov rad etiladi.
+40. 37 va 39-holatlarda manfiy raqam hech qayerda koʻrinmaydi va netto qatori chiqmaydi — qarz
+    yopilgan (0056).
+41. 100 $ qarzga 1 soʻm toʻlov 12 500 kurs bilan saqlanmaydi (aylantirilgan qiymati nol):
+    qoldiq 100 $ boʻlib qoladi, hisob qoldigʻi oʻzgarmaydi.
+42. Yopilgan qarz kartochkasida «＋ Toʻlov» yoʻq; oʻsha qarzning toʻlovi oʻchirilib qoldiq
+    chegaradan oshsa, tugma qaytadi.
+43. Toʻlov formasida hisob chipi «naqd» ga almashtirilsa yordam qatori ham naqdni aytadi;
+    «Berdim» qarzida pul tushishini, «Oldim» qarzida chiqishini koʻrsatadi.
+44. Boshqa valyutadagi toʻlovda «qarzdan ayiriladi» qatori 10a dagi yaxlitlash bilan bir xil
+    raqamni koʻrsatadi: 12 500 kurs, 100 001 soʻm → 8,00 $.
+
+**Yoʻnalish standarti va kurs manbai (6a, 15d-bandlar; 0062, 0044):**
+
+45. «Yangi qarz» formasi ochilganda yoʻnalish tanlanmagan; hisob «karta», valyuta «soʻm», sana
+    bugungi kun boʻlib turadi.
+46. Yoʻnalish tanlanmasdan saqlashga urinilsa qarz saqlanmaydi va sabab koʻrsatiladi.
+47. «Yangi qarz» formasida dollar tanlanganda ham kurs soʻralmaydi; kiritilgan qarz «oxirgi
+    kurs» ga va «≈ jami soʻmda» qatoriga taʼsir qilmaydi (0044, 0045).
+
 ## Ochiq savollar
 
 Bu spec yozilayotganda ikkita savol chiqdi va ikkalasi ham hal qilindi:
@@ -175,5 +311,21 @@ qarzlardan yigʻiladi; chegara bilan yopilgan qarzning mikro-qoldigʻi kontakt e
 koʻrinmaydi va kontaktni oʻchirishga toʻsqinlik qilmaydi (7a, 7a1, 7a2-bandlar,
 15f–15h-mezonlar). Hisob qoldigʻi (naqd/karta) esa hech qanday chegara bilan oʻzgartirilmaydi —
 u haqiqiy pul harakatidan chiqadi (0017, 0035).
+
+2026-08-17 da `design/qarz-daftari.md` 8-boʻlimidagi toʻqqizta savolni bosh agent 0058 vakolati
+bilan yopdi:
+
+- Qarzning oʻzini tahrirlash va oʻchirish → **0059** (9b, 9b1, 9c, 9c1-bandlar,
+  27–36-mezonlar). Valyuta faqat toʻlovi yoʻq qarzda oʻzgaradi.
+- Kontaktni tahrirlash → **0060** (2a, 2b-bandlar, 23–26-mezonlar).
+- Toʻlov qoldiqdan katta boʻlsa; aylantirilgandan keyin nolga aylansa; yopilgan qarzga toʻlov;
+  toʻlov formasidagi ikki yordam qatori → **0061** (10b–10e-bandlar, 37–44-mezonlar). Keyinroq
+  shu qarorga (e) bandi qoʻshildi: qarz summasi tahrirlanganda toʻlovlardan past qilib
+  qoʻyilsa — chegara ichida qabul, undan koʻp past boʻlsa rad (9b2-band, 33a–33d-mezonlar).
+- «Berdim»/«Oldim» uchun standart qiymat → **0062**: yoʻq (6a-band, 45–46-mezonlar).
+- Qarz formasida kurs maydoni yoʻq degan oʻqilish tasdiqlandi — bu yangi qaror emas, 0044 dan
+  chiqadi (15d-band, 47-mezon).
+- Bosh sahifadan «Qarz daftari» ga havola → **0063**: dashboard 3.10 gacha qurilmaydi, ungacha
+  vaqtinchalik pastki navigatsiya paneli ishlaydi (`prds/daftar-prd.md` 3a-band).
 
 Bu specda ochiq savol qolmadi.

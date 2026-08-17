@@ -39,6 +39,10 @@
   --panel-balandligi: 72px;
   --ustun-eni: 560px;
 
+  /* Vaqtinchalik navigatsiya paneli (0063): 56 px + qurilmaning pastki xavfsiz zonasi. */
+  --nav-balandligi: 56px;
+  --nav-toliq: calc(56px + env(safe-area-inset-bottom, 0px));
+
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
     sans-serif;
   font-size: 16px;
@@ -56,6 +60,14 @@ body {
   min-height: 100dvh;
   background: var(--fon);
   color: var(--matn);
+}
+
+/*
+ * Ilovaning eng tashqi oʻrami. `display: contents` — tartibga aralashmaydi, lekin
+ * `nav-bor` belgisi ichkaridagi panellarga yetib boradi (0063).
+ */
+.ilova {
+  display: contents;
 }
 
 /*
@@ -96,6 +108,20 @@ body {
 .panel-tepa > button {
   grid-column: 1;
   justify-self: start;
+}
+
+/* Oʻngdagi havola («Tahrirlash») — uchinchi ustunda (dizayn: kontakt sahifasi). */
+.panel-tepa > .panel-ong {
+  grid-column: 3;
+  justify-self: end;
+}
+
+/* Uzun ism bir qatorda kesiladi va oxirida `…` qoʻyiladi (dizayn 2-boʻlim). */
+.sarlavha-kesik {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .sarlavha {
@@ -693,4 +719,407 @@ input:focus-visible {
 
 button:active {
   filter: brightness(0.92);
+}
+
+/* ── Vaqtinchalik navigatsiya paneli (0063) ──────────────────────────────── */
+
+/*
+ * `design/uslub.md` → «Navigatsiya paneli — VAQTINCHALIK (0063)». Dashboard 3.10 da
+ * qurilganda bosh sahifa oʻsha boʻladi va bu boʻlim qayta koʻriladi.
+ */
+.navigatsiya {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  background: var(--yuza);
+  border-top: 1px solid var(--chegara);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.navigatsiya-ichi {
+  max-width: var(--ustun-eni);
+  margin: 0 auto;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+}
+
+/* Boʻlak eni teng, bosiladigan joyi butun boʻlak (kamida 44 px — bu yerda 56 px). */
+.nav-bolak {
+  min-height: var(--nav-balandligi);
+  padding: 0 var(--bosh-2);
+  border: 0;
+  background: transparent;
+  color: var(--matn-ikkinchi);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+/* Faol boʻlim faqat rang bilan emas — qalinlik bilan ham ajratiladi (uslub). */
+.nav-bolak.faol {
+  color: var(--harakat);
+  font-weight: 600;
+}
+
+/*
+ * Pastdagi panellar tartibi (uslub: «Pastdagi panellar tartibi»): eng pastda navigatsiya
+ * paneli, ustida ekranning asosiy tugma paneli, hammasining ustida «qaytarish» paneli.
+ */
+.nav-bor .panel-past {
+  bottom: var(--nav-toliq);
+}
+
+.nav-bor .qaytarish-paneli {
+  bottom: calc(var(--nav-toliq) + var(--bosh-4) + env(safe-area-inset-bottom, 0px));
+}
+
+/* Roʻyxat oxiridagi boʻsh joy qatlamlar yigʻindisiga teng. */
+.nav-bor .royxat {
+  padding-bottom: var(--nav-toliq);
+}
+
+.nav-bor .kategoriya-tanasi,
+.nav-bor .qarz-tanasi,
+.nav-bor .kontakt-tanasi {
+  padding-bottom: calc(var(--panel-balandligi) + var(--nav-toliq));
+}
+
+/* ── «Qarz daftari» — kontaktlar roʻyxati ────────────────────────────────── */
+
+.qarz-tanasi,
+.kontakt-tanasi {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosh-6);
+  padding: var(--bosh-4) 0 var(--panel-balandligi);
+}
+
+.kontakt-bloki {
+  margin: 0 var(--bosh-4);
+}
+
+/* Blok ikki qatorli: `×` va tugma maydonlarning yuqorisiga tekislanadi. */
+.kontakt-bloki .qoshish-boshi {
+  align-items: flex-start;
+}
+
+/*
+ * Blokdagi «Qoʻshish»/«Saqlash» — dizayn boʻyicha **asosiy tugma**, lekin qator ichida
+ * turgani uchun eni mazmuniga qarab oʻlchanadi (dizayn 1- va 2-boʻlim). Selektor
+ * `.qoshish-boshi` bilan: `.asosiy-tugma` dagi `width: 100%` yengilishi kerak.
+ */
+.qoshish-boshi .qoshish-tugma {
+  flex: none;
+  width: auto;
+  padding: 0 var(--bosh-4);
+}
+
+/* Ism va telefon ustma-ust turadi; `×` va tugma yon tomonda (dizayn: qoʻshish bloki). */
+.kontakt-maydonlar {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosh-2);
+}
+
+.kontakt-maydonlar .maydon {
+  flex: none;
+}
+
+/*
+ * Dizayn 1-boʻlim: 1-qator ism, 2-qator telefon, **ostida** netto qatorlari — oʻngga
+ * tekislangan. Shuning uchun qator ustun boʻlib tuziladi, yonma-yon emas.
+ */
+.kontakt-qator {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosh-1);
+  min-height: 64px;
+  padding: var(--bosh-3) var(--bosh-4);
+  border: 0;
+  border-bottom: 1px solid var(--chegara);
+  background: var(--yuza);
+  color: var(--matn);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.qator-ism {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* Raqam faqat matn — qoʻngʻiroq yoki SMS havolasi qilinmaydi (0031). */
+.qator-telefon {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--matn-ikkinchi);
+}
+
+/* ── Netto (0037, 0056) ──────────────────────────────────────────────────── */
+
+.netto-qatorlar {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--bosh-1);
+}
+
+.netto-qator {
+  display: flex;
+  align-items: baseline;
+  gap: var(--bosh-2);
+}
+
+.netto-sozi {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--matn-ikkinchi);
+}
+
+.netto-summa {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Kontakt sahifasidagi netto — ekranning eng katta raqami (dizayn 2-boʻlim). */
+.netto-bloklar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosh-4);
+  padding: 0 var(--bosh-4);
+}
+
+.netto-blok {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosh-1);
+}
+
+.netto-katta {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * Yoʻnalish rangi: «berdim» — pul menga qaytadi (`kirim`), «oldim» — mendan ketadi
+ * (`chiqim`). Nolda rang qoʻyilmaydi: soʻz va ishora oʻzi yetadi (uslub).
+ */
+.netto-summa.kirim,
+.netto-katta.kirim,
+.qarz-qoldiq.kirim {
+  color: var(--kirim);
+}
+
+.netto-summa.chiqim,
+.netto-katta.chiqim,
+.qarz-qoldiq.chiqim {
+  color: var(--chiqim);
+}
+
+/* ── Kontakt sahifasi ────────────────────────────────────────────────────── */
+
+.kontakt-telefon,
+.ochiq-qarz-yoq {
+  margin: 0 var(--bosh-4);
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--matn-ikkinchi);
+}
+
+.kontakt-ochirish {
+  margin: 0 var(--bosh-4);
+}
+
+/* Uslub: «Xavfli tugma» — matni va chegarasi `chiqim`, foni `yuza`. */
+.xavfli-tugma {
+  width: 100%;
+  height: var(--maydon-balandligi);
+  border: 1px solid var(--chiqim);
+  border-radius: var(--radius);
+  background: var(--yuza);
+  color: var(--chiqim);
+  font: inherit;
+  cursor: pointer;
+}
+
+.kontakt-ochirish .xato-matni {
+  margin-top: var(--bosh-2);
+}
+
+/* ── Qarz kartochkasi ────────────────────────────────────────────────────── */
+
+.qarzlar {
+  margin: 0;
+  padding: 0 var(--bosh-4);
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosh-3);
+}
+
+.qarz-kartochka {
+  background: var(--yuza);
+  border: 1px solid var(--chegara);
+  border-radius: var(--radius);
+  padding: var(--bosh-3) var(--bosh-4);
+}
+
+.kartochka-boshi {
+  position: relative;
+  display: flex;
+}
+
+.kartochka-tugma {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosh-1);
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--matn);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.kartochka-birinchi {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--bosh-3);
+}
+
+.qarz-yonalish {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.qarz-qoldiq {
+  flex: none;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Yopilgan qarzda raqam oʻrnida soʻz turadi — mikro-qoldiq koʻrsatilmaydi (0052, 0056). */
+.qarz-yopilgan {
+  flex: none;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--matn-ikkinchi);
+}
+
+.kartochka-ikkinchi {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--matn-ikkinchi);
+}
+
+/* «Oʻchirish» summaning oʻrnini egallaydi — kartochka kengligi oʻzgarmaydi. */
+.kartochka-boshi.ochiq .qarz-qoldiq,
+.kartochka-boshi.ochiq .qarz-yopilgan,
+.tolov-qator.ochiq .tolov-summa {
+  visibility: hidden;
+}
+
+.kartochka-boshi .ochirish-tugma,
+.tolov-qator .ochirish-tugma {
+  right: 0;
+}
+
+/* ── Toʻlov qatorlari ────────────────────────────────────────────────────── */
+
+.tolovlar {
+  margin: var(--bosh-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tolov-qator {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--bosh-3);
+  min-height: var(--barmoq);
+  padding: var(--bosh-2) 0;
+}
+
+.tolov-sana {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.tolov-tafsilot {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--matn-ikkinchi);
+}
+
+/* Toʻlov summasi rang olmaydi: `−` bu yerda «qoldiqdan ayirildi» degani (dizayn). */
+.tolov-summa {
+  flex: none;
+  margin-left: auto;
+  font-size: 16px;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.tolov-yoq {
+  margin: var(--bosh-3) 0 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--matn-ikkinchi);
+}
+
+.tolov-havola {
+  display: block;
+  margin-top: var(--bosh-2);
+}
+
+/* ── Qarz va toʻlov formalari ────────────────────────────────────────────── */
+
+.qarz-qatori {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosh-1);
+}
+
+.qarz-kontakt {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--matn-ikkinchi);
+}
+
+/*
+ * Toʻlovi bor qarzda valyuta muzlatilgan (0059): tanlangan chip oʻz koʻrinishida
+ * qoladi, ikkinchisi «oʻchiq» boʻladi. Uslub: «Oʻchiq (bosilmaydi)» — matni
+ * `matn-oʻchiq`, foni `fon`, kursor oʻzgarmaydi.
+ */
+.chip-ochiq {
+  background: var(--fon);
+  color: var(--matn-ochiq);
+}
+
+.chip:disabled {
+  cursor: default;
 }

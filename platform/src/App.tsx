@@ -1,13 +1,21 @@
 // Ilovaning kirish nuqtasi va ekranlar orasidagi oʻtish.
 //
-// Uchta ekran bor: «Yangi yozuv» formasi, «Yozuvlar» roʻyxati va «Kategoriyalar»
-// boshqaruvi. Bosh sahifa (dashboard) hali qurilmagan, shuning uchun oʻtish faqat
-// dizaynda bor elementlarga bogʻlangan: formadagi `×` va «Saqlash» roʻyxatga qaytaradi,
-// roʻyxatdagi «‹ Orqaga» formaga oladi, qator tahrirlash formasini ochadi, formadagi
-// «Boshqarish» esa kategoriyalar ekranini ochadi (dizayn: «Navigatsiya»).
+// **Vaqtinchalik (0063):** dashboard 3.10 gacha qurilmaydi, shuning uchun ilovada pastki
+// navigatsiya paneli turadi (Yozuv / Yozuvlar / Qarz daftari) va ilova «Yozuvlar» bilan
+// ochiladi. Dashboard qurilganda u bosh sahifa boʻladi va navigatsiya qayta koʻriladi.
+// Tavsifi: `design/uslub.md` → «Navigatsiya paneli — VAQTINCHALIK (0063)».
 //
-// Kategoriyalar ekrani ochilganda forma DOM da qoladi (`hidden`), chunki qaytilganda
-// forma toʻldirilgan holicha turishi kerak (dizayn: «Boshqarish» qatori).
+// Yettita ekran bor:
+// - «Yangi yozuv» / «Yozuvni tahrirlash» formasi va «Kategoriyalar» boshqaruvi;
+// - «Yozuvlar» roʻyxati;
+// - «Qarz daftari» (kontaktlar), «Kontakt» sahifasi, «Yangi qarz»/«Qarzni tahrirlash»
+//   formasi va «Toʻlov» formasi.
+//
+// Panel forma ekranlarida koʻrinmaydi: u yerda pastda «Saqlash» yoki «＋ Yangi kategoriya»
+// paneli turadi va ikkita panel ustma-ust qoʻyilmaydi (dizayn).
+//
+// Kategoriyalar ekrani ochilganda yozuv formasi DOM da qoladi (`hidden`), chunki
+// qaytilganda forma toʻldirilgan holicha turishi kerak (dizayn: «Boshqarish» qatori).
 
 import { useEffect, useRef, useState } from 'react'
 import {
@@ -17,6 +25,20 @@ import {
   kategoriyaniYashir,
 } from './data/kategoriyalar.ts'
 import {
+  kontaktHolatlari,
+  kontaktSaqla,
+  kontaktniOchir,
+  kontaktniQaytar,
+  kontaktniTahrirla,
+  qarzQosh,
+  qarzniOchir,
+  qarzniQaytar,
+  qarzniYangila,
+  tolovQosh,
+  tolovniOchir,
+  tolovniQaytar,
+} from './data/qarzlar.ts'
+import {
   hammaYozuvlar,
   yozuvQosh,
   yozuvniOchir,
@@ -24,21 +46,60 @@ import {
   yozuvniYangila,
 } from './data/yozuvlar.ts'
 import { korinadiganlar } from './domain/kategoriya.ts'
-import type { Kategoriya, YangiYozuv, Yozuv, YozuvTuri } from './domain/turlar.ts'
+import type {
+  Kategoriya,
+  KontaktHolati,
+  Natija,
+  OchirilganKontakt,
+  Qarz,
+  YangiQarz,
+  YangiTolov,
+  YangiYozuv,
+  Yozuv,
+  YozuvTuri,
+} from './domain/turlar.ts'
+import { ha } from './domain/turlar.ts'
 import { Kategoriyalar } from './ui/Kategoriyalar.tsx'
+import { Kontakt } from './ui/Kontakt.tsx'
+import type { Bolim } from './ui/Navigatsiya.tsx'
+import { Navigatsiya } from './ui/Navigatsiya.tsx'
+import { QarzDaftari } from './ui/QarzDaftari.tsx'
+import { QarzForma } from './ui/QarzForma.tsx'
+import { TolovForma } from './ui/TolovForma.tsx'
 import type { KategoriyaRoyxati } from './ui/YozuvForma.tsx'
 import { YozuvForma } from './ui/YozuvForma.tsx'
 import { Yozuvlar } from './ui/Yozuvlar.tsx'
 
-type Ekran = 'forma' | 'yozuvlar' | 'kategoriyalar'
+type Ekran =
+  | 'forma'
+  | 'yozuvlar'
+  | 'kategoriyalar'
+  | 'qarz-daftari'
+  | 'kontakt'
+  | 'qarz-forma'
+  | 'tolov-forma'
 
-async function oqi(): Promise<{ kategoriyalar: Kategoriya[]; yozuvlar: Yozuv[] }> {
-  const [kategoriyalar, yozuvlar] = await Promise.all([hammaKategoriyalar(), hammaYozuvlar()])
-  return { kategoriyalar, yozuvlar }
+/** Navigatsiya paneli faqat shu ekranlarda koʻrinadi (dizayn, 0063). */
+const NAVLI_EKRANLAR: readonly Ekran[] = ['yozuvlar', 'qarz-daftari', 'kontakt']
+
+type Holat = {
+  kategoriyalar: Kategoriya[]
+  yozuvlar: Yozuv[]
+  kontaktlar: KontaktHolati[]
+}
+
+async function oqi(): Promise<Holat> {
+  const [kategoriyalar, yozuvlar, kontaktlar] = await Promise.all([
+    hammaKategoriyalar(),
+    hammaYozuvlar(),
+    kontaktHolatlari(),
+  ])
+  return { kategoriyalar, yozuvlar, kontaktlar }
 }
 
 export function App() {
-  const [ekran, setEkran] = useState<Ekran>('forma')
+  // Ilova «Yozuvlar» bilan ochiladi (0063; dizayn: «Ilova ochilganda va forma yopilganda»).
+  const [ekran, setEkran] = useState<Ekran>('yozuvlar')
   const [tahrirlanayotgan, setTahrirlanayotgan] = useState<Yozuv | null>(null)
   const [kategoriyaTuri, setKategoriyaTuri] = useState<YozuvTuri>('chiqim')
   // «Boshqarish» dan har qaytishda ortadi — forma shu belgidan tanlangan
@@ -47,26 +108,46 @@ export function App() {
   const navbatRef = useRef<Promise<unknown>>(Promise.resolve())
   const [kategoriyalar, setKategoriyalar] = useState<readonly Kategoriya[]>([])
   const [yozuvlar, setYozuvlar] = useState<readonly Yozuv[]>([])
+  const [kontaktlar, setKontaktlar] = useState<readonly KontaktHolati[]>([])
+  const [kontaktId, setKontaktId] = useState<string | null>(null)
+  const [qarzId, setQarzId] = useState<string | null>(null)
+  const [tolovQarzId, setTolovQarzId] = useState<string | null>(null)
+  // Oʻchirilgan kontakt «Qarz daftari» roʻyxatida «qaytarish» paneli boʻlib turadi (0030).
+  const [ochirilganKontakt, setOchirilganKontakt] = useState<OchirilganKontakt | null>(null)
 
+  /**
+   * Birinchi oʻqish ham **navbatdan** oʻtadi.
+   *
+   * Navigatsiya paneli darhol chiziladi (0063), demak odam birinchi oʻqish tugamasdan
+   * kontakt qoʻsha oladi. Navbatsiz holatda kech qaytgan birinchi surat yangi kontaktni
+   * ekrandan oʻchirib yuborardi — saqlangan narsa jimgina yoʻqolardi
+   * (`src/App.qarz.poyga.test.tsx` shuni qizil bilan koʻrsatgan).
+   */
   useEffect(() => {
     let tirik = true
-    void oqi().then((holat) => {
+    void navbatga(async () => {
+      const holat = await oqi()
       if (tirik) {
         setKategoriyalar(holat.kategoriyalar)
         setYozuvlar(holat.yozuvlar)
+        setKontaktlar(holat.kontaktlar)
       }
     })
     return () => {
       tirik = false
     }
+    // Ataylab bir marta: `navbatga` har renderda yangidan yasaladi, lekin navbatning
+    // oʻzi `useRef` da turadi va oʻzgarmaydi.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Qoldiq va roʻyxat saqlanmaydi — har oʻzgarishdan keyin doʻkondan qayta oʻqiladi
-  // (KELISHUV 6-boʻlim; mezon 10, 11).
+  // Qoldiq, netto va roʻyxatlar saqlanmaydi — har oʻzgarishdan keyin doʻkondan qayta
+  // oʻqiladi (KELISHUV 6- va 13-boʻlimlar; mezon 10, 11).
   async function yangila(): Promise<void> {
     const holat = await oqi()
     setKategoriyalar(holat.kategoriyalar)
     setYozuvlar(holat.yozuvlar)
+    setKontaktlar(holat.kontaktlar)
   }
 
   /**
@@ -97,10 +178,44 @@ export function App() {
       ? undefined
       : kategoriyalar.find((kategoriya) => kategoriya.id === tahrirlanayotgan.kategoriyaId)
 
+  const joriyKontakt = kontaktlar.find((holat) => holat.kontakt.id === kontaktId)
+  const joriyQarz = joriyKontakt?.qarzlar.find((holat) => holat.qarz.id === qarzId)
+  const tolovQarzi = joriyKontakt?.qarzlar.find((holat) => holat.qarz.id === tolovQarzId)
+
   const formaKerak = ekran === 'forma' || ekran === 'kategoriyalar'
+  const navKorinadi = NAVLI_EKRANLAR.includes(ekran)
+  // «Kontakt» sahifasida faol boʻlim — «Qarz daftari» (dizayn).
+  const faolBolim: Bolim = ekran === 'yozuvlar' ? 'yozuvlar' : 'qarz-daftari'
+
+  /** Panel yoʻqolganda oʻchirish yakuniy boʻladi — nusxa tashlanadi (0029). */
+  function kontaktPanelniUnut(): void {
+    setOchirilganKontakt(null)
+  }
+
+  function navigatsiyaOtishi(bolim: Bolim): void {
+    // Ekrandan chiqib ketilsa panel yoʻqoladi va oʻchirish yakuniy boʻladi (dizayn).
+    kontaktPanelniUnut()
+    if (bolim === 'yozuv') {
+      setTahrirlanayotgan(null)
+      setEkran('forma')
+      return
+    }
+    if (bolim === 'yozuvlar') {
+      setEkran('yozuvlar')
+      return
+    }
+    setKontaktId(null)
+    setEkran('qarz-daftari')
+  }
+
+  function kontaktgaQayt(): void {
+    setQarzId(null)
+    setTolovQarzId(null)
+    setEkran('kontakt')
+  }
 
   return (
-    <>
+    <div className={navKorinadi ? 'ilova nav-bor' : 'ilova'}>
       {formaKerak ? (
         <div className="ekran-orash" hidden={ekran !== 'forma'}>
           <YozuvForma
@@ -119,6 +234,8 @@ export function App() {
               })
             }}
             yop={() => {
+              // `×` bosilsa ham, «Saqlash» bosilsa ham «Yozuvlar» ochiladi (0063).
+              setTahrirlanayotgan(null)
               setEkran('yozuvlar')
             }}
             boshqarish={(turi) => {
@@ -184,12 +301,148 @@ export function App() {
               await yangila()
             })
           }}
-          orqaga={() => {
-            setTahrirlanayotgan(null)
-            setEkran('forma')
-          }}
         />
       ) : null}
-    </>
+
+      {ekran === 'qarz-daftari' ? (
+        <QarzDaftari
+          kontaktlar={kontaktlar}
+          ochirilganKontakt={ochirilganKontakt}
+          och={(id) => {
+            kontaktPanelniUnut()
+            setKontaktId(id)
+            setEkran('kontakt')
+          }}
+          qosh={async (forma) =>
+            navbatga(async () => {
+              const natija = await kontaktSaqla(forma)
+              if (natija.ok) {
+                await yangila()
+              }
+              return natija
+            })
+          }
+          qaytar={async (ochirilgan) => {
+            await navbatga(async () => {
+              await kontaktniQaytar(ochirilgan)
+              await yangila()
+            })
+          }}
+          unut={kontaktPanelniUnut}
+        />
+      ) : null}
+
+      {ekran === 'kontakt' && joriyKontakt !== undefined ? (
+        <Kontakt
+          key={joriyKontakt.kontakt.id}
+          holat={joriyKontakt}
+          orqaga={() => {
+            setKontaktId(null)
+            setEkran('qarz-daftari')
+          }}
+          tahrirla={async (forma) =>
+            navbatga(async () => {
+              const natija = await kontaktniTahrirla(joriyKontakt.kontakt.id, forma)
+              if (natija.ok) {
+                await yangila()
+              }
+              return natija
+            })
+          }
+          yangiQarz={() => {
+            setQarzId(null)
+            setEkran('qarz-forma')
+          }}
+          yangiTolov={(qarz: Qarz) => {
+            setTolovQarzId(qarz.id)
+            setEkran('tolov-forma')
+          }}
+          qarzniTahrirla={(qarz: Qarz) => {
+            setQarzId(qarz.id)
+            setEkran('qarz-forma')
+          }}
+          qarzniOchir={async (qarz: Qarz) =>
+            navbatga(async () => {
+              const ochirilgan = await qarzniOchir(qarz.id)
+              await yangila()
+              return ochirilgan
+            })
+          }
+          qarzniQaytar={async (ochirilgan) => {
+            await navbatga(async () => {
+              await qarzniQaytar(ochirilgan)
+              await yangila()
+            })
+          }}
+          tolovniOchir={async (tolov) => {
+            await navbatga(async () => {
+              await tolovniOchir(tolov.id)
+              await yangila()
+            })
+          }}
+          tolovniQaytar={async (tolov) => {
+            await navbatga(async () => {
+              await tolovniQaytar(tolov)
+              await yangila()
+            })
+          }}
+          kontaktniOchir={async () =>
+            navbatga(async () => {
+              const natija = await kontaktniOchir(joriyKontakt.kontakt.id)
+              if (natija.ok) {
+                // Ekran roʻyxatga qaytadi, panel oʻsha yerda chiqadi (dizayn 2-boʻlim).
+                setOchirilganKontakt(natija.qiymat)
+                setKontaktId(null)
+                setEkran('qarz-daftari')
+                await yangila()
+              }
+              return natija
+            })
+          }
+        />
+      ) : null}
+
+      {ekran === 'qarz-forma' && joriyKontakt !== undefined ? (
+        <QarzForma
+          key={qarzId ?? 'yangi'}
+          kontakt={joriyKontakt.kontakt}
+          qarz={joriyQarz?.qarz}
+          tolovlarSoni={joriyQarz?.tolovlar.length ?? 0}
+          tolangan={joriyQarz?.tolangan ?? 0}
+          saqla={async (yangi: YangiQarz): Promise<Natija<Qarz>> =>
+            navbatga(async () => {
+              const natija =
+                joriyQarz === undefined
+                  ? ha(await qarzQosh(yangi))
+                  : await qarzniYangila(joriyQarz.qarz.id, yangi)
+              if (natija.ok) {
+                await yangila()
+              }
+              return natija
+            })
+          }
+          yop={kontaktgaQayt}
+        />
+      ) : null}
+
+      {ekran === 'tolov-forma' && joriyKontakt !== undefined && tolovQarzi !== undefined ? (
+        <TolovForma
+          key={tolovQarzi.qarz.id}
+          kontakt={joriyKontakt.kontakt}
+          qarz={tolovQarzi.qarz}
+          tolovlar={tolovQarzi.tolovlar}
+          saqla={async (yangi: YangiTolov) =>
+            navbatga(async () => {
+              const tolov = await tolovQosh(yangi)
+              await yangila()
+              return ha(tolov)
+            })
+          }
+          yop={kontaktgaQayt}
+        />
+      ) : null}
+
+      {navKorinadi ? <Navigatsiya faol={faolBolim} otish={navigatsiyaOtishi} /> : null}
+    </div>
   )
 }

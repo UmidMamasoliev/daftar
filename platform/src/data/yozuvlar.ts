@@ -8,8 +8,8 @@
 // - forma tekshiruvi xatosi → `Natija` ichida `xatolar` (`yozuvSaqla`);
 // - bazaga tegishli xato (yozuv topilmadi, baza ochilmadi) → Promise rad etiladi (`Error`).
 
-import { oxirgiKurs, yozuvlardanKurslar } from '../domain/kurs.ts'
-import { qoldiqlar } from '../domain/qoldiq.ts'
+import { oxirgiKurs, tolovlardanKurslar, yozuvlardanKurslar } from '../domain/kurs.ts'
+import { qoldiqlar, qoldiqlarniQosh } from '../domain/qoldiq.ts'
 import type {
   Kategoriya,
   KursManbai,
@@ -22,6 +22,7 @@ import type {
 import { hozirYaratilgan } from '../domain/vaqt.ts'
 import { yozuvniTekshir } from '../domain/yozuv.ts'
 import { YOZUVLAR_OMBORI, idYarat, omborda } from './baza.ts'
+import { hammaTolovlar, qarzQoldiqlariniOl } from './qarzlar.ts'
 
 export { bazaniTozala, bazaniYop } from './baza.ts'
 
@@ -122,20 +123,34 @@ export function yozuvNusxasi(yozuv: Yozuv): Yozuv {
   return { ...yozuv }
 }
 
-/** Hisob × valyuta qoldiqlari — joriy yozuvlardan sanaladi (mezon 8, 9, 10). */
+/**
+ * Hisob × valyuta qoldiqlari — joriy yozuvlar **va** qarz daftaridan sanaladi
+ * (mezon 8, 9, 10; qarz daftari mezon 13–15b).
+ *
+ * Qarz pul qoldigʻiga taʼsir qiladi (0017): qarzga berilgan pul qoʻldan chiqadi,
+ * olingani qoʻlga kiradi, toʻlov teskari yoʻnalishda ishlaydi. Shuning uchun bu
+ * funksiya qarz daftarini ham qoʻshadi — ekran ikki manbani oʻzi qoʻshib yurmasin.
+ */
 export async function qoldiqlarniOl(): Promise<Qoldiqlar> {
-  return qoldiqlar(await hammaYozuvlar())
+  return qoldiqlarniQosh(qoldiqlar(await hammaYozuvlar()), await qarzQoldiqlariniOl())
 }
 
 /**
- * «Oxirgi kurs» — yozuvlardan (va berilgan qoʻshimcha manbalardan) hisoblanadi (0044, 0045).
+ * «Oxirgi kurs» — yozuvlar, qarz toʻlovlari va berilgan qoʻshimcha manbalardan
+ * hisoblanadi (0044, 0045; qarz speci 15b-band).
  *
- * `qoshimcha` — «≈ jami soʻmda» uchun qoʻlda soʻralgan kurslar va (T4 dan keyin) qarz
- * toʻlovlari kurslari. Birorta manba boʻlmasa `null` — u holda kurs soʻraladi (mezon 23g).
+ * `qoshimcha` — «≈ jami soʻmda» uchun qoʻlda soʻralgan kurslar. Qarz toʻlovlari
+ * kurslari endi shu yerda avtomatik qatnashadi; qarzning oʻzida kurs yoʻq, demak u
+ * manba emas. Birorta manba boʻlmasa `null` — u holda kurs soʻraladi (mezon 23g).
  */
 export async function oxirgiKursniOl(
   qoshimcha: readonly KursManbai[] = [],
 ): Promise<number | null> {
   const yozuvlar = await hammaYozuvlar()
-  return oxirgiKurs([...yozuvlardanKurslar(yozuvlar), ...qoshimcha])
+  const tolovlar = await hammaTolovlar()
+  return oxirgiKurs([
+    ...yozuvlardanKurslar(yozuvlar),
+    ...tolovlardanKurslar(tolovlar),
+    ...qoshimcha,
+  ])
 }

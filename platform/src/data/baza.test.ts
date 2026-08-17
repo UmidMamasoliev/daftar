@@ -1,5 +1,6 @@
-// Sxema migratsiyasi: 1-versiyadagi baza 2-versiyaga oʻtganda `yozuvlar` ombori va
-// undagi maʼlumot buzilmasligi kerak — T3 da faqat yangi `kategoriyalar` ombori qoʻshiladi.
+// Sxema migratsiyasi: 1-versiyadagi baza joriy versiyaga oʻtganda `yozuvlar` ombori va
+// undagi maʼlumot buzilmasligi kerak — har qadamda faqat yangi omborlar qoʻshiladi
+// (2: `kategoriyalar`; 3: `kontaktlar`, `qarzlar`, `tolovlar`).
 //
 // Bu fayl ataylab boshqa test fayllaridan ayri: u bazani baza.ts dan OLDIN, eski
 // versiya bilan qoʻlda yaratadi (vitest har test faylini alohida muhitda ishga tushiradi,
@@ -8,7 +9,16 @@
 import { beforeAll, describe, expect, it } from 'vitest'
 
 import type { Yozuv } from '../domain/turlar.ts'
-import { BAZA_NOMI, BAZA_VERSIYASI, KATEGORIYALAR_OMBORI, YOZUVLAR_OMBORI, bazaniOch } from './baza.ts'
+import {
+  BAZA_NOMI,
+  BAZA_VERSIYASI,
+  KATEGORIYALAR_OMBORI,
+  KONTAKTLAR_OMBORI,
+  QARZLAR_OMBORI,
+  TOLOVLAR_OMBORI,
+  YOZUVLAR_OMBORI,
+  bazaniOch,
+} from './baza.ts'
 import { hammaKategoriyalar } from './kategoriyalar.ts'
 import { hammaYozuvlar, yozuvniOl } from './yozuvlar.ts'
 
@@ -53,13 +63,21 @@ beforeAll(async () => {
   await eskiBazaniYarat()
 })
 
-describe('baza sxemasi — 1-versiyadan 2-versiyaga (0028; mezon 15)', () => {
-  it('versiya koʻtariladi va `kategoriyalar` ombori qoʻshiladi', async () => {
+describe('baza sxemasi — 1-versiyadan joriy versiyaga (0028; mezon 15)', () => {
+  it('versiya koʻtariladi va yetishmagan omborlar qoʻshiladi', async () => {
     const baza = await bazaniOch()
 
-    expect(BAZA_VERSIYASI).toBe(2)
-    expect(baza.version).toBe(2)
-    expect([...baza.objectStoreNames].sort()).toEqual([KATEGORIYALAR_OMBORI, YOZUVLAR_OMBORI])
+    expect(BAZA_VERSIYASI).toBe(3)
+    expect(baza.version).toBe(3)
+    expect([...baza.objectStoreNames].sort()).toEqual(
+      [
+        KATEGORIYALAR_OMBORI,
+        KONTAKTLAR_OMBORI,
+        QARZLAR_OMBORI,
+        TOLOVLAR_OMBORI,
+        YOZUVLAR_OMBORI,
+      ].sort(),
+    )
   })
 
   it('eski `yozuvlar` ombori va undagi yozuv buzilmaydi', async () => {

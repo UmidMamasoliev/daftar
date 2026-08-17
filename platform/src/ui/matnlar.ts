@@ -1,9 +1,10 @@
 // Ekrandagi matnlar — bitta joyda.
 //
-// Hammasi `design/kirim-chiqim.md` dan AYNAN koʻchirilgan: dizayn fayli manba, bu yer nusxa.
-// Matn oʻzgarsa avval dizayn fayli oʻzgaradi (AGENTS.md, 0009: oʻzbekcha lotin yozuvida).
+// Hammasi `design/kirim-chiqim.md`, `design/qarz-daftari.md` va `design/uslub.md` dan
+// AYNAN koʻchirilgan: dizayn fayllari manba, bu yer nusxa. Matn oʻzgarsa avval dizayn
+// fayli oʻzgaradi (AGENTS.md, 0009: oʻzbekcha lotin yozuvida).
 
-import type { XatoKodi } from '../domain/turlar.ts'
+import type { Hisob, QarzYonalishi, XatoKodi } from '../domain/turlar.ts'
 
 /** «Yangi yozuv» formasidagi matnlar. */
 export const FORMA = {
@@ -65,16 +66,159 @@ export const KATEGORIYALAR = {
   boshIkkinchi: 'Yashirilganini «Koʻrsatish» bilan qaytaring yoki yangisini qoʻshing.',
 } as const
 
-/** «Yozuvlar» ekranidagi matnlar (dizayn: 2-boʻlim). */
-export const YOZUVLAR = {
-  sarlavha: 'Yozuvlar',
+/** Hamma ekranda bir xil matnlar. */
+export const UMUMIY = {
   orqaga: '‹ Orqaga',
   ochirish: 'Oʻchirish',
-  ochirildi: 'Yozuv oʻchirildi',
   qaytarish: 'QAYTARISH',
-  boshBirinchi: 'Hali bitta ham yozuv yoʻq.',
-  boshIkkinchi: 'Birinchi yozuvni bosh sahifadagi «＋ Yozuv» tugmasi bilan qoʻshasiz.',
+  yopish: 'Yopish',
 } as const
+
+/**
+ * «Yozuvlar» ekranidagi matnlar (dizayn: `design/kirim-chiqim.md` 2-boʻlim).
+ *
+ * **Vaqtinchalik (0063):** dashboard qurilgunicha boʻsh holatning ikkinchi qatori
+ * navigatsiya panelidagi «Yozuv» boʻlimini koʻrsatadi; bosh sahifa paydo boʻlganda
+ * «Birinchi yozuvni bosh sahifadagi «＋ Yozuv» tugmasi bilan qoʻshasiz.» qaytadi.
+ */
+export const YOZUVLAR = {
+  sarlavha: 'Yozuvlar',
+  ochirish: UMUMIY.ochirish,
+  ochirildi: 'Yozuv oʻchirildi',
+  qaytarish: UMUMIY.qaytarish,
+  boshBirinchi: 'Hali bitta ham yozuv yoʻq.',
+  boshIkkinchi: 'Birinchi yozuvni pastdagi «Yozuv» boʻlimi bilan qoʻshasiz.',
+} as const
+
+/**
+ * Pastki navigatsiya paneli — **VAQTINCHALIK** (0063; `design/uslub.md`).
+ *
+ * Dashboard 3.10 da qurilganda bosh sahifa oʻsha boʻladi va panel qayta koʻriladi.
+ * «Hisobot» va «Zaxira» boʻlaklari oʻz qismlari tayyor boʻlganda shu naqshda qoʻshiladi.
+ */
+export const NAVIGATSIYA = {
+  yorliq: 'Boʻlimlar',
+  yozuv: 'Yozuv',
+  yozuvlar: 'Yozuvlar',
+  qarzDaftari: 'Qarz daftari',
+} as const
+
+/** Netto qatoridagi soʻzlar (dizayn: `design/qarz-daftari.md` 0-boʻlim; 0037, 0056). */
+export const NETTO = {
+  olaman: 'olaman',
+  beraman: 'beraman',
+  hisobTeng: 'hisob teng',
+} as const
+
+/** «Qarz daftari» — kontaktlar roʻyxati (dizayn: `design/qarz-daftari.md` 1-boʻlim). */
+export const QARZ_DAFTARI = {
+  sarlavha: 'Qarz daftari',
+  yangiKontakt: '＋ Yangi kontakt',
+  ism: 'Ism',
+  telefon: 'Telefon (ixtiyoriy)',
+  qoshish: 'Qoʻshish',
+  yopish: UMUMIY.yopish,
+  qaytarish: UMUMIY.qaytarish,
+  ochirildi: 'Kontakt oʻchirildi',
+  boshBirinchi: 'Hali bitta ham kontakt yoʻq.',
+  boshIkkinchi:
+    'Qarz yozish uchun avval kontakt qoʻshing — pastdagi «＋ Yangi kontakt» tugmasi bilan.',
+} as const
+
+/** Kontakt sahifasi (dizayn: `design/qarz-daftari.md` 2-boʻlim). */
+export const KONTAKT = {
+  orqaga: UMUMIY.orqaga,
+  tahrirlash: 'Tahrirlash',
+  saqlash: 'Saqlash',
+  ism: 'Ism',
+  telefon: 'Telefon (ixtiyoriy)',
+  yopish: UMUMIY.yopish,
+  yangiQarz: '＋ Yangi qarz',
+  yangiTolov: '＋ Toʻlov',
+  berdim: 'Berdim',
+  oldim: 'Oldim',
+  yopilgan: 'Yopilgan',
+  yopilganQarzlar: 'Yopilgan qarzlar',
+  boshlangich: 'boshlangʻich',
+  tolovYoq: 'Hali toʻlov yoʻq.',
+  ochiqQarzYoq: 'Ochiq qarz yoʻq.',
+  ochirish: UMUMIY.ochirish,
+  qaytarish: UMUMIY.qaytarish,
+  kontaktniOchirish: 'Kontaktni oʻchirish',
+  qarzOchirildi: 'Qarz oʻchirildi',
+  tolovOchirildi: 'Toʻlov oʻchirildi',
+  boshBirinchi: 'Bu kontaktda hali qarz yoʻq.',
+  boshIkkinchi: 'Birinchi qarzni pastdagi «＋ Yangi qarz» tugmasi bilan qoʻshasiz.',
+} as const
+
+/** «Yangi qarz» / «Qarzni tahrirlash» formasi (dizayn: 3-boʻlim). */
+export const QARZ_FORMA = {
+  sarlavhaYangi: 'Yangi qarz',
+  sarlavhaTahrir: 'Qarzni tahrirlash',
+  yopish: UMUMIY.yopish,
+  summa: 'Summa',
+  yonalish: 'Yoʻnalish',
+  berdim: 'Berdim',
+  oldim: 'Oldim',
+  valyutaMuzlatilgan:
+    'Toʻlovi bor qarzda valyuta oʻzgarmaydi — avval toʻlovlarni oʻchiring.',
+  saqlash: 'Saqlash',
+} as const
+
+/** «Toʻlov» formasi (dizayn: 4-boʻlim). */
+export const TOLOV_FORMA = {
+  sarlavha: 'Toʻlov',
+  yopish: UMUMIY.yopish,
+  summa: 'Summa',
+  saqlash: 'Saqlash',
+} as const
+
+/** «Kontakt: Akmal» — qarz va toʻlov formasidagi qator (dizayn: 3- va 4-boʻlim). */
+export function kontaktQatori(ism: string): string {
+  return `Kontakt: ${ism}`
+}
+
+/** «Qarz qoldigʻi: 700 000 soʻm» — toʻlov formasidagi qator (dizayn: 4-boʻlim). */
+export function qarzQoldigiQatori(qoldiqMatni: string): string {
+  return `Qarz qoldigʻi: ${qoldiqMatni}`
+}
+
+/** «Qarzdan ayiriladi: 50,00 $» — kurs maydoni ostidagi yordam qatori (0061; mezon 44). */
+export function ayiriladiQatori(summaMatni: string): string {
+  return `Qarzdan ayiriladi: ${summaMatni}`
+}
+
+/**
+ * Toʻlov formasidagi hisob yordam qatori (0061; mezon 43).
+ *
+ * Yoʻnalish qarzdan olinadi: «berdim» qarziga kelgan toʻlov tanlangan hisobga **tushadi**,
+ * «oldim» qarziga toʻlov oʻsha hisobdan **chiqadi** (0017, 0035).
+ */
+export function tolovYordami(yonalishi: QarzYonalishi, hisob: Hisob): string {
+  if (yonalishi === 'berdim') {
+    return hisob === 'karta' ? 'Pul kartaga tushadi.' : 'Pul naqdga tushadi.'
+  }
+  return hisob === 'karta' ? 'Pul kartadan chiqadi.' : 'Pul naqddan chiqadi.'
+}
+
+/**
+ * Qarz kartochkasining ikkinchi qatori (dizayn 0-boʻlim):
+ * `14-avgust · Karta · boshlangʻich 1 000 000 soʻm`.
+ */
+export function qarzTafsiloti(sana: string, hisob: string, summaMatni: string): string {
+  return `${sana} · ${hisob} · ${KONTAKT.boshlangich} ${summaMatni}`
+}
+
+/**
+ * «Qarz summasi toʻlovlardan kichik — toʻlangan: 300 000 soʻm.» (0061e; 9b2-band).
+ *
+ * Doʻkon xabarida raqam **formatlanmagan** holda keladi (KELISHUV 15-boʻlim), shuning
+ * uchun matnni ekran oʻzi yigʻadi: raqam `QarzHolati.tolangan` dan olinib qarzning oʻz
+ * valyutasida koʻrsatiladi.
+ */
+export function tolovdanKamMatni(tolanganMatni: string): string {
+  return `Qarz summasi toʻlovlardan kichik — toʻlangan: ${tolanganMatni}.`
+}
 
 /**
  * Tekshiruv kodidan ekran matniga.
@@ -102,6 +246,16 @@ const EKRAN_MATNLARI: Partial<Record<XatoKodi, string>> = {
   'kategoriya-turi': 'Kategoriyani tanlang.',
   'kategoriya-yashirilgan':
     'Bunday kategoriya yashirilgan — pastdagi Yashirilgan roʻyxatidan Koʻrsatish tugmasi bilan qaytaring.',
+
+  // ── Qarz daftari (`design/qarz-daftari.md`; KELISHUV 15-boʻlim) ──
+  'kontakt-ism-bosh': 'Ism kiriting.',
+  'yonalish-bosh': 'Berdim yoki oldim ekanini tanlang.',
+  'tolov-ortiqcha': 'Toʻlov qarz qoldigʻidan katta.',
+  'tolov-nol-aylanma': 'Toʻlov juda kichik — qarz valyutasida nolga aylanadi.',
+  // 0030: doʻkon «qarzni yoping» deydi, dizayn «qarzlarni yoping» — ekran matni dizaynniki.
+  'kontakt-ochiq-qarz': 'Ochiq qarzi bor kontakt oʻchirilmaydi — avval qarzlarni yoping.',
+  // `qarz-summa-tolovdan-kam` bu roʻyxatda YOʻQ: uning matni raqamli va qarz valyutasiga
+  // bogʻliq, shuning uchun forma uni `tolovdanKamMatni` bilan oʻzi yigʻadi.
 }
 
 /** Xato kodiga mos ekran matni; topilmasa doʻkonning oʻz xabari. */

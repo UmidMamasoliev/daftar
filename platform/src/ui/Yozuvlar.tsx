@@ -7,15 +7,19 @@
 // Doʻkon bu yerda chaqirilmaydi: yozuvlar va kategoriyalar props orqali keladi, oʻchirish
 // va qaytarish esa chaqiruv boʻlib beriladi. Ekranning oʻz ishi — «qaytarish» panelini
 // 7 soniya ushlab turish (0029, 0048).
+//
+// **Vaqtinchalik (0063):** bu ekran pastki navigatsiyaning oʻz boʻlimi, shuning uchun
+// yuqorida «‹ Orqaga» havolasi yoʻq — qaytadigan ekran yoʻq. Dashboard (3.10) qurilib,
+// yozuvlarga oʻsha yerdan kirilsa «‹ Orqaga» qaytadi.
 
 import { useEffect, useRef, useState } from 'react'
 import { bugun } from '../domain/sana.ts'
 import type { Yozuv } from '../domain/turlar.ts'
 import { qatorIzohi, sanaYorligi, summaKorinishi } from './format.ts'
 import { YOZUVLAR } from './matnlar.ts'
+import { QAYTARISH_MUDDATI, QaytarishPaneli } from './QaytarishPaneli.tsx'
 
-/** «QAYTARISH» tugmasi necha millisoniya turadi — 7 soniya, qatʼiy qiymat (0048). */
-export const QAYTARISH_MUDDATI = 7000
+export { QAYTARISH_MUDDATI } from './QaytarishPaneli.tsx'
 
 /** Qatorni chapga surish shu masofadan oshsa «Oʻchirish» ochiladi (telefon). */
 const SURISH_CHEGARASI = 40
@@ -37,8 +41,6 @@ export type YozuvlarProps = {
   ochir: (yozuv: Yozuv) => Promise<void> | void
   /** «QAYTARISH» bosilganda — `yozuvniQaytar` va roʻyxatni yangilash (mezon 11). */
   qaytar: (yozuv: Yozuv) => Promise<void> | void
-  /** «‹ Orqaga». */
-  orqaga?: (() => void) | undefined
 }
 
 type Kun = { sana: string; yozuvlar: Yozuv[] }
@@ -61,14 +63,7 @@ function kunlarga(yozuvlar: readonly Yozuv[]): Kun[] {
   return kunlar
 }
 
-export function Yozuvlar({
-  yozuvlar,
-  kategoriyalar,
-  tahrirla,
-  ochir,
-  qaytar,
-  orqaga,
-}: YozuvlarProps) {
+export function Yozuvlar({ yozuvlar, kategoriyalar, tahrirla, ochir, qaytar }: YozuvlarProps) {
   // Qaysi qatorning «Oʻchirish» tugmasi ochiq (hover yoki surish natijasi).
   const [ochiqQator, setOchiqQator] = useState<string | null>(null)
   // Oʻchirilgan yozuvning nusxasi: «qaytarish» panelining butun holati (KELISHUV 8-boʻlim).
@@ -166,9 +161,6 @@ export function Yozuvlar({
       }}
     >
       <header className="panel-tepa">
-        <button type="button" className="matn-havola panel-orqaga" onClick={orqaga}>
-          {YOZUVLAR.orqaga}
-        </button>
         <h1 className="sarlavha">{YOZUVLAR.sarlavha}</h1>
       </header>
 
@@ -254,18 +246,12 @@ export function Yozuvlar({
       )}
 
       {ochirilgan === null ? null : (
-        <div className="qaytarish-paneli" role="status">
-          <span className="qaytarish-matni">{YOZUVLAR.ochirildi}</span>
-          <button
-            type="button"
-            className="qaytarish-tugma"
-            onClick={() => {
-              void qaytarishniBosdi()
-            }}
-          >
-            {YOZUVLAR.qaytarish}
-          </button>
-        </div>
+        <QaytarishPaneli
+          matn={YOZUVLAR.ochirildi}
+          qaytar={() => {
+            void qaytarishniBosdi()
+          }}
+        />
       )}
     </div>
   )

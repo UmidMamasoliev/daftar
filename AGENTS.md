@@ -13,7 +13,7 @@ oflayn ishlaydigan, serversiz veb-sayt (0003).
 2. `lessons/qoidalar.md` — takrorlanmasligi kerak boʻlgan xatolar.
 3. `memory/` dagi eng yangi fayl — qayerda toʻxtaganimiz.
 4. `discovery/` — ochiq savollar (boʻsh boʻlishi mumkin).
-5. `decisions/` — 0001 dan 0057 gacha. **Hammasi majburiy va bahsga tushmaydi.**
+5. `decisions/` — 0001 dan 0063 gacha. **Hammasi majburiy va bahsga tushmaydi.**
 6. `prds/daftar-prd.md` — mahsulot chegarasi.
 7. Oʻz qismingiz speci: `prds/kirim-chiqim.md`, `prds/qarz-daftari.md`,
    `prds/oylik-hisobot.md`, `prds/dashboard.md`.
@@ -79,10 +79,11 @@ Roʻyxatda yoʻq narsani «foydali boʻlardi» deb qoʻshmang. Kerak boʻlsa —
 - Kategoriya va qarz qatorlari valyuta boʻyicha alohida, taxminsiz (0038).
 
 **Xatti-harakat**
-- Oʻchirishda tasdiq oynasi yoʻq — «qaytarish» tugmasi **7 soniya** turadi; yozuv, qarz toʻlovi
-  va kontakt uchun bir xil (0029, 0048).
+- Oʻchirishda tasdiq oynasi yoʻq — «qaytarish» tugmasi **7 soniya** turadi; yozuv, qarz, qarz
+  toʻlovi va kontakt uchun bir xil (0029, 0048, 0059).
 - Yozuv formasida tur («kirim» yoki «chiqim») uchun standart qiymat yoʻq — foydalanuvchi har
-  safar oʻzi tanlaydi (0050).
+  safar oʻzi tanlaydi (0050). Qarz formasida yoʻnalish («berdim»/«oldim») uchun ham standart
+  yoʻq — sabab bir xil (0062).
 - Yashirilgan kategoriya nomi band sanaladi: shu nom bilan qoʻshish rad etiladi va xato
   yashirilganlikni aytib «Koʻrsatish» yoʻlini koʻrsatadi; avtomatik koʻrsatish yoʻq (0051).
 - Qarz pul qoldigʻiga taʼsir qiladi, lekin hisobotda alohida qatorda turadi (0017).
@@ -94,6 +95,17 @@ Roʻyxatda yoʻq narsani «foydali boʻlardi» deb qoʻshmang. Kerak boʻlsa —
   uchun: qarz yopilishi har qarzning oʻz qoldigʻi bilan aniqlanadi (0037, 0016).
 - Chegara faqat qarz yopiqligiga va nettoga tegishli — naqd va karta qoldiqlari haqiqiy pul
   harakatidan chiqadi va tuzatilmaydi (0056, 0017, 0035).
+- Qarzning oʻzi ham tahrirlanadi va oʻchiriladi (0014 ruhida): summa, sana, hisob, yoʻnalish
+  erkin; **valyuta faqat toʻlovi yoʻq qarzda** oʻzgaradi. Qarz oʻchirilsa toʻlovlari ham birga
+  oʻchadi, «qaytarish» ikkalasini birga qaytaradi (0059).
+- Kontakt tahrirlanadi: ism va telefon oʻzgaradi, ism boʻsh boʻlmaydi (0060; 0015, 0031).
+- Toʻlov qarz qoldigʻidan 0052 chegarasidan (1 sent / 100 soʻm) koʻp oshsa rad etiladi; chegara
+  ichida oshsa qabul qilinadi, qarz yopiladi va qoldiq nol koʻrsatiladi — hisobga esa haqiqiy
+  toʻlov summasi tushadi. Aylantirilgandan keyin nolga aylanadigan toʻlov rad etiladi. Yopilgan
+  qarzga toʻlov qoʻshilmaydi (0061).
+- Teskari tomoni: qarz summasi tahrirlanganda toʻlovlar yigʻindisidan chegaradan koʻp past
+  qilinsa tahrir rad etiladi; chegara ichida past boʻlsa qabul qilinadi va qarz yopiladi (0061e).
+- Toʻlovning oʻzi tahrirlanmaydi — oʻchiriladi va kerak boʻlsa qaytadan kiritiladi (0029, 0048).
 - Ochiq qarzi bor kontakt oʻchirilmaydi (0030).
 - Import: avval joriy maʼlumot avtomatik faylga chiqariladi; zaxira saqlanmasa import
   bajarilmaydi (0027). Tasdiq — foydalanuvchi oʻsha faylni qaytarib tanlaydi va ilova uni
@@ -102,6 +114,9 @@ Roʻyxatda yoʻq narsani «foydali boʻlardi» deb qoʻshmang. Kerak boʻlsa —
   holatida) avtomatik zaxira ham, tasdiq ham boʻlmaydi — import bir qadamda oʻtadi (0055).
 - Oxirgi eksport sanasi zaxira fayliga kiradi va import bilan tiklanadi (0053); uni har
   muvaffaqiyatli eksport yangilaydi — import oldidagi avtomatik zaxira ham (0054).
+- **VAQTINCHALIK (0063):** dashboard 3.10 gacha qurilmaydi; ungacha ilovada oddiy pastki
+  navigatsiya paneli turadi (Yozuv, Yozuvlar, Qarz daftari; keyin Hisobot va Zaxira). Dashboard
+  qurilganda u bosh sahifa boʻladi (0020) va navigatsiyani dizayn qayta koʻradi.
 
 **Tayyorlik**
 - Daftar tayyor sanaladi, qachonki toʻrt qism ishlasa va testlari oʻtsa (0022).
@@ -117,6 +132,11 @@ Roʻyxatda yoʻq narsani «foydali boʻlardi» deb qoʻshmang. Kerak boʻlsa —
 4. Har feature `prds/` dagi spec asosida quriladi — spec yoʻq boʻlsa, avval spec.
 5. Qarorlar orasida boʻshliq koʻrsangiz, oʻzingiz xulosa chiqarmang — savol qilib bering
    (`lessons/qoidalar.md`).
+   **Vaqtinchalik istisno (0058):** qarz-daftari, oylik-hisobot va zaxira qurilishi hamda 3.9
+   syomkasiga tayyorgarlik davomida boʻshliqni bosh agent oʻzi hal qiladi — lekin qarorni
+   baribir `decisions/` ga yozadi va «bosh agent vakolat bilan tanladi (0058)» deb belgilaydi.
+   Mavjud qarorga (0001–0057) zid tanlov chiqsa — baribir odamga savol. Muddati: 3.9 syomkasi
+   boshlanguncha.
 6. Foydalanuvchi sizni tuzatsa — `lessons/` ga qoida yozing, ikkinchi marta takrorlanmasin.
 
 ## Ish tugaganda nima yoziladi

@@ -6,11 +6,19 @@ import { expect, test } from '@playwright/test'
 // Mezonlarning oʻzi Vitest da tekshiriladi (`src/ui/`, `src/App.test.tsx`); bu yerda
 // faqat hammasi birga ishlashi koʻriladi: yozuv qoʻshiladi, roʻyxatda koʻrinadi,
 // oʻchiriladi va «QAYTARISH» bilan qaytadi.
+//
+// **Vaqtinchalik (0063):** ilova «Yozuvlar» bilan ochiladi, formaga esa pastdagi
+// navigatsiya panelining «Yozuv» boʻlagidan kiriladi. `exact: true` shart —
+// Playwright nomni standart holda qism sifatida qidiradi va «Yozuv» «Yozuvlar» ga
+// ham tushib ketardi.
 
 test('yozuv qoʻshiladi, roʻyxatda koʻrinadi, oʻchiriladi va qaytariladi', async ({ page }) => {
   await page.goto('/')
 
   await expect(page).toHaveTitle('Daftar')
+  await expect(page.getByRole('heading', { name: 'Yozuvlar', level: 1 })).toBeVisible()
+
+  await page.getByRole('button', { name: 'Yozuv', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'Yangi yozuv' })).toBeVisible()
 
   // Tayyor kategoriyalar bazadan kelib chip boʻlib chiqadi (0028; mezon 15).
@@ -47,6 +55,7 @@ test('kategoriya qoʻshiladi, yashiriladi va formadagi chiplar darhol oʻzgaradi
 }) => {
   await page.goto('/')
 
+  await page.getByRole('button', { name: 'Yozuv', exact: true }).click()
   await page.getByRole('button', { name: 'Chiqim' }).click()
   await expect(page.getByRole('button', { name: 'kiyim' })).toBeVisible()
 
@@ -93,6 +102,7 @@ test('kategoriya qoʻshiladi, yashiriladi va formadagi chiplar darhol oʻzgaradi
 test('«QAYTARISH» paneli 7 soniyadan keyin yoʻqoladi (0048; mezon 12)', async ({ page }) => {
   await page.goto('/')
 
+  await page.getByRole('button', { name: 'Yozuv', exact: true }).click()
   await page.getByRole('button', { name: 'Chiqim' }).click()
   await page.getByRole('button', { name: 'transport' }).click()
   await page.getByLabel('Summa').fill('12000')

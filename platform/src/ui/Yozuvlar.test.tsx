@@ -44,7 +44,6 @@ function yozuv(qism: Partial<Yozuv> & { id: string }): Yozuv {
 
 type Ustama = {
   yozuvlar?: readonly Yozuv[]
-  orqaga?: () => void
 }
 
 function chiz(ustama: Ustama = {}) {
@@ -58,7 +57,6 @@ function chiz(ustama: Ustama = {}) {
       tahrirla={tahrirla}
       ochir={ochir}
       qaytar={qaytar}
-      orqaga={ustama.orqaga}
     />,
   )
   const odam = userEvent.setup()
@@ -89,10 +87,11 @@ afterEach(() => {
 })
 
 describe('koʻrinish va tartib (mezon 19; 0032)', () => {
-  it('yuqorida «‹ Orqaga» va «Yozuvlar» sarlavhasi turadi', () => {
+  it('yuqorida «Yozuvlar» sarlavhasi turadi, «‹ Orqaga» yoʻq (0063)', () => {
     chiz()
     expect(screen.getByRole('heading', { name: 'Yozuvlar', level: 1 })).toBeDefined()
-    expect(screen.getByRole('button', { name: '‹ Orqaga' })).toBeDefined()
+    // Bu ekran navigatsiyaning oʻz boʻlimi — qaytadigan ekran yoʻq (dizayn, 0063).
+    expect(screen.queryByRole('button', { name: '‹ Orqaga' })).toBeNull()
   })
 
   it('kunlar sarlavhasi «Bugun», «Kecha» va sana boʻlib chiqadi', () => {
@@ -168,7 +167,7 @@ describe('boʻsh holat', () => {
     chiz({ yozuvlar: [] })
     expect(screen.getByText('Hali bitta ham yozuv yoʻq.')).toBeDefined()
     expect(
-      screen.getByText('Birinchi yozuvni bosh sahifadagi «＋ Yozuv» tugmasi bilan qoʻshasiz.'),
+      screen.getByText('Birinchi yozuvni pastdagi «Yozuv» boʻlimi bilan qoʻshasiz.'),
     ).toBeDefined()
   })
 })
@@ -346,11 +345,9 @@ describe('oʻchirish va «qaytarish» paneli (mezon 11, 12, 12a, 12b, 20; 0029, 
   })
 })
 
-describe('orqaga qaytish', () => {
-  it('«‹ Orqaga» bosilsa chaqiruv ishlaydi', async () => {
-    const orqaga = vi.fn()
-    const { odam } = chiz({ orqaga })
-    await odam.click(screen.getByRole('button', { name: '‹ Orqaga' }))
-    expect(orqaga).toHaveBeenCalledTimes(1)
+describe('navigatsiya (0063)', () => {
+  it('ekranda yozuv qoʻshish tugmasi yoʻq — u navigatsiya panelida', () => {
+    chiz()
+    expect(screen.queryByRole('button', { name: /Yangi yozuv|＋ Yozuv/ })).toBeNull()
   })
 })

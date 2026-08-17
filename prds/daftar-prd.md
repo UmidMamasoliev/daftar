@@ -29,6 +29,11 @@ bir xil.
    oʻrnatsa boʻladi (0003).
 2. Hamma maʼlumot foydalanuvchi qurilmasida saqlanadi; hech narsa serverga yuborilmaydi (0004).
 3. Ochilganda hech qanday parol yoki PIN soʻralmaydi — darhol dashboard koʻrinadi (0006, 0020).
+3a. **Vaqtinchalik holat (0063):** dashboard 3.10 gacha qurilmaydi, shuning uchun ungacha ilovada
+   bosh sahifa oʻrniga oddiy **pastki navigatsiya paneli** turadi: Yozuv (forma), Yozuvlar, Qarz
+   daftari; qismlar qurilgan sari Hisobot va Zaxira qoʻshiladi. Ilova ochilganda birinchi boʻlim
+   koʻrinadi. Bu vaqtinchalik yechim: dashboard qurilganda **u bosh sahifa boʻladi** (3-band va
+   0020 oʻz kuchida) va navigatsiyani dizayn qayta koʻradi (0063, 0020).
 4. Interfeys faqat oʻzbekcha, lotin yozuvida (0009).
 5. Ikkita tayyor hisob bor: **naqd** va **karta**. Yangi hisob qoʻshib boʻlmaydi (0011).
 6. Ikkita valyutani biladi: **soʻm** va **dollar** (0026). Har hisob qoldigʻi valyuta boʻyicha
@@ -249,6 +254,12 @@ Mahsulot darajasidagi mezonlar — hammasi sanab boʻladigan:
 | 0055 | Boʻsh daftarga importda avtomatik zaxira yoʻq |
 | 0056 | Netto faqat ochiq qarzlardan yigʻiladi |
 | 0057 | Tahrirlashda chiplar: koʻrinadiganlar + yozuvning oʻz kategoriyasi |
+| 0058 | 3.9 tayyorgarligi davrida boʻshliqni bosh agent hal qiladi (vaqtinchalik) |
+| 0059 | Qarzning oʻzi ham tahrirlanadi va oʻchiriladi; valyuta faqat toʻlovsiz qarzda |
+| 0060 | Kontakt tahrirlanadi: ism va telefon |
+| 0061 | Toʻlov qoidalari: chegaradan oshgan, nolga aylanadigan, yopilgan qarzga toʻlov |
+| 0062 | Qarz yoʻnalishi uchun standart qiymat yoʻq |
+| 0063 | Vaqtinchalik navigatsiya: dashboard qurilgunicha pastki panel |
 
 ## Ochiq savollar
 

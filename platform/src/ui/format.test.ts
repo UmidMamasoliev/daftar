@@ -6,17 +6,25 @@
 
 import { describe, expect, it } from 'vitest'
 import { kunMatni } from '../domain/sana.ts'
-import type { Yozuv } from '../domain/turlar.ts'
+import type { Tolov, Yozuv } from '../domain/turlar.ts'
 import {
   belgilarSoni,
   hisobNomi,
+  kursMatni,
   kursniShakllantir,
   kursorOrni,
   minglikBoshliq,
+  nettoMatni,
+  nettoSinfi,
+  nettoSozi,
+  pulMatni,
+  qarzQoldigiMatni,
   qatorIzohi,
   sanaYorligi,
   summaKorinishi,
   summaniShakllantir,
+  tolovMatni,
+  tolovTafsiloti,
 } from './format.ts'
 
 const BUGUN = '2026-08-17'
@@ -200,5 +208,93 @@ describe('qator ikkinchi qatori — hisob va izoh', () => {
   it('izoh boʻsh boʻlsa faqat hisob nomi qoladi', () => {
     expect(qatorIzohi('naqd', undefined)).toBe('Naqd')
     expect(qatorIzohi('naqd', '')).toBe('Naqd')
+  })
+})
+
+// ─── Qarz daftari formatlari (design/qarz-daftari.md 0-boʻlim; design/uslub.md) ───
+
+function tolov(qism: Partial<Tolov> & { id: string }): Tolov {
+  return {
+    yaratilgan: '2026-08-17T09:00:00.000Z',
+    qarzId: 'q1',
+    summa: 5000,
+    valyuta: 'dollar',
+    sana: BUGUN,
+    hisob: 'karta',
+    ...qism,
+  } as Tolov
+}
+
+describe('pulMatni — ishorasiz summa (uslub: «Son, sana va valyuta formati»)', () => {
+  it('soʻm butun son, mingliklari boʻsh joy bilan', () => {
+    expect(pulMatni(700000, 'som')).toBe('700 000 soʻm')
+    expect(pulMatni(0, 'som')).toBe('0 soʻm')
+  })
+
+  it('dollar ikki kasr, kasr belgisi vergul', () => {
+    expect(pulMatni(5000, 'dollar')).toBe('50,00 $')
+    expect(pulMatni(123456, 'dollar')).toBe('1 234,56 $')
+    expect(pulMatni(0, 'dollar')).toBe('0,00 $')
+    expect(pulMatni(1, 'dollar')).toBe('0,01 $')
+  })
+})
+
+describe('netto qatori (0037, 0056; dizayn 0-boʻlim)', () => {
+  it('musbat netto — «olaman», `+`, kirim rangi', () => {
+    expect(nettoSozi(700000)).toBe('olaman')
+    expect(nettoMatni(700000, 'som')).toBe('+700 000 soʻm')
+    expect(nettoSinfi(700000)).toBe('kirim')
+  })
+
+  it('manfiy netto — «beraman», `−`, chiqim rangi', () => {
+    expect(nettoSozi(-5000)).toBe('beraman')
+    expect(nettoMatni(-5000, 'dollar')).toBe('−50,00 $')
+    expect(nettoSinfi(-5000)).toBe('chiqim')
+  })
+
+  it('nol netto — «hisob teng», ishorasiz, oddiy rang (mezon 15e)', () => {
+    expect(nettoSozi(0)).toBe('hisob teng')
+    expect(nettoMatni(0, 'dollar')).toBe('0,00 $')
+    expect(nettoSinfi(0)).toBe('')
+  })
+})
+
+describe('qarz kartochkasidagi qoldiq — ishora yoʻnalishdan (uslub: «Qarz yoʻnalishi»)', () => {
+  it('«berdim» qarzida pul menga qaytadi: `+`, kirim', () => {
+    expect(qarzQoldigiMatni(700000, 'som', 'berdim')).toBe('+700 000 soʻm')
+  })
+
+  it('«oldim» qarzida pul mendan ketadi: `−`, chiqim', () => {
+    expect(qarzQoldigiMatni(5000, 'dollar', 'oldim')).toBe('−50,00 $')
+  })
+})
+
+describe('toʻlov qatori (dizayn 0-boʻlim: «Toʻlov qatori»)', () => {
+  it('summa har doim `−` bilan — u qarz qoldigʻidan ayirildi', () => {
+    expect(tolovMatni(5000, 'dollar')).toBe('−50,00 $')
+    expect(tolovMatni(300000, 'som')).toBe('−300 000 soʻm')
+  })
+
+  it('qarz valyutasidagi toʻlovda ikkinchi qatorda faqat hisob nomi turadi', () => {
+    expect(tolovTafsiloti(tolov({ id: 't1', valyuta: 'dollar', summa: 5000 }), 'dollar')).toBe(
+      'Karta',
+    )
+  })
+
+  it('boshqa valyutadagi toʻlovda kiritilgan summa va kurs ham koʻrinadi', () => {
+    const berilgan = tolov({
+      id: 't2',
+      valyuta: 'som',
+      summa: 625000,
+      kurs: 12500,
+      hisob: 'karta',
+    })
+    expect(tolovTafsiloti(berilgan, 'dollar')).toBe('Karta · 625 000 soʻm · 1 $ = 12 500 soʻm')
+  })
+})
+
+describe('kursMatni (0023, 0042)', () => {
+  it('toʻliq yozilishi — 1 $ = 12 500 soʻm', () => {
+    expect(kursMatni(12500)).toBe('1 $ = 12 500 soʻm')
   })
 })
