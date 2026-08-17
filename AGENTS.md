@@ -13,7 +13,7 @@ oflayn ishlaydigan, serversiz veb-sayt (0003).
 2. `lessons/qoidalar.md` — takrorlanmasligi kerak boʻlgan xatolar.
 3. `memory/` dagi eng yangi fayl — qayerda toʻxtaganimiz.
 4. `discovery/` — ochiq savollar (boʻsh boʻlishi mumkin).
-5. `decisions/` — 0001 dan 0051 gacha. **Hammasi majburiy va bahsga tushmaydi.**
+5. `decisions/` — 0001 dan 0056 gacha. **Hammasi majburiy va bahsga tushmaydi.**
 6. `prds/daftar-prd.md` — mahsulot chegarasi.
 7. Oʻz qismingiz speci: `prds/kirim-chiqim.md`, `prds/qarz-daftari.md`,
    `prds/oylik-hisobot.md`, `prds/dashboard.md`.
@@ -84,12 +84,21 @@ Roʻyxatda yoʻq narsani «foydali boʻlardi» deb qoʻshmang. Kerak boʻlsa —
   yashirilganlikni aytib «Koʻrsatish» yoʻlini koʻrsatadi; avtomatik koʻrsatish yoʻq (0051).
 - Qarz pul qoldigʻiga taʼsir qiladi, lekin hisobotda alohida qatorda turadi (0017).
 - Qarz oʻz valyutasida yuritiladi; boshqa valyutadagi toʻlov toʻlov kursida aylantiriladi (0023).
-- Kontakt qoldigʻi — netto, valyutalar alohida. Netto faqat koʻrsatish uchun: qarz yopilishi
-  har qarzning oʻz qoldigʻi bilan aniqlanadi (0037, 0016).
+- Qarz qoldigʻi chegaradan oshmasa qarz yopilgan sanaladi: dollarda ≤ 1 sent, soʻmda ≤ 100 soʻm
+  (0052). Yopiqlik holat maydoni emas — har safar qoldiqdan hisoblanadi (0016).
+- Kontakt qoldigʻi — netto, valyutalar alohida va faqat **ochiq** qarzlardan: chegara bilan
+  yopilgan qarzning mikro-qoldigʻi nettoda koʻrinmaydi (0037, 0056). Netto faqat koʻrsatish
+  uchun: qarz yopilishi har qarzning oʻz qoldigʻi bilan aniqlanadi (0037, 0016).
+- Chegara faqat qarz yopiqligiga va nettoga tegishli — naqd va karta qoldiqlari haqiqiy pul
+  harakatidan chiqadi va tuzatilmaydi (0056, 0017, 0035).
 - Ochiq qarzi bor kontakt oʻchirilmaydi (0030).
 - Import: avval joriy maʼlumot avtomatik faylga chiqariladi; zaxira saqlanmasa import
   bajarilmaydi (0027). Tasdiq — foydalanuvchi oʻsha faylni qaytarib tanlaydi va ilova uni
   joriy maʼlumotga solishtiradi; boshqa tasdiq yoʻli qurilmaydi (0041).
+- Istisno: daftar boʻsh boʻlsa (yozuv, kontakt, qarz, toʻlov yoʻq va kategoriyalar tayyor
+  holatida) avtomatik zaxira ham, tasdiq ham boʻlmaydi — import bir qadamda oʻtadi (0055).
+- Oxirgi eksport sanasi zaxira fayliga kiradi va import bilan tiklanadi (0053); uni har
+  muvaffaqiyatli eksport yangilaydi — import oldidagi avtomatik zaxira ham (0054).
 
 **Tayyorlik**
 - Daftar tayyor sanaladi, qachonki toʻrt qism ishlasa va testlari oʻtsa (0022).

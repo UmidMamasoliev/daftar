@@ -1,13 +1,17 @@
-// Ilova darajasidagi ulash testi: forma haqiqiy doʻkonlar bilan ishlaydimi.
+// Ilova darajasidagi ulash testlari: ekranlar, doʻkon va oʻtishlar birga ishlaydimi.
 //
-// Bu yerda soxta kategoriya roʻyxati yoʻq — chiplar `data/kategoriyalar.ts` dagi tayyor
-// roʻyxatdan keladi (0028; mezon 15), yozuv esa `data/yozuvlar.ts` orqali bazaga tushadi
-// (mezon 1). Baza — `fake-indexeddb`, `src/test/setup.ts` qoʻyadi.
+// Bu yerda soxta roʻyxat yoʻq — kategoriyalar `data/kategoriyalar.ts` dagi tayyor
+// roʻyxatdan (0028; mezon 15), yozuvlar esa `data/yozuvlar.ts` orqali bazadan keladi.
+// Baza — `fake-indexeddb`, `src/test/setup.ts` qoʻyadi.
+//
+// «Qaytarish» muddati (7 soniya) shu yerda tekshirilmaydi: soxta soat IndexedDB ga
+// xalaqit beradi. U ekran darajasida — `src/ui/Yozuvlar.test.tsx` da.
 
-import { cleanup, render, screen, waitFor } from '@testing-library/react'
+import { cleanup, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, expect, it } from 'vitest'
 import { App } from './App.tsx'
+import { hammaKategoriyalar, kategoriyaniYashir } from './data/kategoriyalar.ts'
 import { bazaniTozala, hammaYozuvlar } from './data/yozuvlar.ts'
 import { bugun } from './domain/sana.ts'
 
@@ -16,19 +20,44 @@ afterEach(async () => {
   await bazaniTozala()
 })
 
+function tugma(nom: string | RegExp): HTMLElement {
+  return screen.getByRole('button', { name: nom })
+}
+
+/**
+ * Kategoriyalar roʻyxatidagi aynan shu nomli qatorning tugmasi.
+ * Nomdan qidiriladi — roʻyxat tartibiga tayanmaydi.
+ */
+function qatorTugmasi(nom: string, tugmaNomi: string): HTMLElement {
+  const qator = screen
+    .getAllByRole('listitem')
+    .find((q) => q.textContent?.startsWith(nom) === true)
+  if (qator === undefined) {
+    throw new Error(`«${nom}» qatori topilmadi`)
+  }
+  return within(qator).getByRole('button', { name: tugmaNomi })
+}
+
+/** Formani toʻldirib saqlaydi — koʻp testga kerak boʻlgan tayyorgarlik. */
+async function yozuvQoshdi(
+  odam: ReturnType<typeof userEvent.setup>,
+  summa: string,
+  kategoriya: string | RegExp = 'oziq-ovqat',
+): Promise<void> {
+  await odam.click(await screen.findByRole('button', { name: 'Chiqim' }))
+  await odam.type(screen.getByLabelText('Summa'), summa)
+  await odam.click(await screen.findByRole('button', { name: kategoriya }))
+  await odam.click(tugma('Saqlash'))
+}
+
 it('tayyor kategoriyalar chip boʻlib chiqadi va yozuv bazaga saqlanadi', async () => {
   const odam = userEvent.setup()
   render(<App />)
 
-  await odam.click(await screen.findByRole('button', { name: 'Chiqim' }))
-  await odam.type(screen.getByLabelText('Summa'), '45000')
-  await odam.click(await screen.findByRole('button', { name: 'oziq-ovqat' }))
-  await odam.click(screen.getByRole('button', { name: 'Saqlash' }))
+  await yozuvQoshdi(odam, '45000')
 
-  // Saqlangani ekranda koʻrinadi: forma tozalanadi (dizayn: «Saqlash» qatori).
-  await waitFor(() => {
-    expect((screen.getByLabelText('Summa') as HTMLInputElement).value).toBe('')
-  })
+  // Saqlangach forma yopiladi va odam roʻyxatga qaytadi (dizayn: «Saqlash» qatori).
+  await screen.findByRole('heading', { name: 'Yozuvlar', level: 1 })
 
   const yozuvlar = await hammaYozuvlar()
   expect(yozuvlar).toHaveLength(1)
@@ -49,4 +78,251 @@ it('kirim turida faqat kirim kategoriyalari koʻrinadi (mezon 16)', async () => 
   await odam.click(await screen.findByRole('button', { name: 'Kirim' }))
   expect(await screen.findByRole('button', { name: 'oylik' })).toBeDefined()
   expect(screen.queryByRole('button', { name: 'oziq-ovqat' })).toBeNull()
+})
+
+it('yangi yozuv roʻyxatda darhol koʻrinadi', async () => {
+  const odam = userEvent.setup()
+  render(<App />)
+
+  await yozuvQoshdi(odam, '45000')
+
+  expect(await screen.findByText('−45 000 soʻm')).toBeDefined()
+  expect(screen.getByText('oziq-ovqat')).toBeDefined()
+  expect(screen.getByRole('heading', { name: 'Bugun', level: 2 })).toBeDefined()
+})
+
+it('`×` bosilsa roʻyxat ekrani ochiladi, «‹ Orqaga» esa formaga qaytaradi', async () => {
+  const odam = userEvent.setup()
+  render(<App />)
+
+  await odam.click(tugma('Yopish'))
+  expect(screen.getByRole('heading', { name: 'Yozuvlar', level: 1 })).toBeDefined()
+
+  await odam.click(tugma('‹ Orqaga'))
+  expect(screen.getByRole('heading', { name: 'Yangi yozuv', level: 1 })).toBeDefined()
+})
+
+it('roʻyxatdagi qator tahrirlash formasini toʻldirilgan holda ochadi (mezon 18)', async () => {
+  const odam = userEvent.setup()
+  render(<App />)
+
+  await yozuvQoshdi(odam, '45000')
+  await odam.click(await screen.findByRole('button', { name: /oziq-ovqat/ }))
+
+  expect(screen.getByRole('heading', { name: 'Yozuvni tahrirlash', level: 1 })).toBeDefined()
+  expect((screen.getByLabelText('Summa') as HTMLInputElement).value).toBe('45 000')
+  expect(tugma('Chiqim').getAttribute('aria-pressed')).toBe('true')
+  expect(tugma('oziq-ovqat').getAttribute('aria-pressed')).toBe('true')
+})
+
+it('tahrirlangan yozuv roʻyxatda darhol yangilanadi (mezon 10, 18)', async () => {
+  const odam = userEvent.setup()
+  render(<App />)
+
+  await yozuvQoshdi(odam, '45000')
+  await odam.click(await screen.findByRole('button', { name: /oziq-ovqat/ }))
+
+  const summa = screen.getByLabelText('Summa')
+  await odam.clear(summa)
+  await odam.type(summa, '50000')
+  await odam.click(tugma('Saqlash'))
+
+  expect(await screen.findByText('−50 000 soʻm')).toBeDefined()
+  expect(screen.queryByText('−45 000 soʻm')).toBeNull()
+  expect(await hammaYozuvlar()).toHaveLength(1)
+})
+
+it('yashirilgan kategoriyadagi eski yozuv tahrirlanganda nomi koʻrinadi (mezon 14, 18)', async () => {
+  const odam = userEvent.setup()
+  render(<App />)
+
+  await yozuvQoshdi(odam, '45000')
+  await screen.findByRole('heading', { name: 'Yozuvlar', level: 1 })
+
+  // Kategoriya yashiriladi — yozuv oʻz joyida qoladi (0013).
+  const kategoriyalar = await hammaKategoriyalar()
+  const oziq = kategoriyalar.find((k) => k.id === 'oziq-ovqat')
+  expect(oziq).toBeDefined()
+  await kategoriyaniYashir('oziq-ovqat')
+
+  await odam.click(tugma('‹ Orqaga'))
+  await odam.click(tugma('Yopish'))
+  await odam.click(await screen.findByRole('button', { name: /oziq-ovqat/ }))
+
+  expect(screen.getByRole('heading', { name: 'Yozuvni tahrirlash', level: 1 })).toBeDefined()
+  expect(tugma('oziq-ovqat').getAttribute('aria-pressed')).toBe('true')
+})
+
+it('oʻchirilgan yozuv roʻyxatdan yoʻqoladi va «QAYTARISH» uni tiklaydi (mezon 11, 20)', async () => {
+  const odam = userEvent.setup()
+  render(<App />)
+
+  await yozuvQoshdi(odam, '45000')
+  const qator = await screen.findByRole('button', { name: /oziq-ovqat/ })
+
+  await odam.hover(qator)
+  await odam.click(tugma('Oʻchirish'))
+
+  await waitFor(() => {
+    expect(screen.queryByText('−45 000 soʻm')).toBeNull()
+  })
+  expect(await hammaYozuvlar()).toHaveLength(0)
+  expect(screen.getByText('Yozuv oʻchirildi')).toBeDefined()
+
+  await odam.click(tugma('QAYTARISH'))
+  expect(await screen.findByText('−45 000 soʻm')).toBeDefined()
+  expect(await hammaYozuvlar()).toHaveLength(1)
+})
+
+it('«Boshqarish» kategoriyalar ekranini formadagi tur bilan ochadi', async () => {
+  const odam = userEvent.setup()
+  render(<App />)
+
+  await odam.click(await screen.findByRole('button', { name: 'Kirim' }))
+  await odam.click(tugma('Boshqarish'))
+
+  expect(screen.getByRole('heading', { name: 'Kategoriyalar', level: 1 })).toBeDefined()
+  expect(tugma('Kirim').getAttribute('aria-pressed')).toBe('true')
+  // Mezon 15: kirimda uchta tayyor nom.
+  expect(screen.getAllByRole('button', { name: 'Yashirish' })).toHaveLength(3)
+})
+
+it('qaytilganda forma toʻldirilgan holicha turadi', async () => {
+  const odam = userEvent.setup()
+  render(<App />)
+
+  await odam.click(await screen.findByRole('button', { name: 'Chiqim' }))
+  await odam.type(screen.getByLabelText('Summa'), '45000')
+  await odam.type(screen.getByLabelText('Izoh'), 'nonushta')
+  await odam.click(tugma('Boshqarish'))
+  await odam.click(tugma('‹ Orqaga'))
+
+  expect(screen.getByRole('heading', { name: 'Yangi yozuv', level: 1 })).toBeDefined()
+  expect((screen.getByLabelText('Summa') as HTMLInputElement).value).toBe('45 000')
+  expect((screen.getByLabelText('Izoh') as HTMLInputElement).value).toBe('nonushta')
+  expect(tugma('Chiqim').getAttribute('aria-pressed')).toBe('true')
+})
+
+it('qoʻshilgan kategoriya formadagi chiplarda darhol paydo boʻladi (mezon 13)', async () => {
+  const odam = userEvent.setup()
+  render(<App />)
+
+  await odam.click(await screen.findByRole('button', { name: 'Chiqim' }))
+  await odam.click(tugma('Boshqarish'))
+  await odam.click(tugma('＋ Yangi kategoriya'))
+  await odam.type(screen.getByLabelText('Kategoriya nomi'), 'dorixona')
+  await odam.click(tugma('Qoʻshish'))
+
+  // Kiritish qatori yopiladi va yangi qator roʻyxatda koʻrinadi (dizayn).
+  await waitFor(() => {
+    expect(screen.queryByLabelText('Kategoriya nomi')).toBeNull()
+  })
+  expect(screen.getAllByRole('button', { name: 'Yashirish' })).toHaveLength(9)
+
+  await odam.click(tugma('‹ Orqaga'))
+  expect(tugma('dorixona')).toBeDefined()
+})
+
+it('yashirilgan kategoriya formadagi chiplardan darhol yoʻqoladi (mezon 14)', async () => {
+  const odam = userEvent.setup()
+  render(<App />)
+
+  await odam.click(await screen.findByRole('button', { name: 'Chiqim' }))
+  expect(tugma('kiyim')).toBeDefined()
+
+  await odam.click(tugma('Boshqarish'))
+  await odam.click(qatorTugmasi('kiyim', 'Yashirish'))
+
+  // Yashirilganlar boʻlimida paydo boʻladi va «Koʻrsatish» bilan qaytadi.
+  expect(await screen.findByRole('button', { name: 'Koʻrsatish' })).toBeDefined()
+
+  await odam.click(tugma('‹ Orqaga'))
+  expect(screen.queryByRole('button', { name: 'kiyim' })).toBeNull()
+
+  await odam.click(tugma('Boshqarish'))
+  await odam.click(tugma('Koʻrsatish'))
+  await odam.click(tugma('‹ Orqaga'))
+  expect(tugma('kiyim')).toBeDefined()
+})
+
+it('tanlangan kategoriya yashirilib qaytilsa tanlov bekor boʻladi', async () => {
+  const odam = userEvent.setup()
+  render(<App />)
+
+  await odam.click(await screen.findByRole('button', { name: 'Chiqim' }))
+  await odam.click(tugma('oziq-ovqat'))
+  expect(tugma('oziq-ovqat').getAttribute('aria-pressed')).toBe('true')
+
+  await odam.click(tugma('Boshqarish'))
+  await odam.click(qatorTugmasi('oziq-ovqat', 'Yashirish'))
+  await odam.click(tugma('‹ Orqaga'))
+
+  expect(screen.queryByRole('button', { name: 'oziq-ovqat' })).toBeNull()
+  expect(screen.getByText('Tanlangan kategoriya yashirildi — boshqasini tanlang.')).toBeDefined()
+
+  // «Saqlash» odatdagi xatoni beradi va yozuv saqlanmaydi.
+  await odam.type(screen.getByLabelText('Summa'), '45000')
+  await odam.click(tugma('Saqlash'))
+  expect(screen.getByText('Kategoriyani tanlang.')).toBeDefined()
+  expect(await hammaYozuvlar()).toHaveLength(0)
+})
+
+it('yashirib, keyin «Koʻrsatish» bilan qaytarilsa tanlov joyida qoladi', async () => {
+  const odam = userEvent.setup()
+  render(<App />)
+
+  await odam.click(await screen.findByRole('button', { name: 'Chiqim' }))
+  await odam.click(tugma('oziq-ovqat'))
+
+  await odam.click(tugma('Boshqarish'))
+  await odam.click(qatorTugmasi('oziq-ovqat', 'Yashirish'))
+  await odam.click(await screen.findByRole('button', { name: 'Koʻrsatish' }))
+  await odam.click(tugma('‹ Orqaga'))
+
+  expect(tugma('oziq-ovqat').getAttribute('aria-pressed')).toBe('true')
+  expect(screen.queryByText('Tanlangan kategoriya yashirildi — boshqasini tanlang.')).toBeNull()
+})
+
+it('yashirilgan nom bilan qoʻshishga urinish rad etiladi (mezon 14a, 14b)', async () => {
+  const odam = userEvent.setup()
+  render(<App />)
+
+  await odam.click(await screen.findByRole('button', { name: 'Chiqim' }))
+  await odam.click(tugma('Boshqarish'))
+
+  await odam.click(qatorTugmasi('kiyim', 'Yashirish'))
+  const oldingiSoni = (await hammaKategoriyalar()).length
+
+  await odam.click(tugma('＋ Yangi kategoriya'))
+  await odam.type(screen.getByLabelText('Kategoriya nomi'), '  KIYIM ')
+  await odam.click(tugma('Qoʻshish'))
+
+  expect(
+    await screen.findByText(
+      'Bunday kategoriya yashirilgan — pastdagi Yashirilgan roʻyxatidan Koʻrsatish tugmasi bilan qaytaring.',
+    ),
+  ).toBeDefined()
+  // Dublikat yaratilmaydi va kategoriya oʻzi koʻrsatilib yuborilmaydi (0051).
+  expect(await hammaKategoriyalar()).toHaveLength(oldingiSoni)
+  expect(tugma('Koʻrsatish')).toBeDefined()
+})
+
+it('panel turganda boshqa ekranga oʻtilsa oʻchirish yakuniy boʻladi (mezon 12b)', async () => {
+  const odam = userEvent.setup()
+  render(<App />)
+
+  await yozuvQoshdi(odam, '45000')
+  const qator = await screen.findByRole('button', { name: /oziq-ovqat/ })
+
+  await odam.hover(qator)
+  await odam.click(tugma('Oʻchirish'))
+  expect(screen.getByText('Yozuv oʻchirildi')).toBeDefined()
+
+  await odam.click(tugma('‹ Orqaga'))
+  await odam.click(tugma('Yopish'))
+
+  expect(screen.queryByText('Yozuv oʻchirildi')).toBeNull()
+  expect(screen.queryByRole('button', { name: 'QAYTARISH' })).toBeNull()
+  expect(await hammaYozuvlar()).toHaveLength(0)
+  expect(screen.getByText('Hali bitta ham yozuv yoʻq.')).toBeDefined()
 })

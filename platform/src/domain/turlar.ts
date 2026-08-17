@@ -83,6 +83,15 @@ export type Kategoriya = {
   nom: string
   turi: YozuvTuri
   yashirilgan: boolean
+  /**
+   * Foydalanuvchi qoʻshgan kategoriya daftarga qachon tushgani (ISO 8601 UTC) —
+   * roʻyxatdagi tartib shundan chiqadi: qoʻshilish tartibi (dizayn, 1-boʻlim).
+   *
+   * Tayyor kategoriyalarda boʻlmaydi: ular 0028 dagi tartibda oldinda turadi.
+   * Maydon yozuv bilan birga saqlanadi, demak zaxira faylidan qaytgandan keyin ham
+   * tartib oʻsha boʻlib qoladi.
+   */
+  yaratilgan?: string
 }
 
 /** Bitta valyutadagi qoldiq — eng kichik birlikda (soʻm, sent). */

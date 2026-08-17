@@ -58,6 +58,19 @@ body {
   color: var(--matn);
 }
 
+/*
+ * Forma kategoriyalar ekrani ochilganda DOM da qoladi, lekin koʻrinmaydi va yordamchi
+ * texnologiyalarga ham koʻrinmaydi (`hidden`). `display: contents` — oʻrash elementi
+ * tartibga aralashmasin.
+ */
+.ekran-orash {
+  display: contents;
+}
+
+.ekran-orash[hidden] {
+  display: none;
+}
+
 /* Bitta ustun, markazda; yon chekka 16 px. */
 .ekran {
   max-width: var(--ustun-eni);
@@ -69,14 +82,20 @@ body {
 
 /* ── Yuqori panel ─────────────────────────────────────────────────────────── */
 
+/* Chapda tugma, oʻrtada sarlavha: yon ustunlar teng boʻlgani uchun sarlavha markazda. */
 .panel-tepa {
   display: grid;
-  grid-template-columns: var(--barmoq) 1fr var(--barmoq);
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: var(--bosh-2);
   padding: var(--bosh-2) var(--bosh-4);
   background: var(--yuza);
   border-bottom: 1px solid var(--chegara);
+}
+
+.panel-tepa > button {
+  grid-column: 1;
+  justify-self: start;
 }
 
 .sarlavha {
@@ -365,6 +384,279 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: background-color 150ms;
+}
+
+/* ── «Yozuvlar» ekrani ────────────────────────────────────────────────────── */
+
+/* Roʻyxat oxirida 72 px boʻsh joy: oxirgi qator panel tagida qolmasin. */
+.royxat {
+  flex: 1;
+  padding-bottom: var(--panel-balandligi);
+}
+
+/* Kun sarlavhasi aylantirilganda tepada yopishib turadi. */
+.kun-sarlavhasi {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  margin: 0;
+  padding: var(--bosh-2) var(--bosh-4);
+  background: var(--fon);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--matn-ikkinchi);
+}
+
+.qatorlar {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.yozuv-qator {
+  position: relative;
+  display: flex;
+  background: var(--yuza);
+  border-bottom: 1px solid var(--chegara);
+}
+
+.qator-tugma {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--bosh-3);
+  min-height: 64px;
+  padding: var(--bosh-3) var(--bosh-4);
+  border: 0;
+  background: transparent;
+  color: var(--matn);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.qator-chap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosh-1);
+}
+
+.qator-kategoriya {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* Uzun izoh bir qatorda kesiladi va oxirida `…` qoʻyiladi. */
+.qator-izoh {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--matn-ikkinchi);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.qator-summa {
+  flex: none;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.qator-summa.kirim {
+  color: var(--kirim);
+}
+
+.qator-summa.chiqim {
+  color: var(--chiqim);
+}
+
+/* Tugma summaning oʻrnini egallaydi, shuning uchun summa vaqtincha koʻrinmaydi. */
+.yozuv-qator.ochiq .qator-summa {
+  visibility: hidden;
+}
+
+/*
+ * «Oʻchirish» qatorning oʻng chekkasida, summa oʻrnida turadi — qator kengligi
+ * oʻzgarmaydi. Uslubdagi «Xavfli tugma»: matni va chegarasi `chiqim`, foni `yuza`.
+ */
+.ochirish-tugma {
+  position: absolute;
+  right: var(--bosh-4);
+  top: 50%;
+  transform: translateY(-50%);
+  height: var(--barmoq);
+  padding: 0 var(--bosh-3);
+  border: 1px solid var(--chiqim);
+  border-radius: var(--radius);
+  background: var(--yuza);
+  color: var(--chiqim);
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Boʻsh holat: ekranning oʻrtasidan biroz yuqorida. */
+.bosh-holat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bosh-2);
+  padding: var(--bosh-8) var(--bosh-4) 20vh;
+  text-align: center;
+}
+
+.bosh-birinchi {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.bosh-ikkinchi {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--matn-ikkinchi);
+}
+
+/* «Qaytarish» paneli — 7 soniya turadi (0048); soya faqat shu yerda va pastki panelda. */
+.qaytarish-paneli {
+  position: fixed;
+  left: var(--bosh-4);
+  right: var(--bosh-4);
+  bottom: calc(var(--bosh-4) + env(safe-area-inset-bottom, 0px));
+  max-width: calc(var(--ustun-eni) - var(--bosh-4) * 2);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bosh-3);
+  padding: var(--bosh-2) var(--bosh-2) var(--bosh-2) var(--bosh-4);
+  border-radius: var(--radius);
+  background: var(--qora-panel);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
+}
+
+.qaytarish-tugma {
+  flex: none;
+  height: var(--barmoq);
+  padding: 0 var(--bosh-3);
+  border: 0;
+  border-radius: var(--radius-ich);
+  background: transparent;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ── «Kategoriyalar» (boshqaruv) ekrani ───────────────────────────────────── */
+
+/*
+ * Yon chekka roʻyxat qatorlariga emas, alohida bloklarga beriladi: qatorlar chetdan
+ * chetgacha choʻziladi va oʻz ichki chekkasiga ega (uslub: «Roʻyxat qatori»).
+ */
+.kategoriya-tanasi {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosh-6);
+  /* Pastda 72 px boʻsh joy: oxirgi qator yopishib turgan panel tagida qolmasin. */
+  padding: var(--bosh-4) 0 var(--panel-balandligi);
+}
+
+.kategoriya-tanasi > .segment,
+.qoshish-qatori,
+.kategoriya-bosh {
+  margin: 0 var(--bosh-4);
+}
+
+.qoshish-boshi {
+  display: flex;
+  align-items: center;
+  gap: var(--bosh-2);
+}
+
+.qoshish-boshi .maydon {
+  flex: 1;
+  min-width: 0;
+}
+
+.ikkinchi-tugma {
+  flex: none;
+  height: var(--maydon-balandligi);
+  padding: 0 var(--bosh-4);
+  border: 1px solid var(--chegara);
+  border-radius: var(--radius);
+  background: var(--yuza);
+  color: var(--matn);
+  font: inherit;
+  cursor: pointer;
+}
+
+.qoshish-qatori .xato-matni {
+  margin-left: var(--barmoq);
+}
+
+.kategoriya-royxati {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kategoriya-qatori {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bosh-3);
+  min-height: 64px;
+  padding: var(--bosh-3) var(--bosh-4);
+  background: var(--yuza);
+  border-bottom: 1px solid var(--chegara);
+}
+
+.kategoriya-nomi {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Oʻchiq rang faqat shu boshqaruv ekranida ishlatiladi (dizayn). */
+.ochiq-rang {
+  color: var(--matn-ochiq);
+}
+
+.yashirilgan-sarlavhasi {
+  margin: 0;
+  padding: var(--bosh-2) var(--bosh-4);
+  background: var(--fon);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--matn-ikkinchi);
+}
+
+.kategoriya-bosh {
+  padding: var(--bosh-6) 0;
+  text-align: center;
+}
+
+.kategoriya-bosh .bosh-ikkinchi {
+  margin-top: var(--bosh-2);
+}
+
+/* Bu ekranda pastki panel `.ekran` ning bevosita bolasi — yon chekkasi oʻzida. */
+.panel-past-yon {
+  padding-left: var(--bosh-4);
+  padding-right: var(--bosh-4);
 }
 
 /* ── Holatlar ─────────────────────────────────────────────────────────────── */

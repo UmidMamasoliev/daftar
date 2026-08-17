@@ -7,8 +7,8 @@
 // Kategoriyalar roʻyxati tashqaridan (props orqali) keladi: forma doʻkonni oʻzi chaqirmaydi,
 // shuning uchun uni bazasiz test qilsa boʻladi.
 
-import type { FormEvent } from 'react'
-import { useId, useRef, useState } from 'react'
+import type { ChangeEvent, FormEvent } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import { bugun } from '../domain/sana.ts'
 import type {
   Hisob,
@@ -21,7 +21,13 @@ import type {
   YozuvTuri,
 } from '../domain/turlar.ts'
 import { boshlangichForma, formaQiymatlari, yozuvniTekshir } from '../domain/yozuv.ts'
-import { kursniShakllantir, sanaYorligi, summaniShakllantir } from './format.ts'
+import {
+  belgilarSoni,
+  kursniShakllantir,
+  kursorOrni,
+  sanaYorligi,
+  summaniShakllantir,
+} from './format.ts'
 import { FORMA, OGOHLANTIRISH, xatoMatni } from './matnlar.ts'
 
 /** Chip boʻlib chiqadigan kategoriya — doʻkondagi `Kategoriya` shu shaklga toʻgʻri keladi. */
@@ -47,8 +53,18 @@ export type YozuvFormaProps = {
   yozuv?: Yozuv | undefined
   /** `×` bosilganda va saqlangandan keyin chaqiriladi. */
   yop?: (() => void) | undefined
-  /** «Boshqarish» — «Kategoriyalar» ekraniga oʻtish (keyingi vazifada ulanadi). */
-  boshqarish?: (() => void) | undefined
+  /**
+   * «Boshqarish» — «Kategoriyalar» ekraniga oʻtish. Joriy tur beriladi: oʻsha ekran
+   * shu turni ochiq qilib koʻrsatadi, tur tanlanmagan boʻlsa `''` keladi (dizayn).
+   */
+  boshqarish?: ((turi: YozuvTuri | '') => void) | undefined
+  /**
+   * «Boshqarish» dan qaytilganda bittaga ortadi. Har ortganda forma **bir marta**
+   * tekshiradi: tanlangan kategoriya hali koʻrinadimi (dizayn: «Tanlangan kategoriya
+   * yashirilsa»). Shu sababli yashirib, keyin «Koʻrsatish» bilan qaytarib qaytilsa
+   * tanlov joyida qoladi — tekshiruv oʻsha paytdagi holatga qaraydi.
+   */
+  boshqarishdanQaytish?: number | undefined
 }
 
 /** Xato qaysi maydonda ekani ekrandagi tartibda: birinchi xatoli maydonga suriladi. */
@@ -75,12 +91,20 @@ function boshlangichHolat(yozuv: Yozuv | undefined): YozuvFormasi {
   }
 }
 
-export function YozuvForma({ kategoriyalar, saqla, yozuv, yop, boshqarish }: YozuvFormaProps) {
+export function YozuvForma({
+  kategoriyalar,
+  saqla,
+  yozuv,
+  yop,
+  boshqarish,
+  boshqarishdanQaytish = 0,
+}: YozuvFormaProps) {
   const tahrir = yozuv !== undefined
   const [forma, setForma] = useState<YozuvFormasi>(() => boshlangichHolat(yozuv))
   const [xatolar, setXatolar] = useState<readonly Xato[]>([])
   const [summaOgohi, setSummaOgohi] = useState('')
   const [kursOgohi, setKursOgohi] = useState('')
+  const [kategoriyaOgohi, setKategoriyaOgohi] = useState('')
 
   const summaRef = useRef<HTMLInputElement>(null)
   const turiRef = useRef<HTMLButtonElement>(null)
@@ -89,6 +113,25 @@ export function YozuvForma({ kategoriyalar, saqla, yozuv, yop, boshqarish }: Yoz
   const valyutaRef = useRef<HTMLButtonElement>(null)
   const kursRef = useRef<HTMLInputElement>(null)
   const sanaRef = useRef<HTMLInputElement>(null)
+
+  // Format terish paytida qoʻyilgani uchun kursor oʻz-oʻzidan oxiriga sakraydi. Yangi
+  // oʻrni shu yerda eslab qolinadi va DOM yangilangach qaytariladi (uslub: «Maydonda
+  // terish paytidagi format»).
+  const kursorlar = useRef<{ summa: number | null; kurs: number | null }>({
+    summa: null,
+    kurs: null,
+  })
+
+  useLayoutEffect(() => {
+    const { summa, kurs } = kursorlar.current
+    kursorlar.current = { summa: null, kurs: null }
+    if (summa !== null) {
+      summaRef.current?.setSelectionRange(summa, summa)
+    }
+    if (kurs !== null) {
+      kursRef.current?.setSelectionRange(kurs, kurs)
+    }
+  })
 
   const asos = useId()
   const kursId = `${asos}-kurs`
@@ -100,6 +143,32 @@ export function YozuvForma({ kategoriyalar, saqla, yozuv, yop, boshqarish }: Yoz
   const bugungi = bugun()
   const dollar = forma.valyuta === 'dollar'
   const royxat = forma.turi === '' ? [] : kategoriyalar[forma.turi]
+
+  /**
+   * «Boshqarish» dan qaytilgandagi bir martalik tekshiruv (dizayn: «Tanlangan
+   * kategoriya yashirilsa»). Tanlangan kategoriya endi koʻrinmasa — tanlov bekor
+   * boʻladi va oʻrniga boshqasi avtomatik tanlanmaydi: yozuv odam bir soniya oldin
+   * yashirgan kategoriyaga jimgina tushib ketmasin (0013).
+   *
+   * Qoida faqat yangi yozuv formasiga tegishli: tahrirlashda yashirilgan
+   * kategoriyali eski yozuv oʻz nomi bilan qolaveradi (mezon 14).
+   */
+  useEffect(() => {
+    if (tahrir || forma.turi === '' || forma.kategoriyaId === '') {
+      return
+    }
+    const bor = kategoriyalar[forma.turi].some(
+      (kategoriya) => kategoriya.id === forma.kategoriyaId,
+    )
+    if (bor) {
+      return
+    }
+    setForma((oldingi) => ({ ...oldingi, kategoriyaId: '' }))
+    setKategoriyaOgohi(FORMA.tanlanganYashirildi)
+    // Ataylab faqat qaytish belgisiga bogʻlangan: tekshiruv qaytilganda bir marta
+    // bajariladi, roʻyxat har oʻzgarganda emas.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [boshqarishdanQaytish])
 
   function xatolarniTozala(maydonlar: readonly XatoMaydoni[]): void {
     setXatolar((oldingi) => oldingi.filter((x) => !maydonlar.includes(x.maydon)))
@@ -145,21 +214,28 @@ export function YozuvForma({ kategoriyalar, saqla, yozuv, yop, boshqarish }: Yoz
     nishon.focus()
   }
 
-  function summaniOzgartir(xom: string): void {
+  function summaniOzgartir(hodisa: ChangeEvent<HTMLInputElement>): void {
+    const xom = hodisa.target.value
+    const chapda = belgilarSoni(xom.slice(0, hodisa.target.selectionStart ?? xom.length))
     const { qiymat, kasrOlindi } = summaniShakllantir(xom, forma.valyuta)
+    kursorlar.current.summa = kursorOrni(qiymat, chapda)
     setForma({ ...forma, summa: qiymat })
-    setSummaOgohi(kasrOlindi ? OGOHLANTIRISH.somdaKasrYoq : '')
+    // Kasr kesilgani xato emas: maydon qizil boʻlmaydi, saqlash toʻxtamaydi (dizayn).
+    setSummaOgohi(kasrOlindi ? OGOHLANTIRISH.somdaKasrOlindi : '')
     xatolarniTozala(['summa'])
   }
 
   function turniTanla(turi: YozuvTuri): void {
     // Roʻyxatlar alohida (0013): tur almashsa tanlangan kategoriya bekor boʻladi.
     setForma({ ...forma, turi, kategoriyaId: '' })
+    // Boshqa turga oʻtilganda qator eskiradi: u aynan oldingi roʻyxat haqida edi.
+    setKategoriyaOgohi('')
     xatolarniTozala(['turi'])
   }
 
   function kategoriyaniTanla(id: string): void {
     setForma({ ...forma, kategoriyaId: id })
+    setKategoriyaOgohi('')
     xatolarniTozala(['kategoriyaId'])
   }
 
@@ -185,10 +261,13 @@ export function YozuvForma({ kategoriyalar, saqla, yozuv, yop, boshqarish }: Yoz
     xatolarniTozala(['valyuta', 'kurs', 'summa'])
   }
 
-  function kursniOzgartir(xom: string): void {
+  function kursniOzgartir(hodisa: ChangeEvent<HTMLInputElement>): void {
+    const xom = hodisa.target.value
+    const chapda = belgilarSoni(xom.slice(0, hodisa.target.selectionStart ?? xom.length))
     const { qiymat, kasrOlindi } = kursniShakllantir(xom)
+    kursorlar.current.kurs = kursorOrni(qiymat, chapda)
     setForma({ ...forma, kurs: qiymat })
-    setKursOgohi(kasrOlindi ? OGOHLANTIRISH.kursKasrYoq : '')
+    setKursOgohi(kasrOlindi ? OGOHLANTIRISH.kursKasrOlindi : '')
     xatolarniTozala(['kurs'])
   }
 
@@ -216,6 +295,7 @@ export function YozuvForma({ kategoriyalar, saqla, yozuv, yop, boshqarish }: Yoz
       setForma(boshlangichForma())
       setSummaOgohi('')
       setKursOgohi('')
+      setKategoriyaOgohi('')
     }
     yop?.()
   }
@@ -262,12 +342,12 @@ export function YozuvForma({ kategoriyalar, saqla, yozuv, yop, boshqarish }: Yoz
               aria-describedby={summaXatosi === undefined ? undefined : `${asos}-summa-xato`}
               placeholder="0"
               value={forma.summa}
-              onChange={(h) => summaniOzgartir(h.target.value)}
+              onChange={summaniOzgartir}
             />
             <span className="valyuta-sozi">{dollar ? FORMA.dollarBelgisi : FORMA.somSozi}</span>
           </div>
           {xatoQatori('summa', `${asos}-summa-xato`)}
-          {summaOgohi === '' ? null : <p className="xato-matni">{summaOgohi}</p>}
+          {summaOgohi === '' ? null : <p className="yordam">{summaOgohi}</p>}
         </div>
 
         <div className="blok">
@@ -298,7 +378,13 @@ export function YozuvForma({ kategoriyalar, saqla, yozuv, yop, boshqarish }: Yoz
             <span className="yorliq" id={kategoriyaId}>
               {FORMA.kategoriya}
             </span>
-            <button type="button" className="matn-havola" onClick={boshqarish}>
+            <button
+              type="button"
+              className="matn-havola"
+              onClick={() => {
+                boshqarish?.(forma.turi)
+              }}
+            >
               {FORMA.boshqarish}
             </button>
           </div>
@@ -321,6 +407,7 @@ export function YozuvForma({ kategoriyalar, saqla, yozuv, yop, boshqarish }: Yoz
               ))
             )}
           </div>
+          {kategoriyaOgohi === '' ? null : <p className="yordam">{kategoriyaOgohi}</p>}
           {xatoQatori('kategoriyaId', `${asos}-kategoriya-xato`)}
         </div>
 
@@ -390,10 +477,10 @@ export function YozuvForma({ kategoriyalar, saqla, yozuv, yop, boshqarish }: Yoz
               aria-describedby={kursXatosi === undefined ? undefined : `${asos}-kurs-xato`}
               placeholder={FORMA.kursNamunasi}
               value={forma.kurs}
-              onChange={(h) => kursniOzgartir(h.target.value)}
+              onChange={kursniOzgartir}
             />
             {xatoQatori('kurs', `${asos}-kurs-xato`)}
-            {kursOgohi === '' ? null : <p className="xato-matni">{kursOgohi}</p>}
+            {kursOgohi === '' ? null : <p className="yordam">{kursOgohi}</p>}
           </div>
         ) : null}
 

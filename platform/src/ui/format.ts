@@ -1,12 +1,12 @@
 // Ekran formati va maydon filtrlari.
 //
-// Format qoidalari — `design/uslub.md` («Son, sana va valyuta formati»):
-// sana `16-avgust`, bugungi va kechagi kun uchun soʻz; kurs mingliklari boʻsh joy bilan.
-// Filtr qoidalari — `design/kirim-chiqim.md` («Xato holatlari»): notoʻgʻri belgi maydonga
-// umuman tushmaydi (0033, 0042; mezon 4b, 4d, 22).
+// Format qoidalari — `design/uslub.md`:
+// «Son, sana va valyuta formati» (koʻrsatish) va «Maydonda terish paytidagi format»
+// (terish). Filtr qoidalari — `design/kirim-chiqim.md` («Summa maydoni — terish qoidalari»,
+// «Xato holatlari»): notoʻgʻri belgi maydonga umuman tushmaydi (0033, 0042; mezon 4b, 4d, 22).
 
 import { kunMatni } from '../domain/sana.ts'
-import type { Valyuta } from '../domain/turlar.ts'
+import type { Hisob, Valyuta, YozuvTuri } from '../domain/turlar.ts'
 import { FORMA } from './matnlar.ts'
 
 const OYLAR = [
@@ -27,10 +27,16 @@ const OYLAR = [
 /** Faqat raqam, vergul va nuqta qoladi: manfiy ishora va harf tushmaydi (mezon 4d). */
 const KERAKSIZ = /[^\d.,]/g
 
-/** Maydon qiymati va u haqidagi bitta xabar kerakmi. */
+/** Raqam yoki kasr belgisi — kursor oʻrni shu belgilar boʻyicha sanaladi. */
+const SANALADIGAN = /[\d.,]/
+
+/** Kirim `+`, chiqim `−` (U+2212) — uslub: «Kirim va chiqim qanday ajratiladi». */
+const ISHORA = { kirim: '+', chiqim: '−' } as const
+
+/** Maydon qiymati va kasr qismi kesilgani haqidagi bildirish. */
 export type Shakl = { qiymat: string; kasrOlindi: boolean }
 
-/** Sana tugmasidagi yozuv: «Bugun», «Kecha», `14-avgust`, `16-avgust 2025`. */
+/** Sana tugmasidagi va kun sarlavhasidagi yozuv: «Bugun», «Kecha», `14-avgust`. */
 export function sanaYorligi(sana: string, bugungi: string): string {
   if (sana === bugungi) {
     return FORMA.bugun
@@ -60,20 +66,23 @@ function kechagiKun(bugungi: string): string {
 }
 
 /**
- * Summa maydoniga tushadigan qiymat.
+ * Summa maydoniga tushadigan qiymat (uslub: «Maydonda terish paytidagi format»).
  *
- * Soʻmda kasr yoʻq: kasr qismi kesiladi va `kasrOlindi` bilan bildiriladi (0033).
- * Dollarda ikki kasrgacha qoladi; kasr belgisi sifatida vergul koʻrsatiladi (uslub).
+ * Mingliklar boʻsh joy bilan ajratiladi — ajratish faqat butun qismga tegadi.
+ * Soʻmda kasr yoʻq: kasr qismi **kesiladi** (yaxlitlanmaydi) va `kasrOlindi` bilan
+ * bildiriladi (0033). Dollarda odam tergan kasr qismi oʻzgarmaydi, ikki raqamdan
+ * ortigʻi maydonga tushmaydi.
  */
 export function summaniShakllantir(xom: string, valyuta: Valyuta): Shakl {
   const { butun, kasr, kasrBor } = qismlarga(xom)
+  const boshi = minglikBoshliq(butun)
   if (valyuta === 'som') {
-    return { qiymat: butun, kasrOlindi: kasr !== '' }
+    return { qiymat: boshi, kasrOlindi: kasr !== '' }
   }
   if (!kasrBor) {
-    return { qiymat: butun, kasrOlindi: false }
+    return { qiymat: boshi, kasrOlindi: false }
   }
-  return { qiymat: `${butun},${kasr.slice(0, 2)}`, kasrOlindi: false }
+  return { qiymat: `${boshi},${kasr.slice(0, 2)}`, kasrOlindi: false }
 }
 
 /**
@@ -88,6 +97,65 @@ export function kursniShakllantir(xom: string): Shakl {
 /** Mingliklarni boʻsh joy bilan ajratadi: `1250000` → `1 250 000`. */
 export function minglikBoshliq(raqamlar: string): string {
   return raqamlar.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+}
+
+/** Kursordan chapdagi sanaladigan belgilar (raqam va kasr belgisi) soni. */
+export function belgilarSoni(matn: string): number {
+  return matn.replace(KERAKSIZ, '').length
+}
+
+/**
+ * Format qayta qoʻyilgach kursor turadigan oʻrin: `belgiSoni` ta sanaladigan belgidan
+ * keyin (uslub: ajratgich boʻsh joylari sanalmaydi).
+ */
+export function kursorOrni(qiymat: string, belgiSoni: number): number {
+  if (belgiSoni <= 0) {
+    return 0
+  }
+  let sanoq = 0
+  for (let orin = 0; orin < qiymat.length; orin += 1) {
+    if (sanaladiganmi(qiymat[orin])) {
+      sanoq += 1
+      if (sanoq === belgiSoni) {
+        return orin + 1
+      }
+    }
+  }
+  return qiymat.length
+}
+
+function sanaladiganmi(belgi: string | undefined): boolean {
+  return belgi !== undefined && SANALADIGAN.test(belgi)
+}
+
+/**
+ * Roʻyxatdagi summa: ishora + son + valyuta (uslub: «Son, sana va valyuta formati»).
+ * `−45 000 soʻm`, `+12,50 $`. Ajratish faqat butun qismga tegadi.
+ */
+export function summaKorinishi(yozuv: {
+  turi: YozuvTuri
+  summa: number
+  valyuta: Valyuta
+}): string {
+  const ishora = ISHORA[yozuv.turi]
+  if (yozuv.valyuta === 'som') {
+    return `${ishora}${minglikBoshliq(String(yozuv.summa))} ${FORMA.somSozi}`
+  }
+  const butun = Math.floor(yozuv.summa / 100)
+  const sent = yozuv.summa - butun * 100
+  return `${ishora}${minglikBoshliq(String(butun))},${String(sent).padStart(2, '0')} ${FORMA.dollarBelgisi}`
+}
+
+/** Hisob nomi ekranda: «Karta», «Naqd» (0011). */
+export function hisobNomi(hisob: Hisob): string {
+  return hisob === 'karta' ? FORMA.karta : FORMA.naqd
+}
+
+/** Qatorning ikkinchi qatori: `Karta · nonushta`; izoh boʻsh boʻlsa faqat hisob nomi. */
+export function qatorIzohi(hisob: Hisob, izoh: string | undefined): string {
+  const nom = hisobNomi(hisob)
+  const tozalangan = (izoh ?? '').trim()
+  return tozalangan === '' ? nom : `${nom} · ${tozalangan}`
 }
 
 /** Xom matnni butun va kasr qismiga ajratadi; keraksiz belgilar tashlanadi. */

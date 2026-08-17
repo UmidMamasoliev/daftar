@@ -75,11 +75,13 @@ bir xil.
 17. Har qarz bitta kontaktga bogʻlanadi. Ikki yoʻnalish bor: men qarz berdim va men qarz
     oldim (0015).
 18. Kontakt ostida uning hamma qarzi va umumiy qoldigʻi koʻrinadi (0015). Qoldiq har valyuta
-    uchun bitta raqam: «berdim» va «oldim» oʻzaro ayiriladi, valyutalar aralashtirilmaydi;
-    qatorlar faqat qarzi bor valyutada koʻrinadi (0037).
+    uchun bitta raqam: **ochiq** qarzlar boʻyicha «berdim» va «oldim» oʻzaro ayiriladi,
+    valyutalar aralashtirilmaydi; qatorlar faqat ochiq qarzi bor valyutada koʻrinadi
+    (0037, 0056).
 19. Qarzga qisman toʻlov yoziladi; qoldiq oʻzi hisoblanadi va hech qayerda saqlanmaydi. Qoldiq
-    nolga yetganda qarz yopilgan hisoblanadi (0016). Toʻlovni oʻchirishda ham «qaytarish»
-    tugmasi ishlaydi va qaytarilsa qoldiq tiklanadi (0029).
+    nolga yetganda — aniqrogʻi dollarda 1 sentdan, soʻmda 100 soʻmdan oshmaganda — qarz yopilgan
+    hisoblanadi (0016, 0052). Toʻlovni oʻchirishda ham «qaytarish» tugmasi ishlaydi va
+    qaytarilsa qoldiq tiklanadi (0029).
 20. Qarz oʻz valyutasida yuritiladi: dollar qarzining qoldigʻi dollarda turadi. Toʻlov boshqa
     valyutada kelsa, toʻlov paytida kiritilgan kurs boʻyicha qarz valyutasiga aylantirilib
     qoldiqdan ayiriladi (0023).
@@ -241,6 +243,11 @@ Mahsulot darajasidagi mezonlar — hammasi sanab boʻladigan:
 | 0049 | Nol kurs taqiqlanadi |
 | 0050 | Tur uchun standart qiymat yoʻq |
 | 0051 | Yashirilgan nom bilan qoʻshish rad etiladi, xato yoʻl koʻrsatadi |
+| 0052 | Qarz chegara bilan yopiladi: ≤ 1 sent, ≤ 100 soʻm |
+| 0053 | Oxirgi eksport sanasi faylga kiradi |
+| 0054 | Avtomatik zaxira ham eksport sanaladi |
+| 0055 | Boʻsh daftarga importda avtomatik zaxira yoʻq |
+| 0056 | Netto faqat ochiq qarzlardan yigʻiladi |
 
 ## Ochiq savollar
 

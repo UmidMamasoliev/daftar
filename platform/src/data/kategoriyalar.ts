@@ -17,6 +17,7 @@ import {
   tayyorKategoriyalar,
 } from '../domain/kategoriya.ts'
 import type { Kategoriya, Natija, YozuvTuri } from '../domain/turlar.ts'
+import { hozirYaratilgan } from '../domain/vaqt.ts'
 import { KATEGORIYALAR_OMBORI, idYarat, omborda } from './baza.ts'
 
 /**
@@ -72,11 +73,15 @@ export async function kategoriyaQosh(nom: string, turi: YozuvTuri): Promise<Nati
     return tekshirilgan
   }
 
+  // `yaratilgan` — roʻyxatdagi oʻrni: qoʻshilganlar qoʻshilish tartibida turadi
+  // (dizayn, 1-boʻlim). Yozuvdagi kabi monoton oʻsadi (0047), demak bir millisekundda
+  // ikkita kategoriya qoʻshilsa ham tartib chalkashmaydi.
   const kategoriya: Kategoriya = {
     id: idYarat(),
     nom: tekshirilgan.qiymat,
     turi,
     yashirilgan: false,
+    yaratilgan: hozirYaratilgan(),
   }
   await omborda(KATEGORIYALAR_OMBORI, 'readwrite', (ombor) => ombor.add(kategoriya))
   return { ok: true, qiymat: kategoriya }

@@ -2,6 +2,32 @@
 
 Eng yangisi tepada.
 
+## 2026-08-17 — 0056: netto faqat ochiq qarzlardan; hamma discovery yopildi
+
+- **0056:** kontakt netto qoldigʻi faqat ochiq qarzlardan; chegara bilan yopilgan qarzning
+  mikro-qoldigʻi koʻrinmaydi va kontakt oʻchirishga toʻsiq emas. Hisob qoldigʻi (naqd/karta)
+  tegilmaydi — chegara faqat «yopiqmi» va «nettoda koʻrinadimi» savollariga tegishli.
+- Naqsh tasdiqlandi: chegara qoʻyilgan joyda «chegaradan qolgan qoldiq qayerda koʻrinadi»
+  savolini darhol berish kerak edi — javob 0052 ni toʻliq qildi.
+- **`discovery/` boʻshadi** (0056 dan keyin ochiq savol qolmadi); `prds/` dagi besh specning
+  hammasida «ochiq savol qolmadi» deb yozilgan.
+
+## 2026-08-17 — 0052–0055: qolgan toʻrt discovery savoli yopildi
+
+- **0052:** qarz chegara bilan yopiladi (dollarda ≤ 1 sent, soʻmda ≤ 100 soʻm). Variant matni
+  «1 sentdan kam» edi — butun sentlarda bu aynan nol boʻlib qolardi, shuning uchun `≤` oʻqishi
+  olindi va sabab qarorga yozildi. **Saboq:** chegara qiymati taklif qilinganda uni saqlash
+  birligida tekshirish kerak, aks holda qatʼiy tengsizlik chegarani yoʻqqa chiqaradi.
+- **0053** (eksport sanasi faylga kiradi), **0054** (avtomatik zaxira ham eksport sanaladi),
+  **0055** (boʻsh daftarga importda istisno; «boʻsh» taʼrifi kategoriyalarni ham qamraydi,
+  chunki tayyor kategoriyalar har doim bor — 0028).
+- **Yangi boʻshliq:** 0052 chegarasi qarzni yopadi, lekin mikro-qoldiq kontakt nettosida (0037)
+  qolib ketadi → `discovery/chegara-bilan-yopilgan-qarz-nettoda-qanday.md`. Naqsh: chegara
+  qoʻyilgan joyda «chegaradan qolgan qoldiq boshqa qayerda koʻrinadi» degan savol deyarli har
+  doim tugʻiladi.
+- `prds/zaxira.md` va `prds/qarz-daftari.md` dan tashqari hamma specda ochiq savol qolmadi;
+  qarz daftarida bitta ochiq savol bor (yuqoridagi netto savoli).
+
 ## 2026-08-17 — 0051 va koʻchirish ishi
 
 - **0051:** yashirilgan kategoriya nomi bilan qoʻshish rad etiladi; xato yashirilganlikni aytadi
@@ -116,5 +142,8 @@ ikkita xulosani ham boshqacha hal qilgan.
 `discovery/` da: `oxirgi-eksport-sanasi-faylga-kiradimi`, `avtomatik-zaxira-eslatmani-yangilaydimi`,
 `bosh-daftarga-import`, `yaxlitlash-dumi-qarzni-yopadimi` (qarz daftaridan oldin),
 Yopilganlar: `oxirgi-kurs-qaysi-kiritishdan-yangilanadi` → 0044;
-`oxirgi-kurs-qanday-saqlanadi` → 0045; `bir-xil-sanada-oxirgi-kiritilgan-qaysi` → 0047.
-Kurs boʻyicha ochiq savol qolmadi.
+`oxirgi-kurs-qanday-saqlanadi` → 0045; `bir-xil-sanada-oxirgi-kiritilgan-qaysi` → 0047;
+`yaxlitlash-dumi-qarzni-yopadimi` → 0052; `oxirgi-eksport-sanasi-faylga-kiradimi` → 0053;
+`avtomatik-zaxira-eslatmani-yangilaydimi` → 0054; `bosh-daftarga-import` → 0055.
+`chegara-bilan-yopilgan-qarz-nettoda-qanday` → 0056.
+2026-08-17 holatiga `discovery/` da ochiq savol yoʻq — qurish uchun hujjat toʻsigʻi qolmadi.

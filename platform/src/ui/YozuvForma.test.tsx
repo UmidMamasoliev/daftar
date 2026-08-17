@@ -30,15 +30,27 @@ type Ustama = {
 
 function chiz(ustama: Ustama = {}) {
   const saqla = vi.fn(async (_yangi: YangiYozuv): Promise<void> => {})
-  render(
+  let royxat = ustama.kategoriyalar ?? KATEGORIYALAR
+  let qaytish = 0
+  const yasa = () => (
     <YozuvForma
-      kategoriyalar={ustama.kategoriyalar ?? KATEGORIYALAR}
+      kategoriyalar={royxat}
       saqla={saqla}
       yozuv={ustama.yozuv}
       yop={ustama.yop}
-    />,
+      boshqarishdanQaytish={qaytish}
+    />
   )
-  return { saqla, odam: userEvent.setup() }
+  const { rerender } = render(yasa())
+
+  /** «Boshqarish» ga kirib, roʻyxatni oʻzgartirib qaytishni taqlid qiladi. */
+  function boshqarishdanQaytdi(yangiRoyxat: KategoriyaRoyxati = royxat) {
+    royxat = yangiRoyxat
+    qaytish += 1
+    rerender(yasa())
+  }
+
+  return { saqla, odam: userEvent.setup(), boshqarishdanQaytdi }
 }
 
 function tugma(nom: string): HTMLButtonElement {
@@ -186,13 +198,35 @@ describe('maydonga tushmaydigan belgilar (mezon 4b, 4d)', () => {
     expect(screen.queryByText('Summa noldan katta boʻlsin.')).toBeNull()
   })
 
-  it('soʻmda kasrli matn yopishtirilsa kasr olinadi va sabab koʻrinadi (mezon 4b)', async () => {
+  it('soʻmda kasrli matn yopishtirilsa kasr kesiladi va ogohlantirish turadi (mezon 4b)', async () => {
     const { odam } = chiz()
     await odam.click(maydon('Summa'))
-    await odam.paste('12,50')
+    await odam.paste('12 999,99')
 
-    expect(maydon('Summa').value).toBe('12')
-    expect(screen.getByText('Soʻmda tiyin yoʻq — butun son kiriting.')).toBeDefined()
+    // Kesiladi, yaxlitlanmaydi; ogohlantirish xato emas — maydon qizil boʻlmaydi.
+    expect(maydon('Summa').value).toBe('12 999')
+    expect(screen.getByText('Soʻmda tiyin yoʻq — kasr qismi olib tashlandi.')).toBeDefined()
+    expect(maydon('Summa').getAttribute('aria-invalid')).toBe('false')
+  })
+
+  it('terish paytida mingliklar boʻsh joy bilan ajratiladi', async () => {
+    const { odam } = chiz()
+    await odam.type(maydon('Summa'), '1200000')
+    expect(maydon('Summa').value).toBe('1 200 000')
+  })
+
+  it('ajratgich qoʻyilgach kursor oʻsha raqamdan keyin qoladi', async () => {
+    const { odam } = chiz()
+    const summa = maydon('Summa')
+    await odam.type(summa, '1200')
+    expect(summa.value).toBe('1 200')
+    expect(summa.selectionStart).toBe(5)
+
+    // Boshiga qaytib raqam qoʻshilganda ham kursor oʻz oʻrnida qoladi.
+    summa.setSelectionRange(1, 1)
+    await odam.type(summa, '5', { initialSelectionStart: 1, initialSelectionEnd: 1 })
+    expect(summa.value).toBe('15 200')
+    expect(summa.selectionStart).toBe(2)
   })
 
   it('dollarda ikki kasrli summa qabul qilinadi (mezon 4b)', async () => {
@@ -217,7 +251,7 @@ describe('maydonga tushmaydigan belgilar (mezon 4b, 4d)', () => {
     })
   })
 
-  it('dollardan soʻmga oʻtilganda kasr qismi olib tashlanadi va ogohlantiriladi', async () => {
+  it('dollardan soʻmga oʻtilganda ham xuddi shu ogohlantirish turadi — bitta matn', async () => {
     const { odam } = chiz()
     await odam.click(tugma('dollar'))
     await odam.type(maydon('Summa'), '8,50')
@@ -227,14 +261,16 @@ describe('maydonga tushmaydigan belgilar (mezon 4b, 4d)', () => {
     expect(screen.getByText('Soʻmda tiyin yoʻq — kasr qismi olib tashlandi.')).toBeDefined()
   })
 
-  it('kursga kasr belgisi tushmaydi va sabab koʻrinadi', async () => {
+  it('kursda kasr kesiladi va yordam qatori turadi — xato emas', async () => {
     const { odam } = chiz()
     await odam.click(tugma('dollar'))
     await odam.click(maydon('Kurs — 1 dollar necha soʻm'))
     await odam.paste('12500,25')
 
+    // Kesiladi, yaxlitlanmaydi; maydon qizil boʻlmaydi va saqlash toʻxtamaydi.
     expect(maydon('Kurs — 1 dollar necha soʻm').value).toBe('12 500')
-    expect(screen.getByText('Kurs butun soʻmda kiritiladi.')).toBeDefined()
+    expect(screen.getByText('Kurs butun soʻmda — kasr qismi olib tashlandi.')).toBeDefined()
+    expect(maydon('Kurs — 1 dollar necha soʻm').getAttribute('aria-invalid')).toBe('false')
   })
 })
 
@@ -473,5 +509,99 @@ describe('yopish', () => {
 
     expect(yop).toHaveBeenCalledTimes(1)
     expect(saqla).not.toHaveBeenCalled()
+  })
+})
+
+describe('tanlangan kategoriya «Boshqarish» da yashirilsa', () => {
+  const YASHIRILGANDAN_KEYIN: KategoriyaRoyxati = {
+    chiqim: [{ id: 'k-transport', nom: 'transport' }],
+    kirim: [{ id: 'k-oylik', nom: 'oylik' }],
+  }
+
+  async function oziqniTanladi(odam: ReturnType<typeof chiz>['odam']): Promise<void> {
+    await odam.click(tugma('Chiqim'))
+    await odam.click(tugma('oziq-ovqat'))
+  }
+
+  it('tanlov bekor boʻladi va boshqasi avtomatik tanlanmaydi', async () => {
+    const { odam, boshqarishdanQaytdi } = chiz()
+    await oziqniTanladi(odam)
+    expect(tugma('oziq-ovqat').getAttribute('aria-pressed')).toBe('true')
+
+    boshqarishdanQaytdi(YASHIRILGANDAN_KEYIN)
+
+    expect(screen.queryByRole('button', { name: 'oziq-ovqat' })).toBeNull()
+    expect(tugma('transport').getAttribute('aria-pressed')).toBe('false')
+  })
+
+  it('chiplar ostida yordam qatori turadi', async () => {
+    const { odam, boshqarishdanQaytdi } = chiz()
+    await oziqniTanladi(odam)
+    boshqarishdanQaytdi(YASHIRILGANDAN_KEYIN)
+
+    expect(screen.getByText('Tanlangan kategoriya yashirildi — boshqasini tanlang.')).toBeDefined()
+  })
+
+  it('qator birorta chip bosilishi bilan yoʻqoladi', async () => {
+    const { odam, boshqarishdanQaytdi } = chiz()
+    await oziqniTanladi(odam)
+    boshqarishdanQaytdi(YASHIRILGANDAN_KEYIN)
+
+    await odam.click(tugma('transport'))
+    expect(screen.queryByText('Tanlangan kategoriya yashirildi — boshqasini tanlang.')).toBeNull()
+    expect(tugma('transport').getAttribute('aria-pressed')).toBe('true')
+  })
+
+  it('«Saqlash» odatdagi «Kategoriyani tanlang.» xatosini beradi', async () => {
+    const { saqla, odam, boshqarishdanQaytdi } = chiz()
+    await odam.type(maydon('Summa'), '45000')
+    await oziqniTanladi(odam)
+    boshqarishdanQaytdi(YASHIRILGANDAN_KEYIN)
+
+    await odam.click(tugma('Saqlash'))
+    expect(screen.getByText('Kategoriyani tanlang.')).toBeDefined()
+    expect(saqla).not.toHaveBeenCalled()
+  })
+
+  it('yashirib, keyin qaytadan koʻrsatib qaytilsa tanlov joyida qoladi', async () => {
+    const { odam, boshqarishdanQaytdi } = chiz()
+    await oziqniTanladi(odam)
+
+    // Roʻyxat oʻsha holicha qaytdi — demak kategoriya koʻrinadigan boʻlib qolgan.
+    boshqarishdanQaytdi()
+
+    expect(tugma('oziq-ovqat').getAttribute('aria-pressed')).toBe('true')
+    expect(screen.queryByText('Tanlangan kategoriya yashirildi — boshqasini tanlang.')).toBeNull()
+  })
+
+  it('koʻrinadigan kategoriya qolmasa chiplar oʻrnida boʻsh holat matni turadi', async () => {
+    const { odam, boshqarishdanQaytdi } = chiz()
+    await oziqniTanladi(odam)
+    boshqarishdanQaytdi({ chiqim: [], kirim: [] })
+
+    expect(
+      screen.getByText('Koʻrinadigan kategoriya yoʻq — «Boshqarish» dan bittasini koʻrsating.'),
+    ).toBeDefined()
+  })
+
+  it('tahrirlash rejimiga tegilmaydi: yashirilgan kategoriya tanlangicha qoladi', () => {
+    const eskiYozuv: Yozuv = {
+      id: 'y-2',
+      yaratilgan: '2026-08-16T09:00:00.000Z',
+      turi: 'chiqim',
+      summa: 45000,
+      kategoriyaId: 'k-oziq',
+      sana: '2026-08-14',
+      hisob: 'karta',
+      valyuta: 'som',
+    }
+    const { boshqarishdanQaytdi } = chiz({ yozuv: eskiYozuv })
+    expect(tugma('oziq-ovqat').getAttribute('aria-pressed')).toBe('true')
+
+    // Tahrirlashda roʻyxat `hammaKategoriyalar()` dan keladi — yashirilgani ham bor.
+    boshqarishdanQaytdi()
+
+    expect(tugma('oziq-ovqat').getAttribute('aria-pressed')).toBe('true')
+    expect(screen.queryByText('Tanlangan kategoriya yashirildi — boshqasini tanlang.')).toBeNull()
   })
 })

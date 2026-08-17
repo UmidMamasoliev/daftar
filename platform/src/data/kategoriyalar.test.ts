@@ -157,6 +157,62 @@ describe('kategoriyaQosh — oʻz kategoriyasini qoʻshish (0013; mezon 13)', ()
   })
 })
 
+describe('roʻyxat tartibi — 0028, keyin qoʻshilish tartibi (design/kirim-chiqim.md 1-boʻlim)', () => {
+  it('qoʻshilgan kategoriyalar tayyorlardan keyin, qoʻshilish tartibida turadi', async () => {
+    await kategoriyaQosh('yakka', 'chiqim')
+    await kategoriyaQosh('bozor', 'chiqim')
+    await kategoriyaQosh('aeroport', 'chiqim')
+
+    expect(nomlar(await korinadiganKategoriyalar('chiqim'))).toEqual([
+      'oziq-ovqat',
+      'transport',
+      'ijara',
+      'kommunal',
+      'sogʻliq',
+      'kiyim',
+      'koʻngilochar',
+      'boshqa',
+      'yakka',
+      'bozor',
+      'aeroport',
+    ])
+  })
+
+  it('tartib baza yopilib qayta ochilganda ham saqlanadi (maydon yozuvda turadi)', async () => {
+    await kategoriyaQosh('yakka', 'chiqim')
+    await kategoriyaQosh('bozor', 'chiqim')
+    bazaniYop()
+
+    const qoshilganlar = (await hammaKategoriyalar()).filter(
+      (kategoriya) => kategoriya.turi === 'chiqim' && kategoriya.yaratilgan !== undefined,
+    )
+    expect(nomlar(qoshilganlar)).toEqual(['yakka', 'bozor'])
+  })
+
+  it('yashirib qayta koʻrsatilgan kategoriya oʻz oʻrnida qoladi', async () => {
+    const yakka = await kategoriyaQosh('yakka', 'chiqim')
+    await kategoriyaQosh('bozor', 'chiqim')
+    if (!yakka.ok) {
+      throw new Error('kategoriya qoʻshilmadi')
+    }
+
+    await kategoriyaniYashir(yakka.qiymat.id)
+    await kategoriyaniKorsat(yakka.qiymat.id)
+
+    expect(nomlar(await korinadiganKategoriyalar('chiqim')).slice(-2)).toEqual(['yakka', 'bozor'])
+  })
+
+  it('qoʻshilgan kategoriyada qoʻshilish vaqti saqlanadi va u oʻsib boradi', async () => {
+    const birinchi = await kategoriyaQosh('yakka', 'chiqim')
+    const ikkinchi = await kategoriyaQosh('bozor', 'chiqim')
+
+    expect(birinchi.ok && typeof birinchi.qiymat.yaratilgan).toBe('string')
+    expect(
+      birinchi.ok && ikkinchi.ok && (birinchi.qiymat.yaratilgan ?? '') < (ikkinchi.qiymat.yaratilgan ?? ''),
+    ).toBe(true)
+  })
+})
+
 describe('kategoriyaniYashir va kategoriyaniKorsat (0013; mezon 14)', () => {
   it('mezon 14 — yashirilgani tanlov roʻyxatidan chiqadi, lekin oʻchmaydi', async () => {
     const transport = nomBoyicha(await hammaKategoriyalar(), 'transport')

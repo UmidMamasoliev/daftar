@@ -1,43 +1,164 @@
-// Ilovaning kirish nuqtasi.
+// Ilovaning kirish nuqtasi va ekranlar orasidagi oʻtish.
 //
-// Hozircha bitta ekran koʻrinadi — «Yangi yozuv» formasi. Navigatsiya (bosh sahifa,
-// «Yozuvlar» va «Kategoriyalar» ekranlari) keyingi vazifada qoʻshiladi:
-// `design/kirim-chiqim.md` ning «Navigatsiya» qatoriga qarang.
+// Uchta ekran bor: «Yangi yozuv» formasi, «Yozuvlar» roʻyxati va «Kategoriyalar»
+// boshqaruvi. Bosh sahifa (dashboard) hali qurilmagan, shuning uchun oʻtish faqat
+// dizaynda bor elementlarga bogʻlangan: formadagi `×` va «Saqlash» roʻyxatga qaytaradi,
+// roʻyxatdagi «‹ Orqaga» formaga oladi, qator tahrirlash formasini ochadi, formadagi
+// «Boshqarish» esa kategoriyalar ekranini ochadi (dizayn: «Navigatsiya»).
+//
+// Kategoriyalar ekrani ochilganda forma DOM da qoladi (`hidden`), chunki qaytilganda
+// forma toʻldirilgan holicha turishi kerak (dizayn: «Boshqarish» qatori).
 
 import { useEffect, useState } from 'react'
-import { korinadiganKategoriyalar } from './data/kategoriyalar.ts'
-import { yozuvQosh } from './data/yozuvlar.ts'
-import type { YangiYozuv } from './domain/turlar.ts'
+import {
+  hammaKategoriyalar,
+  kategoriyaQosh,
+  kategoriyaniKorsat,
+  kategoriyaniYashir,
+} from './data/kategoriyalar.ts'
+import {
+  hammaYozuvlar,
+  yozuvQosh,
+  yozuvniOchir,
+  yozuvniQaytar,
+  yozuvniYangila,
+} from './data/yozuvlar.ts'
+import { korinadiganlar } from './domain/kategoriya.ts'
+import type { Kategoriya, YangiYozuv, Yozuv, YozuvTuri } from './domain/turlar.ts'
+import { Kategoriyalar } from './ui/Kategoriyalar.tsx'
 import type { KategoriyaRoyxati } from './ui/YozuvForma.tsx'
 import { YozuvForma } from './ui/YozuvForma.tsx'
+import { Yozuvlar } from './ui/Yozuvlar.tsx'
 
-/** Roʻyxat bazadan kelguncha chiplar oʻrni boʻsh turadi (kutish aylanasi yoʻq — 0004). */
-const BOSHLANGICH: KategoriyaRoyxati = { kirim: [], chiqim: [] }
+type Ekran = 'forma' | 'yozuvlar' | 'kategoriyalar'
+
+async function oqi(): Promise<{ kategoriyalar: Kategoriya[]; yozuvlar: Yozuv[] }> {
+  const [kategoriyalar, yozuvlar] = await Promise.all([hammaKategoriyalar(), hammaYozuvlar()])
+  return { kategoriyalar, yozuvlar }
+}
 
 export function App() {
-  const [kategoriyalar, setKategoriyalar] = useState<KategoriyaRoyxati>(BOSHLANGICH)
+  const [ekran, setEkran] = useState<Ekran>('forma')
+  const [tahrirlanayotgan, setTahrirlanayotgan] = useState<Yozuv | null>(null)
+  const [kategoriyaTuri, setKategoriyaTuri] = useState<YozuvTuri>('chiqim')
+  // «Boshqarish» dan har qaytishda ortadi — forma shu belgidan tanlangan
+  // kategoriya hali koʻrinadimi degan tekshiruvni bir marta bajaradi.
+  const [boshqarishdanQaytish, setBoshqarishdanQaytish] = useState(0)
+  const [kategoriyalar, setKategoriyalar] = useState<readonly Kategoriya[]>([])
+  const [yozuvlar, setYozuvlar] = useState<readonly Yozuv[]>([])
 
   useEffect(() => {
     let tirik = true
-    async function oqi(): Promise<void> {
-      const [kirim, chiqim] = await Promise.all([
-        korinadiganKategoriyalar('kirim'),
-        korinadiganKategoriyalar('chiqim'),
-      ])
+    void oqi().then((holat) => {
       if (tirik) {
-        setKategoriyalar({ kirim, chiqim })
+        setKategoriyalar(holat.kategoriyalar)
+        setYozuvlar(holat.yozuvlar)
       }
-    }
-    void oqi()
+    })
     return () => {
       tirik = false
     }
   }, [])
 
-  return <YozuvForma kategoriyalar={kategoriyalar} saqla={saqla} />
-}
+  // Qoldiq va roʻyxat saqlanmaydi — har oʻzgarishdan keyin doʻkondan qayta oʻqiladi
+  // (KELISHUV 6-boʻlim; mezon 10, 11).
+  async function yangila(): Promise<void> {
+    const holat = await oqi()
+    setKategoriyalar(holat.kategoriyalar)
+    setYozuvlar(holat.yozuvlar)
+  }
 
-/** Tekshiruvdan oʻtgan yozuvni doʻkonga beradi (KELISHUV 8-boʻlim). */
-async function saqla(yangi: YangiYozuv): Promise<void> {
-  await yozuvQosh(yangi)
+  // Yangi yozuvda faqat koʻrinadigan kategoriyalar; tahrirlashda hammasi, chunki eski
+  // yozuvning kategoriyasi yashirilgan boʻlishi mumkin (KELISHUV 10-boʻlim; mezon 14).
+  const formaRoyxati: KategoriyaRoyxati =
+    tahrirlanayotgan === null
+      ? {
+          kirim: korinadiganlar(kategoriyalar, 'kirim'),
+          chiqim: korinadiganlar(kategoriyalar, 'chiqim'),
+        }
+      : {
+          kirim: kategoriyalar.filter((kategoriya) => kategoriya.turi === 'kirim'),
+          chiqim: kategoriyalar.filter((kategoriya) => kategoriya.turi === 'chiqim'),
+        }
+
+  const formaKerak = ekran === 'forma' || ekran === 'kategoriyalar'
+
+  return (
+    <>
+      {formaKerak ? (
+        <div className="ekran-orash" hidden={ekran !== 'forma'}>
+          <YozuvForma
+            key={tahrirlanayotgan?.id ?? 'yangi'}
+            kategoriyalar={formaRoyxati}
+            yozuv={tahrirlanayotgan ?? undefined}
+            saqla={async (yangi: YangiYozuv) => {
+              if (tahrirlanayotgan === null) {
+                await yozuvQosh(yangi)
+              } else {
+                await yozuvniYangila(tahrirlanayotgan.id, yangi)
+              }
+              await yangila()
+            }}
+            yop={() => {
+              setEkran('yozuvlar')
+            }}
+            boshqarish={(turi) => {
+              setKategoriyaTuri(turi === '' ? 'chiqim' : turi)
+              setEkran('kategoriyalar')
+            }}
+            boshqarishdanQaytish={boshqarishdanQaytish}
+          />
+        </div>
+      ) : null}
+
+      {ekran === 'kategoriyalar' ? (
+        <Kategoriyalar
+          kategoriyalar={kategoriyalar}
+          boshlangichTur={kategoriyaTuri}
+          qosh={async (nom, turi) => {
+            const natija = await kategoriyaQosh(nom, turi)
+            if (natija.ok) {
+              await yangila()
+            }
+            return natija
+          }}
+          yashir={async (id) => {
+            await kategoriyaniYashir(id)
+            await yangila()
+          }}
+          korsat={async (id) => {
+            await kategoriyaniKorsat(id)
+            await yangila()
+          }}
+          orqaga={() => {
+            setEkran('forma')
+            setBoshqarishdanQaytish((oldingi) => oldingi + 1)
+          }}
+        />
+      ) : null}
+
+      {ekran === 'yozuvlar' ? (
+        <Yozuvlar
+          yozuvlar={yozuvlar}
+          kategoriyalar={kategoriyalar}
+          tahrirla={(yozuv) => {
+            setTahrirlanayotgan(yozuv)
+            setEkran('forma')
+          }}
+          ochir={async (yozuv) => {
+            await yozuvniOchir(yozuv.id)
+            await yangila()
+          }}
+          qaytar={async (yozuv) => {
+            await yozuvniQaytar(yozuv)
+            await yangila()
+          }}
+          orqaga={() => {
+            setTahrirlanayotgan(null)
+            setEkran('forma')
+          }}
+        />
+      ) : null}
+    </>
+  )
 }

@@ -23,6 +23,11 @@ function kat(id: string, nom: string, turi: YozuvTuri, yashirilgan = false): Kat
   return { id, nom, turi, yashirilgan }
 }
 
+/** Foydalanuvchi qoʻshgan kategoriya — qoʻshilish vaqti bilan. */
+function qoshilgan(id: string, nom: string, turi: YozuvTuri, yaratilgan: string): Kategoriya {
+  return { id, nom, turi, yashirilgan: false, yaratilgan }
+}
+
 function nomlar(kategoriyalar: readonly Kategoriya[]): string[] {
   return kategoriyalar.map((kategoriya) => kategoriya.nom)
 }
@@ -193,20 +198,35 @@ describe('kategoriyalarniTartibla — roʻyxat tartibi', () => {
     return topilgan
   }
 
-  it('tayyorlar 0028 tartibida oldinda, qoʻshilganlar keyin nom boʻyicha', () => {
+  it('tayyorlar 0028 tartibida oldinda, qoʻshilganlar qoʻshilish tartibida keyin', () => {
     const aralash: Kategoriya[] = [
-      kat('q2', 'kitob', 'chiqim'),
+      qoshilgan('q2', 'avtoulov', 'chiqim', '2026-08-17T10:00:00.002Z'),
       tayyor('transport'),
-      kat('q1', 'avtoulov', 'chiqim'),
+      qoshilgan('q1', 'zebra', 'chiqim', '2026-08-17T10:00:00.001Z'),
       tayyor('oziq-ovqat'),
     ]
 
     expect(nomlar(kategoriyalarniTartibla(aralash))).toEqual([
       'oziq-ovqat',
       'transport',
+      'zebra',
       'avtoulov',
-      'kitob',
     ])
+  })
+
+  it('qoʻshilganlar nom boʻyicha saralanmaydi — alifbo teskari boʻlsa ham tartib saqlanadi', () => {
+    const royxat: Kategoriya[] = [
+      qoshilgan('q1', 'yakka', 'chiqim', '2026-08-17T10:00:00.001Z'),
+      qoshilgan('q2', 'bozor', 'chiqim', '2026-08-17T10:00:00.002Z'),
+      qoshilgan('q3', 'aeroport', 'chiqim', '2026-08-17T10:00:00.003Z'),
+    ]
+
+    expect(nomlar(kategoriyalarniTartibla(royxat))).toEqual(['yakka', 'bozor', 'aeroport'])
+  })
+
+  it('qoʻshilish vaqti yoʻq qatorlar ham barqaror tartibda turadi (nom boʻyicha)', () => {
+    const royxat: Kategoriya[] = [kat('q2', 'kitob', 'chiqim'), kat('q1', 'avtoulov', 'chiqim')]
+    expect(nomlar(kategoriyalarniTartibla(royxat))).toEqual(['avtoulov', 'kitob'])
   })
 
   it('tartiblash berilgan roʻyxatni oʻzgartirmaydi', () => {

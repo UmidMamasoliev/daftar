@@ -2,7 +2,8 @@
 
 Sana: 2026-08-16. Asos: `prds/daftar-prd.md` (29–30-bandlar, va shu featurega tegishli 2, 5, 6,
 15-bandlar). Qarorlar: 0003, 0004, 0006, 0007, 0008, 0009, 0011, 0013, 0014, 0016, 0021, 0023,
-0024, 0026, 0027, 0029, 0031, 0033, 0034, 0040, 0041, 0042, 0043, 0044, 0045, 0047.
+0024, 0026, 0027, 0029, 0031, 0033, 0034, 0040, 0041, 0042, 0043, 0044, 0045, 0047, 0053, 0054,
+0055.
 
 Nima uchun: 0004 boʻyicha hamma maʼlumot faqat foydalanuvchi brauzerida turadi — brauzer uni
 oʻzi tozalab yuborsa yoki telefon yoʻqolsa, daftar butunlay ketadi. Zaxira fayli shu xavfni
@@ -28,7 +29,11 @@ yoʻli qoldiriladi (0027).
 3. Eksport oflayn ishlaydi; fayl hech qayerga yuborilmaydi, faqat foydalanuvchi qurilmasiga
    saqlanadi. (PRD 2; 0003, 0004)
 4. Fayl nomida u qachon olingani koʻrinadi: `daftar-zaxira-YYYY-MM-DD-HHMM.json`. (0027)
-5. Muvaffaqiyatli eksportdan keyin oxirgi eksport sanasi yangilanadi. (0007, 0024)
+5. Muvaffaqiyatli eksportdan keyin oxirgi eksport sanasi yangilanadi. Bu qoida eksportning
+   **har ikkala turiga** tegishli: qoʻlda olingan eksport ham, import oldidan avtomatik
+   chiqarilgan zaxira ham sanani yangilaydi. (0007, 0024, 0054)
+5a. Oxirgi eksport sanasi zaxira fayliga kiradi va import bilan tiklanadi (7-band, sxema).
+   (0053)
 6. Eksport daftarning joriy holatini yozadi: oʻchirilgan yozuv («qaytarish» tugmasi hali
    ekranda boʻlsa ham) faylga tushmaydi. (0029)
 
@@ -42,6 +47,11 @@ yoʻli qoldiriladi (0027).
 9. `eksport` bloki fayl haqidagi maʼlumot: qachon va qanday olingani (`qolda` yoki
    `import-oldidan`) — bu 0027 dagi «nomda qachon va nima uchun koʻrinsin» talabining fayl
    ichidagi nusxasi.
+9a. Shu blokda `oxirgi-eksport` maydoni ham turadi — daftardagi «oxirgi muvaffaqiyatli eksport
+   sanasi» qiymati (`YYYY-MM-DD`). Qiymat fayl yozilishidan oldin yangilanadi (5-band), shuning
+   uchun u shu eksportning oʻz sanasiga teng boʻladi. Import uni ham tiklaydi va 30 kunlik
+   eslatma (0024) shundan sanaladi: 40 kun oldin olingan fayl tiklansa, eslatma darhol chiqadi.
+   (0053, 0054)
 10. Maʼlumot bloklari — har doʻkon uchun bitta massiv: `hisoblar`, `kategoriyalar`, `yozuvlar`,
     `kontaktlar`, `qarzlar`, `tolovlar`. Doʻkon boʻsh boʻlsa ham blok boʻsh massiv sifatida
     turadi.
@@ -82,7 +92,8 @@ Faylning tuzilishi:
 ```json
 {
   "versiya": 1,
-  "eksport": { "sana": "2026-08-16", "vaqt": "14:05", "turi": "qolda" },
+  "eksport": { "sana": "2026-08-16", "vaqt": "14:05", "turi": "qolda",
+               "oxirgi-eksport": "2026-08-16" },
   "hisoblar":      [ { "id": "naqd",  "nom": "Naqd" }, { "id": "karta", "nom": "Karta" } ],
   "kategoriyalar": [ { "id": "...", "nom": "Oziq-ovqat", "turi": "chiqim", "yashirilgan": false } ],
   "yozuvlar":      [ { "id": "...", "sana": "2026-08-15", "turi": "chiqim", "summa": 1200000,
@@ -100,6 +111,9 @@ Faylning tuzilishi:
 ```
 
 15. Maydonlar boʻyicha qoidalar:
+    - `eksport` — `sana`, `vaqt`, `turi` (`qolda` yoki `import-oldidan`) va `oxirgi-eksport`
+      (`YYYY-MM-DD`). Toʻrtalasi ham majburiy; `oxirgi-eksport` yetishmasa fayl import
+      qilinmaydi (22-band). (0053)
     - `hisoblar` — ikkita yozuv, `naqd` va `karta`; yangi hisob boʻlmaydi. (0011)
     - `kategoriyalar` — `turi` kirim yoki chiqim; `yashirilgan` — yashirilgan kategoriya ham
       faylga tushadi, chunki eski yozuvlar unga bogʻlangan. (0013)
@@ -125,6 +139,16 @@ Faylning tuzilishi:
     - **3-qadam.** Foydalanuvchi **oʻsha chiqarilgan faylni qaytarib tanlaydi**; ilova uni oʻqib
       joriy maʼlumotga mosligini tekshiradi.
     - **4-qadam.** Moslik tasdiqlangandan keyingina fayldagisi ustiga yoziladi.
+17a. **Boʻsh daftar istisnosi:** daftar boʻsh boʻlsa 2- va 3-qadam tushib qoladi — avtomatik
+    zaxira chiqarilmaydi va uni qaytarib tanlash soʻralmaydi. Import bir qadamda oʻtadi: fayl
+    tanlanadi, tekshiriladi (22-band) va qoʻyiladi. (0055)
+17b. **«Boʻsh daftar» taʼrifi** — uchala shart ham bajarilishi kerak: (a) birorta yozuv yoʻq;
+    (b) birorta kontakt, qarz va qarz toʻlovi yoʻq; (c) kategoriyalar tayyor holatida —
+    foydalanuvchi qoʻshgan kategoriya yoʻq va birortasi yashirilmagan (0013, 0028). Shartlardan
+    bittasi buzilsa daftar boʻsh sanalmaydi va import 17-banddagi toʻrt qadam boʻyicha ketadi.
+    (0055)
+17c. Avtomatik zaxira chiqarilmagani uchun boʻsh daftarga importda oxirgi eksport sanasi ham
+    yangilanmaydi — u fayldagi qiymat bilan tiklanadi (9a-band). (0053, 0054, 0055)
 18. Avtomatik chiqarilgan fayl nomida uning qachon va nima uchun yaratilgani koʻrinadi:
     `daftar-import-oldidan-YYYY-MM-DD-HHMM.json`. U oddiy eksport fayli bilan bir xil formatda
     va uni xohlagan paytda qaytarib import qilsa boʻladi. (0027)
@@ -146,6 +170,8 @@ Faylning tuzilishi:
     joyida turadi va qayta soʻralmaydi. Blok boʻsh boʻlsa ham, fayldagi yozuv va toʻlovlarda
     kurs boʻlsa «oxirgi kurs» oʻshalardan hisoblanadi (0045); umuman hech qanday kurs
     topilmasa, kurs 0023 boʻyicha kerak boʻlganda soʻraladi. (0043, 0045)
+21b. Oxirgi eksport sanasi ham fayldagi qiymat bilan almashadi: importdan keyin 30 kunlik
+    eslatma shu tiklangan sanadan hisoblanadi (9a-band). (0053)
 22. Tekshiruv ustiga yozishdan OLDIN oʻtkaziladi. Fayl JSON sifatida oʻqilmasa, blok yoki
     majburiy maydon yetishmasa, yoxud `versiya` ilovaga notanish boʻlsa — import bajarilmaydi,
     sabab koʻrsatiladi va mavjud maʼlumot oʻzgarmaydi. (0027)
@@ -159,6 +185,10 @@ Faylning tuzilishi:
 ### Zaxira eslatmasi
 
 26. Oxirgi muvaffaqiyatli eksport sanasi saqlanadi. (0007, 0024)
+26a. Sanani eksportning har ikkala turi yangilaydi — qoʻlda olingani ham, import oldidan
+    avtomatik chiqarilgani ham (5-band). Import keyin toʻxtab qolsa ham (19a, 19b) yangilangan
+    sana oʻrnida qoladi: fayl haqiqatan chiqarilgan va foydalanuvchi qurilmasida. (0054)
+26b. Sana zaxira fayliga kiradi va import bilan tiklanadi (9a, 21b-bandlar). (0053)
 27. Oxirgi eksportdan 30 kun oʻtsa yoki daftar hech qachon eksport qilinmagan boʻlsa,
     dashboardda bir qatorlik eslatma koʻrinadi; shart bajarilmasa eslatma turmaydi. Eslatmaning
     oʻzi `prds/dashboard.md` (7-band) da, bu yerda uni yoqadigan sana. (PRD 30; 0024)
@@ -209,6 +239,8 @@ sanab boʻladigan:
 6f. Bir xil sanada ketma-ket kiritilgan ikkita kursli yozuv eksport qilinib qayta import
    qilingach, «≈ jami soʻmda» oʻsha kunning keyin kiritilgan kursi bilan hisoblanadi — tartib
    fayldan tiklanadi (0044, 0047).
+6g. Faylning `eksport` blokida `oxirgi-eksport` maydoni bor va u shu eksportning sanasiga teng
+   (0053).
 7. Yashirilgan kategoriya faylda `yashirilgan` belgisi bilan turadi va importdan keyin ham
    yashirilganligicha qoladi.
 8. Faylda qarzning «yopilgan» belgisi yoʻq — faqat qarzning oʻzi va uning toʻlovlari.
@@ -216,6 +248,12 @@ sanab boʻladigan:
 10. Eksportdan keyin dashboarddagi zaxira eslatmasi yoʻqoladi.
 11. Hech qachon eksport qilinmagan daftarda eslatma koʻrinadi; oxirgi eksportdan 30 kundan kam
     oʻtganda koʻrinmaydi; 30 kundan koʻp oʻtganda qayta koʻrinadi.
+11a. 40 kun oldingi `oxirgi-eksport` qiymati bor fayl import qilingach eslatma darhol koʻrinadi;
+    bugungi qiymatli fayldan keyin koʻrinmaydi (0053).
+11b. Import oldidan avtomatik zaxira chiqarilgach eslatma yoʻqoladi — avtomatik zaxira ham
+    eksport sanaladi (0054).
+11c. Avtomatik zaxira chiqarilib, keyin import tasdiqlanmay toʻxtasa ham eslatma qaytmaydi:
+    sana yangilangan boʻlib qoladi (0054, 0041).
 12. Oʻchirilgan va «qaytarish» oynasi hali ochiq yozuv faylga tushmaydi.
 13. Eksport olinadi, brauzer maʼlumoti tozalanadi, fayl import qilinadi — hamma yozuv, qarz,
     toʻlov, kontakt va kategoriya qaytadi (PRD 6-mezon).
@@ -234,6 +272,15 @@ sanab boʻladigan:
     zaxira), moslik tasdiqlanmaydi: import bajarilmaydi va maʼlumot oʻzgarmaydi (0041).
 17d. Tasdiq qadamida buzilgan yoki yarim yozilgan fayl tanlansa ham import bajarilmaydi va
     maʼlumot oʻzgarmaydi (0041).
+17e. Butunlay boʻsh daftarda (yozuv, kontakt, qarz, toʻlov yoʻq; kategoriyalar tayyor holatida)
+    import bir qadamda oʻtadi: avtomatik zaxira fayli yaratilmaydi va tasdiq soʻralmaydi
+    (0055).
+17f. Bitta yozuvi bor daftarda istisno ishlamaydi — avtomatik zaxira chiqariladi va tasdiq
+    soʻraladi (0055).
+17g. Yozuvi yoʻq, lekin bitta kategoriyasi yashirilgan daftarda ham istisno ishlamaydi (0055).
+17h. Yozuvi yoʻq, lekin foydalanuvchi qoʻshgan kategoriyasi bor daftarda ham istisno ishlamaydi
+    (0055).
+17i. Yozuvi yoʻq, lekin bitta kontakti bor daftarda ham istisno ishlamaydi (0055).
 18. Import ustiga yozadi: importdan oldin daftarda boʻlgan, faylda esa yoʻq yozuv importdan
     keyin qolmaydi.
 19. Bir xil faylni ikki marta import qilish yozuvlarni ikki nusxa qilmaydi.
@@ -241,7 +288,8 @@ sanab boʻladigan:
     oʻzgarmaydi.
 21. `versiya` notanish qiymatda boʻlgan fayl import qilinmaydi, sabab koʻrsatiladi, maʼlumot
     oʻzgarmaydi.
-22. Bloki yoki majburiy maydoni yetishmaydigan fayl import qilinmaydi va maʼlumot oʻzgarmaydi.
+22. Bloki yoki majburiy maydoni yetishmaydigan fayl import qilinmaydi va maʼlumot oʻzgarmaydi —
+    `eksport.oxirgi-eksport` yetishmasa ham shunday (0053).
 23. 100 $ qarz va 50 $ toʻlovi bor fayl import qilingach, qarz qoldigʻi 50 $ boʻlib hisoblanadi.
 24. Importdan keyin oylik hisobot raqamlari fayldagi yozuvlardan qayta hisoblanadi.
 24a. `kurslar` bloki bor fayl import qilingach, «≈ jami soʻmda» qatori uchun kurs qayta
@@ -258,8 +306,8 @@ sanab boʻladigan:
 
 ## Ochiq savollar
 
-Bu spec yozilayotganda oltita savol chiqdi. Beshtasi 2026-08-16 da hal qilindi, uchtasi hali
-`discovery/` da turibdi va **javobsiz** — spec ular boʻyicha xulosa chiqarmadi.
+Bu spec yozilayotganda oltita savol chiqdi. Hammasi hal qilindi: beshtasi 2026-08-16 da,
+qolganlari 2026-08-17 da. **Ochiq savol qolmadi.**
 
 Hal qilinganlar:
 
@@ -275,14 +323,9 @@ Hal qilinganlar:
 - Bir xil sanadagi kurslardan qaysi biri «oxirgi kiritilgani» → **0047**: har yozuv va toʻlovda
   `yaratilgan` vaqt maydoni boʻladi va u faylga kiradi (13a, 13b, 15-bandlar).
 
-Ochiq qolganlari:
-
-1. «Oxirgi eksport sanasi» faylga kiradimi va importdan keyin qanday boʻladi →
-   `discovery/oxirgi-eksport-sanasi-faylga-kiradimi.md`. Fayl sxemasi (7–15-bandlar) hozir bu
-   maydonsiz yozilgan.
-2. Import oldidan olingan avtomatik zaxira ham «eksport» sanaladimi (30 kunlik eslatma uchun) →
-   `discovery/avtomatik-zaxira-eslatmani-yangilaydimi.md`.
-3. Daftar boʻsh boʻlganda ham importdan oldin avtomatik zaxira olinadimi →
-   `discovery/bosh-daftarga-import.md`. Spec hozir istisnosiz yozilgan (17-band). 0041 dan keyin
-   bu savol tasdiq qadamiga ham tegadi: boʻsh daftarga istisno qoʻyilsa, faylni qaytarib tanlash
-   qadami ham tushib qoladi.
+- «Oxirgi eksport sanasi» faylga kiradimi → **0053**: kiradi (`eksport.oxirgi-eksport`) va
+  import bilan tiklanadi (9a, 21b-bandlar).
+- Import oldidan olingan avtomatik zaxira ham «eksport» sanaladimi → **0054**: sanaladi, sana
+  yangilanadi va eslatma 30 kunga tinadi (5, 26a-bandlar).
+- Daftar boʻsh boʻlganda ham avtomatik zaxira olinadimi → **0055**: olinmaydi, import bir
+  qadamda oʻtadi; «boʻsh daftar» taʼrifi 17b-bandda.

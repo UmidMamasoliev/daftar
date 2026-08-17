@@ -6,7 +6,18 @@
 
 import { describe, expect, it } from 'vitest'
 import { kunMatni } from '../domain/sana.ts'
-import { kursniShakllantir, minglikBoshliq, sanaYorligi, summaniShakllantir } from './format.ts'
+import type { Yozuv } from '../domain/turlar.ts'
+import {
+  belgilarSoni,
+  hisobNomi,
+  kursniShakllantir,
+  kursorOrni,
+  minglikBoshliq,
+  qatorIzohi,
+  sanaYorligi,
+  summaKorinishi,
+  summaniShakllantir,
+} from './format.ts'
 
 const BUGUN = '2026-08-17'
 
@@ -54,6 +65,21 @@ describe('summaniShakllantir', () => {
     expect(summaniShakllantir('12.50', 'som')).toEqual({ qiymat: '12', kasrOlindi: true })
   })
 
+  it('kasr qismi kesiladi, yaxlitlanmaydi', () => {
+    expect(summaniShakllantir('12 999,99', 'som')).toEqual({ qiymat: '12 999', kasrOlindi: true })
+  })
+
+  it('mingliklarni terish paytida boʻsh joy bilan ajratadi (uslub: «Maydonda terish»)', () => {
+    expect(summaniShakllantir('1200000', 'som').qiymat).toBe('1 200 000')
+    expect(summaniShakllantir('1 200 000', 'som').qiymat).toBe('1 200 000')
+  })
+
+  it('dollarda ajratish faqat butun qismga tegadi, kasr terilganidek qoladi', () => {
+    expect(summaniShakllantir('1234,5', 'dollar').qiymat).toBe('1 234,5')
+    expect(summaniShakllantir('1234,50', 'dollar').qiymat).toBe('1 234,50')
+    expect(summaniShakllantir('12,', 'dollar').qiymat).toBe('12,')
+  })
+
   it('soʻmda yolgʻiz kasr belgisi xabar chiqarmaydi — u shunchaki tushmaydi', () => {
     expect(summaniShakllantir('12,', 'som')).toEqual({ qiymat: '12', kasrOlindi: false })
   })
@@ -95,5 +121,84 @@ describe('minglikBoshliq', () => {
 
   it('katta sonni guruhlaydi', () => {
     expect(minglikBoshliq('1250000')).toBe('1 250 000')
+  })
+})
+
+describe('kursor oʻrni (uslub: «Maydonda terish paytidagi format»)', () => {
+  it('kursordan chapdagi raqamlarni sanaydi, ajratgichni sanamaydi', () => {
+    expect(belgilarSoni('1 20')).toBe(3)
+    expect(belgilarSoni('')).toBe(0)
+    expect(belgilarSoni('12,')).toBe(3)
+  })
+
+  it('format qoʻyilgach kursor oʻsha raqamdan keyin turadi', () => {
+    expect(kursorOrni('1 200', 1)).toBe(1)
+    expect(kursorOrni('1 200', 2)).toBe(3)
+    expect(kursorOrni('1 200', 4)).toBe(5)
+  })
+
+  it('kasr belgisi ham sanaladi — kursor undan keyin qoladi', () => {
+    expect(kursorOrni('12,', 3)).toBe(3)
+  })
+
+  it('boshida va oxirida chegaradan chiqmaydi', () => {
+    expect(kursorOrni('1 200', 0)).toBe(0)
+    expect(kursorOrni('1 200', 9)).toBe(5)
+  })
+})
+
+describe('summaKorinishi — roʻyxatdagi summa (uslub: «Son, sana va valyuta formati»)', () => {
+  function yozuv(qism: Partial<Yozuv>): Yozuv {
+    return {
+      id: 'y',
+      yaratilgan: '2026-08-17T00:00:00.000Z',
+      turi: 'chiqim',
+      summa: 45000,
+      kategoriyaId: 'k',
+      sana: '2026-08-17',
+      hisob: 'karta',
+      valyuta: 'som',
+      ...qism,
+    } as Yozuv
+  }
+
+  it('chiqimni minus ishorasi bilan, soʻmni mingliklarga ajratib yozadi', () => {
+    expect(summaKorinishi(yozuv({}))).toBe('−45 000 soʻm')
+  })
+
+  it('kirimni plus ishorasi bilan yozadi', () => {
+    expect(summaKorinishi(yozuv({ turi: 'kirim', summa: 1200000 }))).toBe('+1 200 000 soʻm')
+  })
+
+  it('dollarni ikki kasr, vergul va `$` bilan yozadi', () => {
+    expect(summaKorinishi(yozuv({ turi: 'kirim', summa: 1250, valyuta: 'dollar', kurs: 12500 }))).toBe(
+      '+12,50 $',
+    )
+  })
+
+  it('dollar sentini yoʻqotmaydi', () => {
+    expect(summaKorinishi(yozuv({ summa: 805, valyuta: 'dollar', kurs: 12500 }))).toBe('−8,05 $')
+  })
+
+  it('dollarda ham ajratish faqat butun qismga tegadi', () => {
+    expect(summaKorinishi(yozuv({ summa: 123456, valyuta: 'dollar', kurs: 12500 }))).toBe(
+      '−1 234,56 $',
+    )
+  })
+})
+
+describe('qator ikkinchi qatori — hisob va izoh', () => {
+  it('hisob nomi bosh harf bilan koʻrsatiladi', () => {
+    expect(hisobNomi('karta')).toBe('Karta')
+    expect(hisobNomi('naqd')).toBe('Naqd')
+  })
+
+  it('izoh boʻlsa nuqta bilan ajratiladi', () => {
+    expect(qatorIzohi('karta', 'nonushta')).toBe('Karta · nonushta')
+  })
+
+  it('izoh boʻsh boʻlsa faqat hisob nomi qoladi', () => {
+    expect(qatorIzohi('naqd', undefined)).toBe('Naqd')
+    expect(qatorIzohi('naqd', '')).toBe('Naqd')
   })
 })

@@ -2,7 +2,7 @@
 
 Sana: 2026-08-16. Asos: `prds/daftar-prd.md` (16–21-bandlar, va shu featurega tegishli 6, 8, 9,
 12, 21-bandlar). Qarorlar: 0015, 0016, 0017, 0023, 0026, 0029, 0030, 0031, 0033, 0034, 0035,
-0037, 0042, 0043, 0044, 0045, 0047, 0048, 0049.
+0037, 0042, 0043, 0044, 0045, 0047, 0048, 0049, 0052, 0056.
 
 Nima uchun: Foydalanuvchi «falonchiga qancha qoldi» degan savolga aniq javob oladi. Qarz
 haqiqatda boʻlib-boʻlib toʻlanadi va esdan chiqadi; daftar kim bilan qanday hisobi borligini,
@@ -15,7 +15,8 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
 1. Kontaktlar roʻyxatini yuritadi (doʻst, qarindosh). Kontaktlar daftar ichida qoʻlda
    yaratiladi. (PRD 16; 0015)
 2. Kontakt ikki maydondan iborat: ism (majburiy) va telefon raqami (ixtiyoriy). (PRD 16; 0031)
-3. Ochiq qarzi bor kontakt oʻchirilmaydi. (PRD 16; 0030)
+3. Ochiq qarzi bor kontakt oʻchirilmaydi. «Ochiq» degani 8a-banddagi chegaradan yuqori qoldiq:
+   chegara ichida yopilgan qarz kontaktni ushlab turmaydi. (PRD 16; 0030, 0052)
 4. Hamma qarzi yopilgan kontakt esa yopilgan qarz tarixi bilan birga oʻchadi. (PRD 16; 0030)
 5. Kontakt oʻchirilganda «qaytarish» tugmasi ishlaydi: bosilsa kontakt ham, uning qarz tarixi
    ham qaytadi. (0030, 0029)
@@ -25,14 +26,25 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
 6. Har qarz bitta kontaktga bogʻlanadi. Ikki yoʻnalish bor: men qarz berdim va men qarz oldim.
    (PRD 17; 0015)
 7. Kontakt ostida uning hamma qarzi va umumiy qoldigʻi koʻrinadi. (PRD 18; 0015)
-7a. Qoldiq har valyuta uchun bitta raqam: «berdim» va «oldim» oʻzaro ayiriladi (netto),
-   valyutalar aralashtirilmaydi. Raqam yoʻnalish bilan koʻrsatiladi — kim kimga qarzdor.
-   Qatorlar faqat qarzi bor valyutada koʻrinadi. Berdim/oldim tarixi kontakt ichidagi
-   operatsiyalar roʻyxatida koʻrinadi. (PRD 18; 0037)
+7a. Qoldiq har valyuta uchun bitta raqam: **ochiq** qarzlar boʻyicha «berdim» va «oldim» oʻzaro
+   ayiriladi (netto), valyutalar aralashtirilmaydi. Raqam yoʻnalish bilan koʻrsatiladi — kim
+   kimga qarzdor. Qatorlar faqat ochiq qarzi bor valyutada koʻrinadi. Berdim/oldim tarixi
+   kontakt ichidagi operatsiyalar roʻyxatida koʻrinadi. (PRD 18; 0037, 0056)
+7a1. 8a-band boʻyicha chegara bilan yopilgan qarz nettoga umuman kirmaydi — uning mikro-qoldigʻi
+   (≤ 1 sent yoki ≤ 100 soʻm) kontakt ekranida koʻrinmaydi. Hamma qarzi yopilgan kontaktda netto
+   qatori chiqmaydi. (0056; 0052)
+7a2. Bu faqat koʻrsatishga tegishli: hisob qoldiqlari (naqd va karta) haqiqiy pul harakatidan
+   chiqadi va hech qanday chegara bilan tuzatilmaydi. (0056; 0017, 0035)
 7b. Netto faqat koʻrsatish uchun: qarzning yopilishi har qarzning oʻz qoldigʻi bilan
-   aniqlanadi (0016), netto bilan emas. (0037)
+   aniqlanadi (0016, 8a-band), netto bilan emas. (0037)
 8. Qarzga qisman toʻlov yoziladi; qoldiq oʻzi hisoblanadi va hech qayerda saqlanmaydi. Qoldiq
    nolga yetganda qarz yopilgan hisoblanadi. (PRD 19; 0016)
+8a. Yopilish sharti aniq chegara bilan: qarz qoldigʻi **oʻz valyutasida** dollarda 1 sent yoki
+   undan kam (`≤ 1` sent), soʻmda 100 soʻm yoki undan kam (`≤ 100` soʻm) boʻlsa, qarz yopilgan
+   sanaladi. Bu 0042 dagi yaxlitlashdan qoladigan «dum» qarzni ochiq ushlab turmasligi uchun.
+   (0052; 0016, 0023)
+8b. Chegara qarzning oʻz valyutasi boʻyicha olinadi va hech qanday holat maydoni yaratilmaydi —
+   yopiqlik har safar qoldiqdan hisoblanadi (0016). (0052)
 9. Toʻlovni oʻchirishda «qaytarish» tugmasi ishlaydi va qaytarilsa qoldiq tiklanadi.
    (PRD 19; 0029)
 9a. «Qaytarish» tugmasi **7 soniya** turadi — yozuvdagi bilan bir xil muddat; kontakt
@@ -94,6 +106,12 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
 4. Kontaktga «oldim» yoʻnalishida qarz qoʻshiladi va u kontakt ostida koʻrinadi.
 5. 1 000 000 soʻm qarz berilib 300 000 soʻm toʻlov yozilsa, qoldiq 700 000 soʻm boʻladi.
 6. Yana 700 000 soʻm toʻlov yozilsa, qoldiq nol boʻladi va qarz yopilgan holatga oʻtadi.
+6a. Dollar qarzida toʻlovdan keyin 1 sent qoldiq qolsa qarz yopilgan sanaladi; 2 sent qolsa
+   ochiq qolaveradi (0052).
+6b. Soʻm qarzida 100 soʻm qoldiq qolsa qarz yopilgan sanaladi; 101 soʻm qolsa ochiq qolaveradi
+   (0052).
+6c. Faqat chegara ichidagi qoldiqli qarzi bor kontakt oʻchiriladi — ochiq qarz sanalmagani
+   uchun 0030 toʻsmaydi (0052).
 7. Toʻlovlar tarixi qarz ostida sana bilan koʻrinadi.
 8. Toʻlov oʻchirilsa qoldiq darhol oʻsha summaga ortadi.
 9. Toʻlov oʻchirilgach «qaytarish» tugmasi koʻrinadi; bosilsa toʻlov ham, qoldiq ham tiklanadi.
@@ -119,6 +137,12 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
 15d. Shu kontaktda soʻm qarzi boʻlmasa, soʻm qatori umuman chiqmaydi.
 15e. Kontaktga 100 $ berilib undan 100 $ olingan boʻlsa, netto nol koʻrinadi, lekin ikkala
     qarz ham ochiq sanaladi va kontakt oʻchirilmaydi.
+15f. Kontaktning hamma qarzi chegara bilan yopilgan boʻlsa (masalan bittasida 1 sent qoldiq),
+    netto qatori umuman chiqmaydi va kontakt oʻchirila oladi (0056; 0052).
+15g. Kontaktda bitta ochiq va bitta chegara bilan yopilgan qarz boʻlsa, netto faqat ochiq
+    qarzdan hisoblanadi — yopilganining mikro-qoldigʻi qoʻshilmaydi (0056).
+15h. 15f va 15g holatlarida naqd va karta qoldiqlari oʻzgarmaydi: mikro-qoldiq nettodan
+    chiqarilgani bilan pul qoldigʻiga tegilmaydi (0056; 0017, 0035).
 16. Ochiq qarzi bor kontaktni oʻchirish urinishi rad etiladi va sabab koʻrsatiladi.
 17. Hamma qarzi yopilgan kontakt oʻchiriladi va uning yopilgan qarz yozuvlari ham ketadi.
 18. Shu oʻchirishdan keyin «qaytarish» bosilsa, kontakt va uning qarz tarixi qaytadi.
@@ -139,8 +163,14 @@ Bu spec yozilayotganda ikkita savol chiqdi va ikkalasi ham hal qilindi:
 Keyinroq, `prds/zaxira.md` yozilayotganda chiqqan kurs savoli ham yopildi → **0042**: kurs butun
 soʻmda, aylantirish eng yaqiniga yaxlitlanadi (10a, 15a-bandlar).
 
-**Ochiq — bu qism qurilishidan OLDIN javob kerak:** yaxlitlashdan qoladigan 1–2 sentlik «dum»
-qarzni «yopilgan» sanashga xalaqit beradimi (0016 «qoldiq nolga yetganda qarz yopilgan» deydi,
-8-band). 0042 buni ataylab hal qilmadi — u faqat yaxlitlash qoidasini belgilaydi. Savol
-`discovery/yaxlitlash-dumi-qarzni-yopadimi.md` da turibdi va **javobsiz**; spec bu yerda hech
-qanday xulosa chiqarmaydi.
+2026-08-17 da yaxlitlash «dumi» savoli ham yopildi → **0052**: qarz qoldigʻi dollarda 1 sentdan,
+soʻmda 100 soʻmdan oshmasa qarz yopilgan sanaladi (8a, 8b-bandlar, 6a–6c-mezonlar). Chegara
+ichidagi qarz kontaktni ham ushlab turmaydi (3-band).
+
+Shu kunning oʻzida 0052 dan chiqqan savol ham yopildi → **0056**: netto faqat **ochiq**
+qarzlardan yigʻiladi; chegara bilan yopilgan qarzning mikro-qoldigʻi kontakt ekranida
+koʻrinmaydi va kontaktni oʻchirishga toʻsqinlik qilmaydi (7a, 7a1, 7a2-bandlar,
+15f–15h-mezonlar). Hisob qoldigʻi (naqd/karta) esa hech qanday chegara bilan oʻzgartirilmaydi —
+u haqiqiy pul harakatidan chiqadi (0017, 0035).
+
+Bu specda ochiq savol qolmadi.

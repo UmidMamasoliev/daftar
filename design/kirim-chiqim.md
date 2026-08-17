@@ -26,7 +26,8 @@ Ostida, yuqoridan pastga:
 
 1. **Summa** — katta maydon (56 px). Ochilganda kursor shu yerda va raqam klaviaturasi ochiq.
    Boʻsh holatda ichida `0` turadi (`matn-oʻchiq`). Maydonning oʻng chekkasida valyuta soʻzi:
-   **soʻm** (`matn-ikkinchi`).
+   **soʻm** (`matn-ikkinchi`). Terish paytida mingliklar boʻsh joy bilan ajratiladi —
+   `1 200 000` (pastdagi «Summa maydoni — terish qoidalari»).
 2. **Tur** — ikki boʻlakli segment: **«Chiqim»** | **«Kirim»**. Ochilganda **hech biri
    tanlanmagan**: u majburiy maydon va standart qiymati yoʻq (0012, 0050).
 3. **Kategoriya** — yorligʻi chapda «Kategoriya», oʻng tepasida matn-havola
@@ -36,6 +37,9 @@ Ostida, yuqoridan pastga:
    - Tur tanlangach oʻsha turning koʻrinadigan kategoriyalari chip boʻlib chiqadi. Tartib —
      0028 dagidek, undan keyin foydalanuvchi qoʻshganlari qoʻshilish tartibida. Chiplar
      oʻrash bilan bir necha qatorga tushadi, roʻyxat qisqartirilmaydi.
+   - Chiplarda faqat **koʻrinadigan** kategoriyalar boʻladi (0013). Tanlangan kategoriya shu
+     roʻyxatdan tashqarida qololmaydi — pastdagi «Tanlangan kategoriya yashirilsa» bandiga
+     qarang.
 4. **Hisob** — yorligʻi «Hisob», tagida ikki chip: **«Karta»** | **«Naqd»**.
    Ochilganda **«Karta»** tanlangan (0011).
 5. **Valyuta** — yorligʻi «Valyuta», tagida ikki chip: **«soʻm»** | **«dollar»**.
@@ -54,10 +58,10 @@ qurilmaydi.
 
 | Nima bosiladi | Keyin nima boʻladi |
 |---|---|
-| Summa maydoni | raqam klaviaturasi ochiladi; soʻmda kasr belgisi qabul qilinmaydi, dollarda ikki kasrgacha (0033) |
+| Summa maydoni | raqam klaviaturasi ochiladi; terish paytida mingliklar ajratiladi; soʻmda kasr belgisi qabul qilinmaydi, dollarda ikki kasrgacha (0033) |
 | «Chiqim» / «Kirim» | segment boʻlagi `chiqim` yoki `kirim` rangiga boʻyaladi; kategoriya chiplari oʻsha turning roʻyxati bilan almashadi. Tur oʻzgartirilsa tanlangan kategoriya bekor boʻladi (roʻyxatlar alohida — 0013) |
 | Kategoriya chipi | chip tanlangan koʻrinishga oʻtadi; bir vaqtda faqat bittasi tanlanadi |
-| «Boshqarish» | «Kategoriyalar» ekrani ochiladi (3-boʻlim); qaytilganda forma toʻldirilgan holicha turadi |
+| «Boshqarish» | «Kategoriyalar» ekrani ochiladi (3-boʻlim); qaytilganda forma toʻldirilgan holicha turadi — bitta istisno bilan: tanlangan kategoriya oʻsha yerda yashirilgan boʻlsa, tanlov bekor boʻladi (pastdagi bandga qarang) |
 | «Karta» / «Naqd» | chip almashadi, boshqa hech narsa oʻzgarmaydi |
 | «soʻm» / «dollar» | summa maydonining oʻngidagi soʻz `soʻm` ↔ `$` ga almashadi; «dollar» da kurs maydoni ochiladi, «soʻm» ga qaytilsa kurs maydoni yopiladi va kiritilgani unutiladi |
 | Sana tugmasi | qurilmaning sana tanlagichi ochiladi; ertangi va undan keyingi kunlar oʻchiq — tanlanmaydi (0034). Tanlangach tugmada «Bugun», «Kecha» yoki `14-avgust` yozuvi turadi |
@@ -89,10 +93,65 @@ Jami 6 ta harakat.
 - Maydon boʻsh ochiladi, ichida `12 500` namuna sifatida turadi (`matn-oʻchiq`). Oldindan
   toʻldirilmaydi: kurs shu holatda majburiy maydon (0023) va boʻsh qolsa yozuv saqlanmaydi
   (6-mezon).
-- Faqat butun son qabul qiladi — kasr belgisi maydonga tushmaydi (0042).
+- Faqat butun son qabul qiladi — kasr belgisi maydonga tushmaydi (0042). Kasrli matn
+  yopishtirilsa summa maydonidagi kabi ish tutiladi: kasr qismi kesiladi va yordam uslubidagi
+  bir qatorlik xabar chiqadi (xatolar jadvaliga qarang).
 - Terilayotganda mingliklar boʻsh joy bilan ajratiladi: `12 500`.
 - Summa maydoni ikki kasrgacha qabul qiladi, oʻngdagi soʻz `$` boʻladi (0033).
 - «soʻm» ga qaytilsa kurs maydoni yopiladi va yozuvda kurs saqlanmaydi (7-mezon).
+
+### Tanlangan kategoriya yashirilsa
+
+Holat: odam formada kategoriyani tanladi, «Boshqarish» ga kirdi, **aynan oʻsha** kategoriyani
+yashirdi va formaga qaytdi.
+
+**Tanlov bekor boʻladi.** Formaga qaytilganda hech qanday chip tanlangan boʻlmaydi, oʻrniga
+boshqasi avtomatik tanlanmaydi. Chiplar ostida yordam qatori turadi (`mayda`,
+`matn-ikkinchi`): **«Tanlangan kategoriya yashirildi — boshqasini tanlang.»** Qator birorta
+chip bosilishi bilan yoʻqoladi. «Saqlash» bosilsa odatdagi **«Kategoriyani tanlang.»** xatosi
+chiqadi.
+
+Nega bekor boʻladi:
+
+- 0013 aynan shuni aytadi: yashirilgan kategoriya **yangi yozuv tanlovida** chiqmaydi. Tanlov
+  kuchda qolsa, odam oʻzi bir soniya oldin yashirgan kategoriyaga yangi yozuv saqlagan boʻlardi.
+- Ekran bilan saqlanadigan narsa bir-biriga zid boʻlib qolardi: chip roʻyxatdan yoʻqolgani
+  uchun ekranda hech narsa tanlanmagandek koʻrinadi, yozuv esa koʻrinmayotgan kategoriyaga
+  tushadi. Daftarda eng yomoni — jimgina notoʻgʻri yozilgan raqam.
+- Narxi bitta bosish, va bu bosishga sabab odamning oʻz harakati.
+
+Qoʻshimcha qoidalar:
+
+- Tekshiruv formaga qaytilganda bir marta bajariladi: tanlangan kategoriya oʻsha payt
+  koʻrinadigan boʻlsa, tanlov joyida qoladi. Yaʼni odam yashirib, keyin oʻsha ekranda
+  «Koʻrsatish» bilan qaytarsa, tanlov ham saqlanib qoladi.
+- Yashirish natijasida oʻsha turda koʻrinadigan kategoriya umuman qolmasa, chiplar oʻrnida
+  boʻsh holat matni turadi (3-boʻlimdagi «Boʻsh holat»).
+- Bu qoida **faqat yangi yozuv formasiga** tegishli. Tahrirlash rejimida yashirilgan
+  kategoriyali eski yozuv oʻz nomi bilan koʻrinaveradi va oʻzgarmaydi (0013, 14-mezon).
+
+### Summa maydoni — terish qoidalari
+
+- **Minglik ajratish summa maydonida ham boʻladi**, kurs maydonidagi kabi va aynan oʻsha
+  qoida boʻyicha (`design/uslub.md`, «Maydonda terish paytidagi format»): `1 200 000`.
+  Nega: soʻm summasi olti-yetti raqamli boʻladi va aynan shu maydonda notoʻgʻri oʻqilgan raqam
+  eng qimmatga tushadi — odam terganini bir qarashda oʻqiy olishi kerak; ikkala maydonga bitta
+  qoida qoʻyilgani uchun format bitta joyda yoziladi, ikkita xulq paydo boʻlmaydi.
+- Ajratish faqat butun qismga tegadi. Dollar rejimida kasr qismi odam terganidek qoladi:
+  `1 234,5` → `1 234,5`, `1 234,50` → `1 234,50`.
+- Kursor raqamlarga nisbatan oʻz oʻrnida qoladi (kursordan chapdagi raqamlar soni saqlanadi).
+- Ajratgich boʻsh joyi faqat koʻrinish uchun: saqlashda olib tashlanadi.
+- Dollar rejimida uchinchi kasr raqami maydonga tushmaydi (0033).
+- **Yopishtirilgan matn** avval tozalanadi: raqam boʻlmagan belgilar (`−`, harf, valyuta soʻzi,
+  boʻsh joy) olib tashlanadi, birinchi kasr belgisi (`,` yoki `.`) kasr ajratgichi deb olinadi.
+  Keyin joriy valyutaning qoidasi qoʻllanadi.
+- **Soʻm rejimida kasrli matn yopishtirilsa:** butun qismi qoladi, kasr qismi kesiladi
+  (yaxlitlanmaydi: `12 999,99` → `12 999`) va maydon ostida bir qatorlik ogohlantirish turadi —
+  **«Soʻmda tiyin yoʻq — kasr qismi olib tashlandi.»** Bu xato emas: maydon qizil boʻlmaydi va
+  saqlashga toʻsqinlik qilmaydi. Xuddi shu xulq valyuta «dollar» dan «soʻm» ga almashtirilganda
+  ham ishlaydi — bitta holat, bitta matn.
+- Kesilgandan keyin `0` qolsa (masalan `0,99` yopishtirilsa), «Saqlash» bosilganda odatdagi
+  **«Summa noldan katta boʻlsin.»** xatosi chiqadi (0033).
 
 ### Xato holatlari
 
@@ -107,11 +166,11 @@ oʻsha yerga tushadi. Maydon tuzatilishi bilan oʻsha xato yoʻqoladi.
 | Kategoriya tanlanmagan | Chiplar ostida: **«Kategoriyani tanlang.»** |
 | Nol summa (`0` yoki `0,00`) | Summa maydoni ostida: **«Summa noldan katta boʻlsin.»** |
 | Manfiy son | Hech narsa koʻrmaydi: `−` belgisi maydonga umuman tushmaydi, yopishtirilgan matndan ham olib tashlanadi. Xato matni chiqmaydi, chunki notoʻgʻri qiymat maydonga kirmaydi (0033) |
-| Soʻmda kasr terilsa | `,` va `.` maydonga tushmaydi. Kasrli matn yopishtirilsa maydon ostida: **«Soʻmda tiyin yoʻq — butun son kiriting.»** |
-| Dollarda kasrli summa terib, keyin «soʻm» ga oʻtilsa | Kasr qismi olib tashlanadi va maydon ostida bir qatorlik ogohlantirish turadi: **«Soʻmda tiyin yoʻq — kasr qismi olib tashlandi.»** Bu xato emas, saqlashga toʻsqinlik qilmaydi |
+| Soʻmda kasr terilsa | `,` va `.` maydonga tushmaydi; hech qanday matn chiqmaydi |
+| Soʻmda kasrli matn yopishtirilsa **yoki** dollarda kasr terib keyin «soʻm» ga oʻtilsa | Kasr qismi kesiladi (yaxlitlanmaydi) va maydon ostida bir qatorlik ogohlantirish turadi: **«Soʻmda tiyin yoʻq — kasr qismi olib tashlandi.»** Bu xato emas: maydon qizil boʻlmaydi, saqlash toʻxtamaydi. Ikkala holatga shu bitta matn ishlatiladi — «Soʻmda tiyin yoʻq — butun son kiriting.» degan matn endi hech qayerda ishlatilmaydi |
 | Kelajak sanasi | Sana tanlagichda ertangi va undan keyingi kunlar oʻchiq koʻrinadi va bosilmaydi (0034). Agar qurilma tanlagichi baribir kelajak sanasini qaytarsa, sana qatori ostida: **«Sana bugundan keyin boʻlmaydi.»** |
 | Dollar tanlangan, kurs boʻsh | Kurs maydoni qizil chegara oladi, tagida: **«Kursni kiriting — 1 dollar necha soʻm.»** |
-| Kursda kasr | Kasr belgisi maydonga tushmaydi. Kasrli matn yopishtirilsa: **«Kurs butun soʻmda kiritiladi.»** |
+| Kursda kasr | Kasr belgisi maydonga tushmaydi. Kasrli matn yopishtirilsa kasr qismi kesiladi (`12 500,25` → `12 500`) va maydon ostida **yordam uslubida** turadi: **«Kurs butun soʻmda — kasr qismi olib tashlandi.»** Bu xato emas: maydon qizil boʻlmaydi, saqlash toʻxtamaydi. «Kurs butun soʻmda kiritiladi.» degan matn endi ishlatilmaydi |
 | Kurs `0` | Kurs maydoni qizil chegara oladi, tagida: **«Kurs notoʻgʻri»**. Yozuv saqlanmaydi (0049) |
 | Summa yoki kursga harf/belgi terilsa | Raqam boʻlmagan belgi maydonga tushmaydi; xato matni chiqmaydi |
 
@@ -149,6 +208,9 @@ Ostida — kunlarga guruhlangan roʻyxat, pastga uzluksiz aylantiriladi (0032).
     qatorda kesiladi va oxirida `…` qoʻyiladi;
   - oʻngda summa (`summa` oʻlchami): `−45 000 soʻm` (`chiqim` rangi) yoki `+12,50 $`
     (`kirim` rangi).
+- **Minglik ajratish ikkala valyutada ham** boʻladi va faqat butun qismga tegadi:
+  `−1 234,56 $`, `+1 200 000 soʻm`. Koʻrsatish va terish bitta formatga boʻysunadi
+  (`design/uslub.md`) — odam formada nimani koʻrgan boʻlsa, roʻyxatda ham oʻshani koʻradi.
 - Kurs qatorda koʻrsatilmaydi — u tahrirlash formasida turadi.
 - Ekranda **qidiruv maydoni, filtr, saralash va oy tanlagichi yoʻq** (0002, 0032).
 - Ekran faqat kirim-chiqim yozuvlarini koʻrsatadi; qarz operatsiyalari oʻz boʻlimida (0032).
@@ -162,8 +224,20 @@ Ostida — kunlarga guruhlangan roʻyxat, pastga uzluksiz aylantiriladi (0032).
 | Qator | Oʻsha yozuvning tahrirlash formasi ochiladi (1-boʻlim) |
 | Qatorni chapga surish (telefon) | Qatorning oʻng chekkasida qizil **«Oʻchirish»** tugmasi ochiladi. Surishning oʻzi oʻchirmaydi — tugmani alohida bosish kerak |
 | Qator ustiga sichqonchani olib borish (kompyuter) | Oʻsha joyda **«Oʻchirish»** matn tugmasi koʻrinadi |
-| Boshqa joyga tegish | Ochilgan «Oʻchirish» tugmasi yopiladi |
+| Boshqa joyga tegish yoki bosish | Ochilgan «Oʻchirish» tugmasi yopiladi |
+| `Esc` (kompyuter) | Ochilgan «Oʻchirish» tugmasi yopiladi |
 | **«Oʻchirish»** | Tasdiq soʻralmaydi (0029). Qator roʻyxatdan darhol yoʻqoladi, qoldiq va hisobot darhol qayta hisoblanadi. Ekran pastida «qaytarish» paneli chiqadi |
+
+**Ochilgan «Oʻchirish» tugmasi qachon yopiladi.** Uchta holatda: tugmaning oʻzi bosilganda,
+ekranning boshqa joyiga tegilganda (yoki bosilganda) va `Esc` bosilganda. Boshqa qatorning
+tugmasi ochilsa, avvalgisi yopiladi — bir vaqtda faqat bitta qatorning tugmasi ochiq turadi.
+
+**Kursor qatordan chiqib ketgani tugmani yopmaydi** (kompyuter). Sabab koʻrinishda: sichqoncha
+qatordan «Oʻchirish» tugmasiga borayotganda yoʻl qatorning chekkasidan oʻtishi mumkin — kursor
+chiqishi bilan yopiladigan tugma aynan odam unga qoʻl choʻzgan payt yoʻqoladi va bosish qator
+ustiga tushib, tahrirlash formasini ochib yuboradi. Yaʼni yopilmaslik — xato emas, qoida:
+tugma odam uni bir marta ochgandan keyin joyida turadi va faqat yuqoridagi uch harakatdan biri
+bilan yopiladi.
 
 ### Oʻchirish va «qaytarish» paneli
 

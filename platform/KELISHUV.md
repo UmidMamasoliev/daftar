@@ -244,8 +244,17 @@ kategoriya avtomatik sepiladi — chiqimda 8 ta, kirimda 3 ta. Tayyor kategoriya
 `id` si oʻzgarmas lotin kaliti (`oziq-ovqat`, `sogliq`, `qoshimcha-daromad` …), qoʻshilgani
 esa tasodifiy id oladi.
 
-**Tartib:** avval tayyor kategoriyalar 0028 dagi tartibda, keyin foydalanuvchi qoʻshganlari
-nom boʻyicha. Ekran qoʻshimcha tartiblash qilmaydi.
+**Tartib** (dizayn, `design/kirim-chiqim.md` 1-boʻlim): avval tayyor kategoriyalar 0028 dagi
+tartibda, keyin foydalanuvchi qoʻshganlari **qoʻshilish tartibida** — nom boʻyicha
+saralanmaydi. Ekran qoʻshimcha tartiblash qilmaydi: `hammaKategoriyalar()` va
+`korinadiganKategoriyalar(turi)` shu tartibda beradi.
+
+Mexanizmi: qoʻshilgan kategoriyada ixtiyoriy `yaratilgan?: string` maydoni boʻladi
+(ISO 8601 UTC, yozuvdagi kabi monoton oʻsadi — 0047). U yozuv bilan birga saqlanadi,
+demak zaxira faylidan qaytgandan keyin ham tartib oʻsha boʻlib qoladi. Tayyor
+kategoriyalarda bu maydon yoʻq — ularning tartibi 0028 roʻyxatidan chiqadi. Maydon
+ekranga koʻrsatilmaydi va ekran uni oʻzi qoʻymaydi; `Kategoriya` yasayotgan test yoki
+komponent uni tashlab ketsa ham tip buzilmaydi (ixtiyoriy).
 
 ### Xatolar (yangi kodlar)
 

@@ -97,6 +97,14 @@ Raqamlar `font-variant-numeric: tabular-nums` bilan — summalar ustunda tekis t
 - **Oʻchiq (bosilmaydi):** matni `matn-oʻchiq`, foni `fon`, kursor oʻzgarmaydi.
 - **Xato:** maydon chegarasi 1 px oʻrniga 2 px `chiqim`; tagida `mayda` oʻlchamda `chiqim`
   rangli xato matni. Maydon tuzatilishi bilan xato yoʻqoladi.
+- **Yordam matni (xato emas):** maydon ostida `mayda` oʻlchamda `matn-ikkinchi` rangli qator;
+  maydonning chegarasi va rangi oʻzgarmaydi.
+
+  Ikkalasining chegarasi bitta savol bilan ajratiladi: **saqlash toʻxtaydimi?**
+  Toʻxtasa — qizil xato (odam nimadir qilishi kerak). Toʻxtamasa, yaʼni ilova qiymatni oʻzi
+  toʻgʻrilagan boʻlsa — yordam matni (odam faqat nima boʻlganini bilib qoʻyadi). Shuning uchun
+  «kasr qismi olib tashlandi» turdagi xabarlar — summa maydonida ham, kurs maydonida ham —
+  yordam matni; boʻsh maydon, nol summa va nol kurs esa qizil xato.
 - **Kutish holati yoʻq:** maʼlumot qurilmaning oʻzida (0004), yuklanish aylanasi qurilmaydi.
 
 ## Boʻshliqlar
@@ -116,6 +124,8 @@ Qadam — 4 px. Ishlatiladigan qiymatlar: 4, 8, 12, 16, 24, 32.
 
 - **Soʻm:** butun son, mingliklar orasi — boʻsh joy: `1 200 000 soʻm`. Tiyin yoʻq (0033).
 - **Dollar:** ikki kasr, kasr belgisi — vergul, oxirida `$`: `12,50 $` (0033).
+- **Minglik ajratish ikkala valyutada ham boʻladi** — koʻrsatishda ham, terishda ham. U faqat
+  butun qismga tegadi: `1 234,56 $`, `1 200 000 soʻm`. Kasr qismi ajratilmaydi.
 - **Ishora:** summadan oldin `+` yoki `−`, keyin boʻsh joysiz son: `−45 000 soʻm`, `+12,50 $`.
 - **Kurs:** butun soʻm, mingliklar orasi boʻsh joy; toʻliq yozilishi `1 $ = 12 500 soʻm`
   (0023, 0042).
@@ -125,6 +135,21 @@ Qadam — 4 px. Ishlatiladigan qiymatlar: 4, 8, 12, 16, 24, 32.
 - **Oy nomlari:** yanvar, fevral, mart, aprel, may, iyun, iyul, avgust, sentabr, oktabr,
   noyabr, dekabr.
 - **Vaqt koʻrsatilmaydi.** `yaratilgan` — texnik maydon, ekranda hech qachon chiqmaydi (0047).
+
+### Maydonda terish paytidagi format
+
+Son kiritiladigan hamma maydon (summa va kurs) bitta qoidaga boʻysunadi — format terish
+paytida, har belgidan keyin qoʻyiladi:
+
+- Minglik ajratish boʻsh joy bilan: `1 200 000`. Ajratish faqat **butun qismga** tegadi.
+- Odam tergan kasr qismi oʻzgartirilmaydi: `12,` → `12,`, `12,50` → `12,50` (oxiridagi nol
+  ham qoladi).
+- Format qayta qoʻyilganda kursor raqamlarga nisbatan oʻz oʻrnida qoladi: kursordan chapdagi
+  **raqamlar soni** saqlanadi, ajratgich boʻsh joylari sanalmaydi.
+- Ajratgich boʻsh joyi — faqat koʻrinish. Saqlashda u olib tashlanadi va son 0008 boʻyicha
+  butun sonda saqlanadi.
+- Yopishtirilgan matndan raqam boʻlmagan belgilar olib tashlanadi, keyin shu qoidalar
+  qoʻllanadi.
 
 ## Nima qilinmaydi
 

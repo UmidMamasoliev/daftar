@@ -2,7 +2,7 @@
 
 Sana: 2026-08-16. Asos: `prds/daftar-prd.md` (26–28-bandlar, va shu featurega tegishli 3, 6, 7,
 15a, 26a, 30-bandlar). Qarorlar: 0006, 0011, 0017, 0018, 0020, 0023, 0024, 0026, 0032, 0035,
-0036, 0042, 0043, 0044, 0045.
+0036, 0042, 0043, 0044, 0045, 0053, 0054.
 
 Nima uchun: Bu — ilova ochilganda koʻrinadigan birinchi va eng koʻp koʻriladigan ekran.
 Foydalanuvchi bir qarashda pul qanchaligini va oy qanday ketayotganini koʻradi, keyin bitta
@@ -26,6 +26,10 @@ tugma bilan yangi yozuv qoʻshadi.
    (PRD 28; 0020)
 7. Oxirgi eksportdan 30 kun oʻtsa yoki daftar hech qachon eksport qilinmagan boʻlsa, bir
    qatorlik zaxira eslatmasi koʻrinadi. Shart bajarilmasa eslatma turmaydi. (PRD 30; 0024)
+7a. Eslatma faqat oxirgi eksport sanasini oʻqiydi; oʻsha sanani qoʻlda olingan eksport ham,
+   import oldidagi avtomatik zaxira ham yangilaydi (0054), import esa uni fayldagi qiymat bilan
+   almashtiradi (0053). Yaʼni eski zaxira tiklangandan keyin eslatma darhol chiqishi mumkin —
+   bu toʻgʻri holat. Sana `prds/zaxira.md` (5, 9a, 26–26b-bandlar) da yuritiladi.
 
 ### Qoldiq qanday hisoblanadi
 

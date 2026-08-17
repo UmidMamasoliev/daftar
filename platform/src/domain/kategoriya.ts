@@ -42,8 +42,13 @@ const TAYYOR_TARTIBI = new Map(
 )
 
 /**
- * Roʻyxat tartibi: avval tayyor kategoriyalar 0028 dagi tartibda, keyin
- * foydalanuvchi qoʻshganlari nom boʻyicha. Yangi nusxa qaytadi.
+ * Roʻyxat tartibi (dizayn, 1-boʻlim): avval tayyor kategoriyalar 0028 dagi tartibda,
+ * keyin foydalanuvchi qoʻshganlari **qoʻshilish tartibida**. Yangi nusxa qaytadi.
+ *
+ * Qoʻshilish tartibi `yaratilgan` maydonidan chiqadi — u yozuv bilan birga saqlanadi,
+ * shuning uchun zaxiradan qaytgandan keyin ham oʻsha boʻlib qoladi. Maydon boʻlmagan
+ * qatorlar (masalan tashqaridan kelgan eski maʼlumot) oldinda va nom boʻyicha turadi —
+ * tartib baribir barqaror boʻlsin.
  */
 export function kategoriyalarniTartibla(kategoriyalar: readonly Kategoriya[]): Kategoriya[] {
   return [...kategoriyalar].sort((a, b) => {
@@ -57,6 +62,11 @@ export function kategoriyalarniTartibla(kategoriyalar: readonly Kategoriya[]): K
     }
     if (bTartib !== undefined) {
       return 1
+    }
+    const aVaqt = a.yaratilgan ?? ''
+    const bVaqt = b.yaratilgan ?? ''
+    if (aVaqt !== bVaqt) {
+      return aVaqt < bVaqt ? -1 : 1
     }
     return a.nom.localeCompare(b.nom, 'uz')
   })
