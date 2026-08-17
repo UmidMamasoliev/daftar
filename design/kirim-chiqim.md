@@ -3,7 +3,7 @@
 Sana: 2026-08-17. Asos: `prds/kirim-chiqim.md`. Rang, oʻlcham va boʻshliq — `design/uslub.md`
 (bu yerda ular nom bilan ataladi: `matn-ikkinchi`, `chip`, `asosiy tugma`).
 Qarorlar: 0009, 0011, 0012, 0013, 0014, 0023, 0026, 0028, 0029, 0032, 0033, 0034, 0042, 0047,
-0048, 0049, 0050.
+0048, 0049, 0050, 0051.
 
 Uchta ekran: **Yangi yozuv** (kiritish formasi), **Yozuvlar** (toʻliq roʻyxat),
 **Kategoriyalar** (boshqaruv).
@@ -246,10 +246,18 @@ faqat shu boshqaruv ekranida ishlatiladi.
 | Holat | Odam nimani koʻradi |
 |---|---|
 | Nom boʻsh yoki faqat boʻshliq | Maydon ostida: **«Nom kiriting.»** |
-| Shu roʻyxatda xuddi shunday nom bor | **«Bu nom roʻyxatda bor.»** Solishtirishda chekka boʻshliqlar va harf katta-kichikligi hisobga olinmaydi |
-| Nom yashirilganlar orasida bor | **«Bu nom yashirilganlar orasida bor — uni «Koʻrsatish» bilan qaytaring.»** |
+| Shu nom **koʻrinib turgan** roʻyxatda bor | Maydon ostida: **«Bunday kategoriya bor.»** Bu matn faqat shu holat uchun — yashirilgani uchun ishlatilmaydi |
+| Shu nom **yashirilganlar** orasida bor | Maydon ostida: **«Bunday kategoriya yashirilgan — pastdagi Yashirilgan roʻyxatidan Koʻrsatish tugmasi bilan qaytaring.»** Yangi kategoriya qoʻshilmaydi (0051) |
 
-Chiqim va kirim roʻyxatlari alohida: bir xil nom ikkalasida ham boʻlishi mumkin, bu xato emas.
+Ikkala tekshiruvda ham chekka boʻshliqlar va harf katta-kichikligi hisobga olinmaydi.
+
+Nega ikki xil matn: yashirilgan kategoriya roʻyxatda koʻrinmaydi, shuning uchun «Bunday
+kategoriya bor» degan matn odamni boshi bergan joyda qoldirardi — u nomni koʻrmayapti va nima
+qilishni bilmaydi. Yoʻnaltiruvchi matn qaytarish yoʻlini oʻzi aytadi va u aynan shu ekranda,
+bir bosish narida (0051, 0013).
+
+Chiqim va kirim roʻyxatlari alohida: bir xil nom ikkalasida ham boʻlishi mumkin, bu xato emas —
+ikkala tekshiruv ham faqat joriy tur roʻyxati ichida ishlaydi.
 
 ### Boʻsh holat
 

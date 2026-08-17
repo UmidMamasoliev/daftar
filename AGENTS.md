@@ -13,7 +13,7 @@ oflayn ishlaydigan, serversiz veb-sayt (0003).
 2. `lessons/qoidalar.md` — takrorlanmasligi kerak boʻlgan xatolar.
 3. `memory/` dagi eng yangi fayl — qayerda toʻxtaganimiz.
 4. `discovery/` — ochiq savollar (boʻsh boʻlishi mumkin).
-5. `decisions/` — 0001 dan 0050 gacha. **Hammasi majburiy va bahsga tushmaydi.**
+5. `decisions/` — 0001 dan 0051 gacha. **Hammasi majburiy va bahsga tushmaydi.**
 6. `prds/daftar-prd.md` — mahsulot chegarasi.
 7. Oʻz qismingiz speci: `prds/kirim-chiqim.md`, `prds/qarz-daftari.md`,
    `prds/oylik-hisobot.md`, `prds/dashboard.md`.
@@ -80,6 +80,8 @@ Roʻyxatda yoʻq narsani «foydali boʻlardi» deb qoʻshmang. Kerak boʻlsa —
   va kontakt uchun bir xil (0029, 0048).
 - Yozuv formasida tur («kirim» yoki «chiqim») uchun standart qiymat yoʻq — foydalanuvchi har
   safar oʻzi tanlaydi (0050).
+- Yashirilgan kategoriya nomi band sanaladi: shu nom bilan qoʻshish rad etiladi va xato
+  yashirilganlikni aytib «Koʻrsatish» yoʻlini koʻrsatadi; avtomatik koʻrsatish yoʻq (0051).
 - Qarz pul qoldigʻiga taʼsir qiladi, lekin hisobotda alohida qatorda turadi (0017).
 - Qarz oʻz valyutasida yuritiladi; boshqa valyutadagi toʻlov toʻlov kursida aylantiriladi (0023).
 - Kontakt qoldigʻi — netto, valyutalar alohida. Netto faqat koʻrsatish uchun: qarz yopilishi

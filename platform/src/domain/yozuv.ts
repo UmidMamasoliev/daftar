@@ -4,10 +4,12 @@
 // Izoh ixtiyoriy (0012). Hisob va valyuta formada tayyor turadi (0011, 0023).
 // Kurs faqat dollar tanlanganda soʻraladi va oʻshanda majburiy (0023, 0042).
 
+import { kategoriyaniTop } from './kategoriya.ts'
 import { kursniOqi, summaniMatnga, summaniOqi } from './pul.ts'
 import { bugun, sananiTekshir } from './sana.ts'
 import type {
   Hisob,
+  Kategoriya,
   Natija,
   Valyuta,
   Xato,
@@ -57,8 +59,20 @@ export function formaQiymatlari(yozuv: Yozuv): YozuvFormasi {
 /**
  * Formani tekshiradi va saqlashga tayyor yozuv qaytaradi.
  * Xato boʻlsa — hamma sabab birdaniga qaytadi, maydoni va kodi bilan (mezon 2).
+ *
+ * `kategoriyalar` — ixtiyoriy: berilsa, tanlangan kategoriya shu roʻyxatda borligi va
+ * turi yozuv turiga mos kelishi ham tekshiriladi (mezon 16). Berilmasa `kategoriyaId`
+ * faqat boʻsh emasligiga qaraladi — T2 dagi xulq shundoq qoladi.
+ *
+ * Qaysi roʻyxat berilishini chaqiruvchi hal qiladi: yangi yozuv formasi
+ * `korinadiganKategoriyalar(turi)` ni beradi, tahrirlash formasi esa
+ * `hammaKategoriyalar()` ni — eski yozuvning kategoriyasi yashirilgan boʻlishi
+ * mumkin va u joyida qolishi kerak (mezon 14).
  */
-export function yozuvniTekshir(forma: YozuvFormasi): Natija<YangiYozuv> {
+export function yozuvniTekshir(
+  forma: YozuvFormasi,
+  kategoriyalar?: readonly Kategoriya[],
+): Natija<YangiYozuv> {
   const xatolar: Xato[] = []
 
   // Valyuta avval aniqlanadi: summani qaysi qoida bilan oʻqish shunga bogʻliq (0033).
@@ -85,6 +99,14 @@ export function yozuvniTekshir(forma: YozuvFormasi): Natija<YangiYozuv> {
   const kategoriyaId = forma.kategoriyaId.trim()
   if (kategoriyaId === '') {
     xatolar.push(xato('kategoriyaId', 'kategoriya-bosh', 'Kategoriya tanlanmagan.'))
+  } else if (kategoriyalar !== undefined) {
+    const kategoriya = kategoriyaniTop(kategoriyalar, kategoriyaId)
+    if (kategoriya === null) {
+      xatolar.push(xato('kategoriyaId', 'kategoriya-topilmadi', 'Kategoriya topilmadi.'))
+    } else if (turi !== null && kategoriya.turi !== turi) {
+      // Kirim kategoriyasi chiqimda tanlanmaydi va aksincha (0013; mezon 16).
+      xatolar.push(xato('kategoriyaId', 'kategoriya-turi', 'Bu kategoriya boshqa turga tegishli.'))
+    }
   }
 
   let sana: string | null = null

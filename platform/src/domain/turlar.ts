@@ -71,6 +71,20 @@ export type YozuvFormasi = {
   kurs: string
 }
 
+/**
+ * Kategoriya — yozuv qaysi nom ostida sanaladi (0013, 0028).
+ *
+ * Kirim va chiqim roʻyxatlari alohida: `turi` shuni belgilaydi (mezon 16).
+ * `yashirilgan` — oʻchirish emas: yozuv va hisobot uchun nom joyida qoladi,
+ * faqat yangi yozuv tanlovida chiqmaydi (0013; mezon 14).
+ */
+export type Kategoriya = {
+  id: string
+  nom: string
+  turi: YozuvTuri
+  yashirilgan: boolean
+}
+
 /** Bitta valyutadagi qoldiq — eng kichik birlikda (soʻm, sent). */
 export type ValyutaQoldigi = { som: number; dollar: number }
 
@@ -93,8 +107,19 @@ export type KursManbai = {
   yaratilgan: string
 }
 
-/** Xato qaysi maydonga tegishli — forma shu bilan qizil maydonni topadi. */
-export type XatoMaydoni = 'summa' | 'turi' | 'kategoriyaId' | 'sana' | 'hisob' | 'valyuta' | 'kurs'
+/**
+ * Xato qaysi maydonga tegishli — forma shu bilan qizil maydonni topadi.
+ * `nom` — kategoriya formasidagi nom maydoni (0013).
+ */
+export type XatoMaydoni =
+  | 'summa'
+  | 'turi'
+  | 'kategoriyaId'
+  | 'sana'
+  | 'hisob'
+  | 'valyuta'
+  | 'kurs'
+  | 'nom'
 
 /** Xato kodlari roʻyxati — testlar va forma shu kodlarga tayanadi, matnga emas. */
 export type XatoKodi =
@@ -116,6 +141,11 @@ export type XatoKodi =
   | 'kurs-notogri'
   | 'kurs-kasr'
   | 'kurs-musbat-emas'
+  | 'kategoriya-nom-bosh'
+  | 'kategoriya-takror'
+  | 'kategoriya-yashirilgan'
+  | 'kategoriya-turi'
+  | 'kategoriya-topilmadi'
 
 /** Bitta xato: qaysi maydon, qaysi kod va odamga koʻrsatiladigan sabab. */
 export type Xato = {

@@ -11,6 +11,7 @@
 import { oxirgiKurs, yozuvlardanKurslar } from '../domain/kurs.ts'
 import { qoldiqlar } from '../domain/qoldiq.ts'
 import type {
+  Kategoriya,
   KursManbai,
   Natija,
   Qoldiqlar,
@@ -34,9 +35,18 @@ export async function yozuvQosh(yangi: YangiYozuv): Promise<Yozuv> {
   return yozuv
 }
 
-/** Formani tekshiradi va toʻgʻri boʻlsa saqlaydi — forma uchun bitta qadam. */
-export async function yozuvSaqla(forma: YozuvFormasi): Promise<Natija<Yozuv>> {
-  const tekshirilgan = yozuvniTekshir(forma)
+/**
+ * Formani tekshiradi va toʻgʻri boʻlsa saqlaydi — forma uchun bitta qadam.
+ *
+ * `kategoriyalar` — ixtiyoriy: berilsa, kategoriya turi yozuv turiga mos kelishi ham
+ * tekshiriladi (mezon 16). Roʻyxatni ekran beradi, chunki qaysi roʻyxat toʻgʻri
+ * kelishini oʻsha biladi (yangi yozuv — koʻrinadiganlar, tahrir — hammasi).
+ */
+export async function yozuvSaqla(
+  forma: YozuvFormasi,
+  kategoriyalar?: readonly Kategoriya[],
+): Promise<Natija<Yozuv>> {
+  const tekshirilgan = yozuvniTekshir(forma, kategoriyalar)
   if (!tekshirilgan.ok) {
     return tekshirilgan
   }

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { tayyorKategoriyalar } from './kategoriya.ts'
 import { bugun } from './sana.ts'
 import type { Natija, YozuvFormasi } from './turlar.ts'
 import { boshlangichForma, formaQiymatlari, yozuvniTekshir } from './yozuv.ts'
@@ -150,6 +151,61 @@ describe('yozuvniTekshir — valyuta va kurs (0023, 0042; mezon 6, 7, 22)', () =
   it('notoʻgʻri hisob va valyuta ushlanadi', () => {
     const buzuq = { ...forma(), hisob: 'hamyon', valyuta: 'yevro' } as unknown as YozuvFormasi
     expect(kodlar(yozuvniTekshir(buzuq))).toEqual(['valyuta-notogri', 'hisob-notogri'])
+  })
+})
+
+describe('yozuvniTekshir — kategoriya turi (0013, 0028; mezon 16)', () => {
+  const kategoriyalar = tayyorKategoriyalar()
+
+  /** Tayyor roʻyxatdan nomi boʻyicha id oladi. */
+  function id(nom: string): string {
+    const topilgan = kategoriyalar.find((kategoriya) => kategoriya.nom === nom)
+    if (topilgan === undefined) {
+      throw new Error(`Tayyor kategoriya topilmadi: ${nom}`)
+    }
+    return topilgan.id
+  }
+
+  it('mezon 16 — kirim kategoriyasi bilan chiqim yozuvi saqlanmaydi', () => {
+    const natija = yozuvniTekshir(
+      forma({ turi: 'chiqim', kategoriyaId: id('oylik') }),
+      kategoriyalar,
+    )
+    expect(kodlar(natija)).toEqual(['kategoriya-turi'])
+    expect(natija.ok === false && natija.xatolar[0]?.maydon).toBe('kategoriyaId')
+  })
+
+  it('mezon 16 — chiqim kategoriyasi bilan kirim yozuvi ham saqlanmaydi', () => {
+    const natija = yozuvniTekshir(
+      forma({ turi: 'kirim', kategoriyaId: id('oziq-ovqat') }),
+      kategoriyalar,
+    )
+    expect(kodlar(natija)).toEqual(['kategoriya-turi'])
+  })
+
+  it('mezon 16 — mos turdagi kategoriya bilan yozuv oʻtadi', () => {
+    const natija = yozuvniTekshir(
+      forma({ turi: 'kirim', kategoriyaId: id('oylik') }),
+      kategoriyalar,
+    )
+    expect(natija.ok).toBe(true)
+  })
+
+  it('roʻyxatda yoʻq kategoriya rad etiladi', () => {
+    expect(kodlar(yozuvniTekshir(forma({ kategoriyaId: 'yoq-bunday-id' }), kategoriyalar))).toEqual(
+      ['kategoriya-topilmadi'],
+    )
+  })
+
+  it('roʻyxat berilmasa kategoriya turi tekshirilmaydi (eski xulq saqlanadi)', () => {
+    expect(yozuvniTekshir(forma({ turi: 'kirim', kategoriyaId: id('oziq-ovqat') })).ok).toBe(true)
+    expect(yozuvniTekshir(forma({ kategoriyaId: 'yoq-bunday-id' })).ok).toBe(true)
+  })
+
+  it('boʻsh kategoriya roʻyxat berilganda ham bitta sabab beradi', () => {
+    expect(kodlar(yozuvniTekshir(forma({ kategoriyaId: '' }), kategoriyalar))).toEqual([
+      'kategoriya-bosh',
+    ])
   })
 })
 

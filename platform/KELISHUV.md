@@ -199,3 +199,100 @@ specda yozilishini talab qiladi).
   kurs `oxirgiKursniOl(qoshimcha)` ga parametr boʻlib beriladi, bazada saqlanmaydi.
 - Summani koʻrsatish formati (mingliklar boʻshligʻi, valyuta belgisi, «≈» belgisi) — ekranniki.
 - Yozuvlar ekrani, forma, «qaytarish» tugmasi va uning muddati — ekranniki.
+
+---
+
+## 10. Kategoriyalar — `src/domain/kategoriya.ts`, `src/data/kategoriyalar.ts`
+
+**T3 da qoʻshildi.** 9-boʻlimdagi «kategoriyalar — T3» qatori shu boʻlim bilan yopildi
+(qarorlar 0013, 0028; mezon 13–16). Yangi fayllar:
+
+```
+src/domain/kategoriya.ts    — tayyor roʻyxat, nom tekshiruvi, tur va yashirish qoidasi
+src/data/kategoriyalar.ts   — kategoriyalar doʻkoni: ekran shu fayl bilan gaplashadi
+```
+
+### Tip
+
+```ts
+type Kategoriya = {
+  id: string
+  nom: string
+  turi: 'kirim' | 'chiqim'   // roʻyxatlar alohida (mezon 16)
+  yashirilgan: boolean       // oʻchirish emas: nom joyida qoladi (mezon 14)
+}
+```
+
+### Doʻkon — `src/data/kategoriyalar.ts` (hammasi `Promise`)
+
+| Funksiya | Qabul qiladi | Qaytaradi |
+|---|---|---|
+| `hammaKategoriyalar()` | — | `Kategoriya[]` — yashirilgani ham; boshqaruv ekrani va hisobot uchun |
+| `korinadiganKategoriyalar(turi)` | `'kirim' \| 'chiqim'` | `Kategoriya[]` — yangi yozuv tanlovi uchun (mezon 14, 16) |
+| `kategoriyaQosh(nom, turi)` | `string`, `YozuvTuri` | `Natija<Kategoriya>` (mezon 13) |
+| `kategoriyaniYashir(id)` | `string` | `Kategoriya` — yangilangan nusxa |
+| `kategoriyaniKorsat(id)` | `string` | `Kategoriya` — yangilangan nusxa |
+| `kategoriyaniOl(id)` | `string` | `Kategoriya \| null` — yashirilgani ham topiladi |
+
+Kategoriya **oʻchirilmaydi** (0013): `kategoriyaniYashir` faqat bayroqni qoʻyadi, qator
+bazada qolaveradi. Shuning uchun eski yozuvning kategoriyasi yashirilgan boʻlsa ham nomi
+`kategoriyaniOl(id)` yoki `hammaKategoriyalar()` orqali topiladi — hisobot va yozuvlar
+ekrani shundan foydalanadi (mezon 14).
+
+**Urugʻlanish (mezon 15):** doʻkon boʻsh boʻlsa birinchi oʻqishda 0028 dagi 11 ta
+kategoriya avtomatik sepiladi — chiqimda 8 ta, kirimda 3 ta. Tayyor kategoriyalarning
+`id` si oʻzgarmas lotin kaliti (`oziq-ovqat`, `sogliq`, `qoshimcha-daromad` …), qoʻshilgani
+esa tasodifiy id oladi.
+
+**Tartib:** avval tayyor kategoriyalar 0028 dagi tartibda, keyin foydalanuvchi qoʻshganlari
+nom boʻyicha. Ekran qoʻshimcha tartiblash qilmaydi.
+
+### Xatolar (yangi kodlar)
+
+| Kod | Maydon | Xabar |
+|---|---|---|
+| `kategoriya-nom-bosh` | `nom` | `Nom kiriting` |
+| `kategoriya-takror` | `nom` | `Bunday kategoriya bor` — koʻrinib turgan bir xil nom |
+| `kategoriya-yashirilgan` | `nom` | `Bu kategoriya yashirilgan` — nom band, lekin qator yashirilgan (0051); ekran «Koʻrsatish» ga yoʻnaltiruvchi oʻz matnini qoʻyadi |
+| `kategoriya-turi` | `kategoriyaId` | `Bu kategoriya boshqa turga tegishli.` |
+| `kategoriya-topilmadi` | `kategoriyaId` | `Kategoriya topilmadi.` |
+
+`XatoMaydoni` ga `'nom'` qoʻshildi — kategoriya formasidagi nom maydoni.
+Nom bandligi **faqat joriy tur** roʻyxati ichida tekshiriladi; solishtirishda chekka
+boʻshliqlar kesiladi va harf katta-kichikligi hisobga olinmaydi («  Transport » =
+«transport»). Yashirilgan kategoriya ham nomni band qiladi (u oʻchmagan) — lekin kodi
+boshqa: `kategoriya-yashirilgan`, chunki foydalanuvchi uni roʻyxatda koʻrmaydi (0051).
+Qoʻshish baribir bajarilmaydi va ilova yashirilgan kategoriyani oʻzi koʻrsatib yubormaydi;
+qaysi qatorni «Koʻrsatish» kerakligini `nomBoyichaTop(kategoriyalar, nom, turi)`
+(`src/domain/kategoriya.ts`) aytadi — solishtirish qoidasini ekran takrorlamasin.
+
+### Yozuv bilan bogʻlanish (mezon 16)
+
+`yozuvniTekshir(forma)` va `yozuvSaqla(forma)` — **oʻzgarmadi**. Ikkalasiga ixtiyoriy
+ikkinchi parametr qoʻshildi:
+
+```ts
+yozuvniTekshir(forma, kategoriyalar?)   // domain
+yozuvSaqla(forma, kategoriyalar?)       // doʻkon
+```
+
+Roʻyxat berilsa: tanlangan `kategoriyaId` oʻsha roʻyxatda borligi va turi yozuv turiga mos
+kelishi tekshiriladi (`kategoriya-topilmadi`, `kategoriya-turi`). Berilmasa — T2 dagidek
+faqat boʻsh emasligiga qaraladi.
+
+Qaysi roʻyxatni berish ekranning qaroriga qoladi:
+- **yangi yozuv formasi** → `korinadiganKategoriyalar(turi)`;
+- **tahrirlash formasi** → `hammaKategoriyalar()`, chunki eski yozuvning kategoriyasi
+  yashirilgan boʻlishi mumkin va u joyida qolishi kerak (mezon 14).
+
+### Baza
+
+`BAZA_VERSIYASI` 1 dan **2** ga koʻtarildi va `kategoriyalar` ombori qoʻshildi
+(`keyPath: 'id'`, `turi` indeksi). Eski `yozuvlar` ombori va undagi maʼlumot tegilmaydi —
+buni `src/data/baza.test.ts` 1-versiyali bazani yasab koʻrsatadi.
+
+### Bu boʻlimda YOʻQ narsalar
+
+- Kategoriyani butunlay oʻchirish — faqat yashirish bor (0013).
+- Kategoriya nomini tahrirlash — qarorlarda yoʻq, soʻralmagan.
+- Kategoriyalar ekrani, tanlov roʻyxatining koʻrinishi va tartib tugmalari — ekranniki.

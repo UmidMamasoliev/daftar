@@ -7,14 +7,21 @@
 /** Baza nomi — brauzerda shu nom bilan koʻrinadi. */
 export const BAZA_NOMI = 'daftar'
 
-/** Sxema versiyasi. Yangi ombor qoʻshilganda bittaga oshadi. */
-export const BAZA_VERSIYASI = 1
+/**
+ * Sxema versiyasi. Yangi ombor qoʻshilganda bittaga oshadi.
+ * 1 → 2: `kategoriyalar` ombori qoʻshildi (T3; 0013, 0028). Eski `yozuvlar` ombori
+ * va undagi maʼlumot tegilmaydi.
+ */
+export const BAZA_VERSIYASI = 2
 
 /** Kirim-chiqim yozuvlari ombori. */
 export const YOZUVLAR_OMBORI = 'yozuvlar'
 
+/** Kategoriyalar ombori: tayyor roʻyxat va foydalanuvchi qoʻshganlari (0013, 0028). */
+export const KATEGORIYALAR_OMBORI = 'kategoriyalar'
+
 /** Bazadagi hamma omborlar — tozalash va yangilash shu roʻyxatdan yuradi. */
-const OMBORLAR = [YOZUVLAR_OMBORI]
+const OMBORLAR = [YOZUVLAR_OMBORI, KATEGORIYALAR_OMBORI]
 
 let ochiq: IDBDatabase | null = null
 
@@ -26,12 +33,19 @@ export function bazaniOch(): Promise<IDBDatabase> {
   return new Promise<IDBDatabase>((bajarildi, xato) => {
     const sorov = indexedDB.open(BAZA_NOMI, BAZA_VERSIYASI)
 
+    // Har ombor alohida tekshiriladi: eski versiyadan kelgan bazada faqat yetishmagani
+    // yaratiladi, mavjudi va undagi maʼlumot qoʻlga tegmaydi.
     sorov.onupgradeneeded = () => {
       const baza = sorov.result
       if (!baza.objectStoreNames.contains(YOZUVLAR_OMBORI)) {
         const ombor = baza.createObjectStore(YOZUVLAR_OMBORI, { keyPath: 'id' })
         // Sana boʻyicha oʻqish keyin kerak boʻladi (hisobot davri, yozuvlar ekrani).
         ombor.createIndex('sana', 'sana', { unique: false })
+      }
+      if (!baza.objectStoreNames.contains(KATEGORIYALAR_OMBORI)) {
+        const ombor = baza.createObjectStore(KATEGORIYALAR_OMBORI, { keyPath: 'id' })
+        // Kirim va chiqim roʻyxatlari alohida oʻqiladi (mezon 16).
+        ombor.createIndex('turi', 'turi', { unique: false })
       }
     }
 

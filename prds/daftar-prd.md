@@ -240,6 +240,7 @@ Mahsulot darajasidagi mezonlar — hammasi sanab boʻladigan:
 | 0048 | «Qaytarish» tugmasi 7 soniya turadi |
 | 0049 | Nol kurs taqiqlanadi |
 | 0050 | Tur uchun standart qiymat yoʻq |
+| 0051 | Yashirilgan nom bilan qoʻshish rad etiladi, xato yoʻl koʻrsatadi |
 
 ## Ochiq savollar
 

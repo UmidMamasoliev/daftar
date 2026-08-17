@@ -3,7 +3,7 @@
 Sana: 2026-08-17 (birinchi variant 2026-08-16). Asos: `prds/daftar-prd.md` (8–15-bandlar, va shu
 featurega tegishli 5, 6-band).
 Qarorlar: 0011, 0012, 0013, 0014, 0023, 0026, 0028, 0029, 0032, 0033, 0034, 0042, 0043, 0044,
-0045, 0047, 0048, 0049, 0050.
+0045, 0047, 0048, 0049, 0050, 0051.
 
 Nima uchun: Foydalanuvchi pulning har harakatini — kirimni ham, chiqimni ham — bir necha
 soniyada yozib qoʻyadi va qoʻlidagi hamda kartadagi pul qanchaligini bilib turadi. Bu daftarning
@@ -74,6 +74,11 @@ poydevori: qolgan uch qism (qarz daftari, oylik hisobot, dashboard) shu yozuvlar
     keraksizini yashira oladi. Kirim va chiqim uchun roʻyxatlar alohida. (PRD 14; 0013)
 11. Tayyor roʻyxat — chiqim: oziq-ovqat, transport, ijara, kommunal, sogʻliq, kiyim,
     koʻngilochar, boshqa; kirim: oylik, qoʻshimcha daromad, sovgʻa. (PRD 14; 0028)
+11a. Nom bandligi tekshiruvi yashirilgan kategoriyalarni ham qamraydi: yashirilgan kategoriya
+    nomi bilan yangi kategoriya qoʻshish rad etiladi — dublikat yaratilmaydi. Xato xabari shu
+    nomdagi kategoriya yashirilganini aytadi va uni «Koʻrsatish» bilan qaytarish mumkinligini
+    koʻrsatadi; ilova kategoriyani oʻzi koʻrsatib yubormaydi. Xabar matni `design/` da.
+    (0051; 0013)
 12. Yashirilgan kategoriyadagi eski yozuvlar joyida qoladi va hisobotda koʻrinadi; ular faqat
     yangi yozuv tanlovida chiqmaydi. (PRD 15; 0013)
 
@@ -129,6 +134,10 @@ poydevori: qolgan uch qism (qarz daftari, oylik hisobot, dashboard) shu yozuvlar
 13. Yangi kategoriya qoʻshilgach u yozuv formasidagi roʻyxatda koʻrinadi.
 14. Yashirilgan kategoriya yangi yozuv roʻyxatida chiqmaydi, lekin oʻsha kategoriyadagi eski
     yozuv joyida qoladi va hisobotda koʻrinadi.
+14a. Yashirilgan kategoriya nomi bilan yangi kategoriya qoʻshishga urinilsa, qoʻshish rad
+    etiladi: kategoriyalar soni oʻzgarmaydi, dublikat paydo boʻlmaydi (0051).
+14b. Shu holatdagi xato xabari kategoriya yashirilganini aytadi va «Koʻrsatish» yoʻlini
+    koʻrsatadi; kategoriyaning oʻzi yashirilganicha qoladi — avtomatik koʻrsatilmaydi (0051).
 15. Tayyor roʻyxat 0028 dagi nomlar bilan keladi: chiqimda sakkizta, kirimda uchta.
 16. Kirim kategoriyasi chiqim yozuvida tanlanmaydi va aksincha.
 17. Internet oʻchirilgan holda yozuv saqlanadi va ilova qayta ochilganda joyida turadi.

@@ -2,6 +2,17 @@
 
 Eng yangisi tepada.
 
+## 2026-08-17 — 0051 va koʻchirish ishi
+
+- **0051:** yashirilgan kategoriya nomi bilan qoʻshish rad etiladi; xato yashirilganlikni aytadi
+  va «Koʻrsatish» yoʻlini koʻrsatadi; avtomatik koʻrsatish yoʻq (0013 ga aniqlik). Savol
+  **backend** T3 dan chiqdi — dizayndan keyin qurish qatlami ham boʻshliq topadi.
+- Xabar matnini qarorda takrorlamadim: matn `design/` niki (0039), qaror faqat xulqni belgilaydi.
+  Shu chegarani saqlash kerak — aks holda bir matn ikki joyda turib, biri eskiradi.
+- `design/kirim-chiqim.md` dagi «qaytarish» panelining uch qoidasi `prds/kirim-chiqim.md` ga
+  koʻchirildi (9a-band, 12a/12b-mezonlar). Ziddiyat yoʻq edi. Qoida: xulq `prds/` da, koʻrinish
+  va matn `design/` da.
+
 ## 2026-08-17 — 0048–0050: dizayn ishidan chiqqan uchta qaror
 
 - **0048:** «qaytarish» 7 soniya (0029 dagi «bir necha soniya» ning raqami). **0049:** nol kurs

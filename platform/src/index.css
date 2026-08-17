@@ -1,15 +1,380 @@
+/*
+ * Daftarning umumiy uslubi — `design/uslub.md` ning kodga tushgani.
+ *
+ * Rang, oʻlcham va boʻshliq shu yerda bir marta belgilanadi; ekranlar faqat sinf nomini
+ * ishlatadi. Mobil-birinchi: bitta ustun, eng tor qurilma 320 px, keng ekranda eni 560 px.
+ * Tashqi shrift va ikonka kutubxonasi yoʻq — ilova oflayn ishlaydi (0003).
+ */
+
 :root {
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  line-height: 1.5;
-  color: #1f2933;
-  background-color: #ffffff;
+  /* Ranglar */
+  --fon: #f4f5f7;
+  --yuza: #ffffff;
+  --chegara: #e3e5e8;
+  --matn: #1a1d21;
+  --matn-ikkinchi: #6b7280;
+  --matn-ochiq: #9ca3af;
+  --kirim: #15803d;
+  --chiqim: #b42318;
+  --harakat: #1d4ed8;
+  --harakat-fon: #eff4ff;
+  --qora-panel: #1a1d21;
+
+  /* Boʻshliqlar — qadam 4 px */
+  --bosh-1: 4px;
+  --bosh-2: 8px;
+  --bosh-3: 12px;
+  --bosh-4: 16px;
+  --bosh-6: 24px;
+  --bosh-8: 32px;
+
+  /* Shakl */
+  --radius: 10px;
+  --radius-ich: 8px;
+  --radius-chip: 999px;
+  --maydon-balandligi: 48px;
+  --summa-balandligi: 56px;
+  --chip-balandligi: 40px;
+  --barmoq: 44px;
+  --panel-balandligi: 72px;
+  --ustun-eni: 560px;
+
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--matn);
+  background-color: var(--fon);
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
   min-height: 100dvh;
+  background: var(--fon);
+  color: var(--matn);
 }
 
-main {
-  padding: 1.5rem;
+/* Bitta ustun, markazda; yon chekka 16 px. */
+.ekran {
+  max-width: var(--ustun-eni);
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Yuqori panel ─────────────────────────────────────────────────────────── */
+
+.panel-tepa {
+  display: grid;
+  grid-template-columns: var(--barmoq) 1fr var(--barmoq);
+  align-items: center;
+  gap: var(--bosh-2);
+  padding: var(--bosh-2) var(--bosh-4);
+  background: var(--yuza);
+  border-bottom: 1px solid var(--chegara);
+}
+
+.sarlavha {
+  grid-column: 2;
+  margin: 0;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.belgi-tugma {
+  width: var(--barmoq);
+  height: var(--barmoq);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--matn);
+  font: inherit;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* ── Forma ────────────────────────────────────────────────────────────────── */
+
+/*
+ * Bloklar orasi 24 px (uslub: «Boʻshliqlar»). `gap` bilan berilgani uchun oxirgi maydon
+ * bilan pastda yopishib turgan panel orasida ham shuncha boʻshliq qoladi — maydon
+ * panel tagida koʻrinmay qolmaydi.
+ */
+.forma {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosh-6);
+  padding: var(--bosh-4) var(--bosh-4) 0;
+}
+
+.blok-boshi {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bosh-2);
+}
+
+/* Yorliq bilan maydon orasi 8 px. */
+.yorliq {
+  display: block;
+  margin-bottom: var(--bosh-2);
+  font-size: 13px;
+  color: var(--matn-ikkinchi);
+}
+
+.blok-boshi .yorliq {
+  margin-bottom: 0;
+}
+
+.blok-boshi + .chiplar {
+  margin-top: var(--bosh-2);
+}
+
+.yordam {
+  margin: 0;
+  font-size: 13px;
+  color: var(--matn-ikkinchi);
+}
+
+/* Maydon bilan xato matni orasi 4 px. */
+.xato-matni {
+  margin: var(--bosh-1) 0 0;
+  font-size: 13px;
+  color: var(--chiqim);
+}
+
+/* ── Maydonlar ────────────────────────────────────────────────────────────── */
+
+.maydon {
+  width: 100%;
+  height: var(--maydon-balandligi);
+  padding: 0 var(--bosh-3);
+  border: 1px solid var(--chegara);
+  border-radius: var(--radius);
+  background: var(--yuza);
+  color: var(--matn);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+.maydon::placeholder {
+  color: var(--matn-ochiq);
+}
+
+/* Summa maydoni — 56 px, matni `raqam-katta`, oʻngida valyuta soʻzi. */
+.summa-maydon {
+  display: flex;
+  align-items: center;
+  gap: var(--bosh-2);
+  height: var(--summa-balandligi);
+  padding: 0 var(--bosh-3);
+  border: 1px solid var(--chegara);
+  border-radius: var(--radius);
+  background: var(--yuza);
+}
+
+.summa-kirit {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--matn);
+  font-family: inherit;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.summa-kirit:focus {
+  outline: none;
+}
+
+.summa-kirit::placeholder {
+  color: var(--matn-ochiq);
+}
+
+.valyuta-sozi {
+  font-size: 16px;
+  color: var(--matn-ikkinchi);
+}
+
+/* Xato: chegara 2 px `chiqim` (uslub: «Holatlar»). */
+.summa-maydon.xatoli,
+.maydon.xatoli {
+  border-width: 2px;
+  border-color: var(--chiqim);
+}
+
+/* ── Segment (kirim / chiqim) ─────────────────────────────────────────────── */
+
+.segment {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: var(--maydon-balandligi);
+  border: 1px solid var(--chegara);
+  border-radius: var(--radius);
+  background: var(--yuza);
+  overflow: hidden;
+}
+
+.segment-bolak {
+  border: 0;
+  border-radius: var(--radius-ich);
+  background: transparent;
+  color: var(--matn);
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 150ms, color 150ms;
+}
+
+.segment-bolak.tanlangan-chiqim {
+  background: var(--chiqim);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.segment-bolak.tanlangan-kirim {
+  background: var(--kirim);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* ── Chiplar ──────────────────────────────────────────────────────────────── */
+
+.chiplar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bosh-2);
+}
+
+.chip {
+  height: var(--chip-balandligi);
+  padding: 0 14px;
+  border: 1px solid var(--chegara);
+  border-radius: var(--radius-chip);
+  background: var(--yuza);
+  color: var(--matn);
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 150ms, border-color 150ms, color 150ms;
+}
+
+.chip-tanlangan {
+  background: var(--harakat-fon);
+  border-color: var(--harakat);
+  color: var(--harakat);
+}
+
+/* ── Sana qatori ──────────────────────────────────────────────────────────── */
+
+.sana-qatori {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bosh-2);
+}
+
+.sana-qatori .yorliq {
+  margin-bottom: 0;
+}
+
+/*
+ * Koʻrinadigan qismi — tugma; ustida qurilmaning oʻz sana tanlagichi shaffof turadi.
+ * Shu bilan tugmada «Bugun» yozuvi qoladi, tanlagich esa qurilmaniki boʻladi (0003).
+ */
+.sana-tanlagich {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 128px;
+  height: var(--maydon-balandligi);
+  padding: 0 var(--bosh-3);
+  border: 1px solid var(--chegara);
+  border-radius: var(--radius);
+  background: var(--yuza);
+}
+
+.sana-tanlagich:focus-within {
+  outline: 2px solid var(--harakat);
+  outline-offset: 2px;
+}
+
+.sana-matni {
+  font-variant-numeric: tabular-nums;
+}
+
+.sana-kirit {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* ── Tugmalar ─────────────────────────────────────────────────────────────── */
+
+.matn-havola {
+  height: var(--barmoq);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--harakat);
+  font: inherit;
+  cursor: pointer;
+}
+
+/*
+ * Pastda yopishib turgan panel: balandligi 72 px (12 + 48 + 12), soyasi faqat shu yerda
+ * va «qaytarish» panelida boʻladi (uslub: «Ranglar»).
+ */
+.panel-past {
+  position: sticky;
+  bottom: 0;
+  margin-top: auto;
+  padding: var(--bosh-3) 0;
+  background: var(--fon);
+  box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.06);
+}
+
+.asosiy-tugma {
+  width: 100%;
+  height: var(--maydon-balandligi);
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--harakat);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 150ms;
+}
+
+/* ── Holatlar ─────────────────────────────────────────────────────────────── */
+
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--harakat);
+  outline-offset: 2px;
+}
+
+button:active {
+  filter: brightness(0.92);
 }
