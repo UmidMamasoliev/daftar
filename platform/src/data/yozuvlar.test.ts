@@ -95,6 +95,16 @@ describe('yozuvSaqla — forma bilan bitta qadamda (mezon 2)', () => {
     expect((await hammaYozuvlar()).length).toBe(1)
   })
 
+  it('mezon 4g — aylantirish natijasi chegaradan oshsa doʻkonga hech narsa tushmaydi', async () => {
+    const natija = await yozuvSaqla(
+      forma({ summa: '10000', valyuta: 'dollar', kurs: '9007199254740' }),
+    )
+
+    expect(natija.ok).toBe(false)
+    expect(natija.ok === false && natija.xatolar[0]?.xabar).toBe('Summa juda katta.')
+    expect(await hammaYozuvlar()).toEqual([])
+  })
+
   it('mezon 2 — xato formada hech narsa saqlanmaydi va sabab qaytadi', async () => {
     const natija = await yozuvSaqla(forma({ summa: '' }))
 

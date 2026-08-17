@@ -12,7 +12,6 @@ import { useEffect, useRef, useState } from 'react'
 import { bugun } from '../domain/sana.ts'
 import type { Yozuv } from '../domain/turlar.ts'
 import { qatorIzohi, sanaYorligi, summaKorinishi } from './format.ts'
-import type { KategoriyaChipi } from './YozuvForma.tsx'
 import { YOZUVLAR } from './matnlar.ts'
 
 /** «QAYTARISH» tugmasi necha millisoniya turadi — 7 soniya, qatʼiy qiymat (0048). */
@@ -21,6 +20,9 @@ export const QAYTARISH_MUDDATI = 7000
 /** Qatorni chapga surish shu masofadan oshsa «Oʻchirish» ochiladi (telefon). */
 const SURISH_CHEGARASI = 40
 
+/** Qatorda kategoriya nomini koʻrsatish uchun yetarli maʼlumot. */
+export type KategoriyaNomi = { id: string; nom: string }
+
 export type YozuvlarProps = {
   /** `hammaYozuvlar('yangidan')` tartibida: sana boʻyicha, bir kunda `yaratilgan` boʻyicha. */
   yozuvlar: readonly Yozuv[]
@@ -28,7 +30,7 @@ export type YozuvlarProps = {
    * Kategoriya nomlari uchun — `hammaKategoriyalar()`. Yashirilgani ham kerak: eski yozuv
    * yashirilgan kategoriyada boʻlishi mumkin va nomi baribir koʻrinadi (mezon 14).
    */
-  kategoriyalar: readonly KategoriyaChipi[]
+  kategoriyalar: readonly KategoriyaNomi[]
   /** Qator bosilganda — oʻsha yozuvning tahrirlash formasi ochiladi (mezon 18). */
   tahrirla: (yozuv: Yozuv) => void
   /** «Oʻchirish» bosilganda — `yozuvniOchir` va roʻyxatni yangilash. */

@@ -21,8 +21,13 @@ export default defineConfig({
         start_url: '/',
         scope: '/',
         display: 'standalone',
-        background_color: '#ffffff',
-        theme_color: '#1f2933',
+        // Ranglar `design/uslub.md` → «PWA va brauzer ranglari» dan olinadi.
+        // `background_color` — ochilish (splash) ekrani foni: ekranning umumiy foni
+        // bilan bir xil, shunda ilova ochilganda rang sakramaydi.
+        // `theme_color` — brauzer paneli rangi: sahifadagi
+        // `<meta name="theme-color">` bilan aynan bir xil qiymat turishi shart.
+        background_color: '#F4F5F7',
+        theme_color: '#FFFFFF',
         icons: [
           { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'icon-512.png', sizes: '512x512', type: 'image/png' },

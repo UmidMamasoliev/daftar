@@ -96,6 +96,10 @@ const EKRAN_MATNLARI: Partial<Record<XatoKodi, string>> = {
   // roʻyxatda koʻrmaydi va qaytarish yoʻlini bilmaydi.
   'kategoriya-nom-bosh': 'Nom kiriting.',
   'kategoriya-takror': 'Bunday kategoriya bor.',
+  // Himoya qatlami: UI bu holatlarga yoʻl qoʻymaydi (chiplar tur boʻyicha), lekin
+  // doʻkon tekshiruvi ishlab qolsa odam eng yaqin maʼnodagi matnni koʻrsin.
+  'kategoriya-topilmadi': 'Kategoriyani tanlang.',
+  'kategoriya-turi': 'Kategoriyani tanlang.',
   'kategoriya-yashirilgan':
     'Bunday kategoriya yashirilgan — pastdagi Yashirilgan roʻyxatidan Koʻrsatish tugmasi bilan qaytaring.',
 }

@@ -5,7 +5,7 @@
 // Kurs faqat dollar tanlanganda soʻraladi va oʻshanda majburiy (0023, 0042).
 
 import { kategoriyaniTop } from './kategoriya.ts'
-import { kursniOqi, summaniMatnga, summaniOqi } from './pul.ts'
+import { dollarSomgaSigadimi, kursniOqi, summaniMatnga, summaniOqi } from './pul.ts'
 import { bugun, sananiTekshir } from './sana.ts'
 import type {
   Hisob,
@@ -136,6 +136,13 @@ export function yozuvniTekshir(
     } else {
       xatolar.push(...oqilganKurs.xatolar)
     }
+  }
+
+  // Summa ham, kurs ham alohida chegaraga sigishi mumkin, lekin aylantirish natijasi
+  // sigmasligi mumkin — oʻshanda soʻmdagi qiymat jimgina notoʻgʻri boʻlib qolardi
+  // (1a1, 1a2; mezon 4g). Sabab summa maydoniga qoʻyiladi: odam oʻzgartiradigan raqam oʻsha.
+  if (summa !== null && kurs !== null && !dollarSomgaSigadimi(summa, kurs)) {
+    xatolar.push(xato('summa', 'summa-notogri', 'Summa juda katta.'))
   }
 
   if (xatolar.length > 0 || summa === null || turi === null || sana === null) {

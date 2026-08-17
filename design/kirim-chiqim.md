@@ -3,7 +3,7 @@
 Sana: 2026-08-17. Asos: `prds/kirim-chiqim.md`. Rang, oʻlcham va boʻshliq — `design/uslub.md`
 (bu yerda ular nom bilan ataladi: `matn-ikkinchi`, `chip`, `asosiy tugma`).
 Qarorlar: 0009, 0011, 0012, 0013, 0014, 0023, 0026, 0028, 0029, 0032, 0033, 0034, 0042, 0047,
-0048, 0049, 0050, 0051.
+0048, 0049, 0050, 0051, 0057.
 
 Uchta ekran: **Yangi yozuv** (kiritish formasi), **Yozuvlar** (toʻliq roʻyxat),
 **Kategoriyalar** (boshqaruv).
@@ -127,8 +127,9 @@ Qoʻshimcha qoidalar:
   «Koʻrsatish» bilan qaytarsa, tanlov ham saqlanib qoladi.
 - Yashirish natijasida oʻsha turda koʻrinadigan kategoriya umuman qolmasa, chiplar oʻrnida
   boʻsh holat matni turadi (3-boʻlimdagi «Boʻsh holat»).
-- Bu qoida **faqat yangi yozuv formasiga** tegishli. Tahrirlash rejimida yashirilgan
-  kategoriyali eski yozuv oʻz nomi bilan koʻrinaveradi va oʻzgarmaydi (0013, 14-mezon).
+- Bu qoida **faqat yangi yozuv formasiga** tegishli. Tahrirlash rejimida yozuvning oʻz
+  kategoriyasi yashirilgan boʻlsa ham chipda koʻrinadi va tanlangan turadi (0057) — u yerda
+  tanlov bekor qilinmaydi.
 
 ### Summa maydoni — terish qoidalari
 
@@ -165,6 +166,7 @@ oʻsha yerga tushadi. Maydon tuzatilishi bilan oʻsha xato yoʻqoladi.
 | Tur tanlanmagan | Segment ostida: **«Kirim yoki chiqim ekanini tanlang.»** |
 | Kategoriya tanlanmagan | Chiplar ostida: **«Kategoriyani tanlang.»** |
 | Nol summa (`0` yoki `0,00`) | Summa maydoni ostida: **«Summa noldan katta boʻlsin.»** |
+| Summa texnik chegaradan oshsa | Summa maydoni qizil chegara oladi, tagida: **«Summa juda katta.»** Saqlash toʻxtaydi. Bu mahsulot chegarasi emas (0033: yuqori chegara yoʻq) — bu hisob buzilmasligi uchun qoʻyilgan texnik chegara: undan katta son butun sonda aniq saqlanmaydi va qoldiq jimgina notoʻgʻri boʻlib qolardi. Aniq raqam dizaynda emas, kodda va specda turadi; kundalik summalarda bu xabar hech qachon koʻrinmaydi |
 | Manfiy son | Hech narsa koʻrmaydi: `−` belgisi maydonga umuman tushmaydi, yopishtirilgan matndan ham olib tashlanadi. Xato matni chiqmaydi, chunki notoʻgʻri qiymat maydonga kirmaydi (0033) |
 | Soʻmda kasr terilsa | `,` va `.` maydonga tushmaydi; hech qanday matn chiqmaydi |
 | Soʻmda kasrli matn yopishtirilsa **yoki** dollarda kasr terib keyin «soʻm» ga oʻtilsa | Kasr qismi kesiladi (yaxlitlanmaydi) va maydon ostida bir qatorlik ogohlantirish turadi: **«Soʻmda tiyin yoʻq — kasr qismi olib tashlandi.»** Bu xato emas: maydon qizil boʻlmaydi, saqlash toʻxtamaydi. Ikkala holatga shu bitta matn ishlatiladi — «Soʻmda tiyin yoʻq — butun son kiriting.» degan matn endi hech qayerda ishlatilmaydi |
@@ -180,6 +182,14 @@ Xuddi shu forma, uchta farq bilan:
 
 - Sarlavha: **«Yozuvni tahrirlash»**.
 - Hamma maydon yozuvdagi qiymat bilan toʻldirilgan holda ochiladi (dollarda kurs ham).
+- **Kategoriya chiplari:** koʻrinadigan kategoriyalar **va shu yozuvning oʻz kategoriyasi**.
+  Yozuvning kategoriyasi yashirilgan boʻlsa ham chip boʻlib chiqadi va tanlangan holda turadi;
+  boshqa yashirilganlar chiqmaydi (0057). Chip oddiy koʻrinishda — «yashirilgan» degan belgi
+  yoki alohida rang qoʻyilmaydi. Shu tufayli odam kategoriyani bilib turib oʻzgartirmaguncha
+  eski yozuv oʻz kategoriyasida qoladi (0013, 14-mezon).
+- Tur («Chiqim»/«Kirim») oʻzgartirilsa tanlangan kategoriya bekor boʻladi va roʻyxat yangi
+  turning **faqat koʻrinadigan** kategoriyalariga aylanadi — eski yozuvning yashirilgan
+  kategoriyasi boshqa turda chiqmaydi.
 - Pastdagi tugma yana **«Saqlash»**. Saqlangach forma yopiladi va qoldiq darhol qayta
   hisoblanadi; eski qiymat hech qayerda qolmaydi (0014, 10-mezon).
 

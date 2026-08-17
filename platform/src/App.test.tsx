@@ -11,7 +11,7 @@ import { cleanup, render, screen, waitFor, within } from '@testing-library/react
 import userEvent from '@testing-library/user-event'
 import { afterEach, expect, it } from 'vitest'
 import { App } from './App.tsx'
-import { hammaKategoriyalar, kategoriyaniYashir } from './data/kategoriyalar.ts'
+import { hammaKategoriyalar } from './data/kategoriyalar.ts'
 import { bazaniTozala, hammaYozuvlar } from './data/yozuvlar.ts'
 import { bugun } from './domain/sana.ts'
 
@@ -22,6 +22,14 @@ afterEach(async () => {
 
 function tugma(nom: string | RegExp): HTMLElement {
   return screen.getByRole('button', { name: nom })
+}
+
+/**
+ * Kategoriya chipi. Chiplar doʻkondan kelgach paydo boʻladi, shuning uchun ular
+ * har doim kutiladi — `getBy*` bilan olinsa test doʻkon tezligiga bogʻlanib qoladi.
+ */
+function chipniKut(nom: string): Promise<HTMLElement> {
+  return screen.findByRole('button', { name: nom })
 }
 
 /**
@@ -48,6 +56,9 @@ async function yozuvQoshdi(
   await odam.type(screen.getByLabelText('Summa'), summa)
   await odam.click(await screen.findByRole('button', { name: kategoriya }))
   await odam.click(tugma('Saqlash'))
+  // Doʻkonga yozildi va forma yopildi — shundan keyingina roʻyxat qatorlari bilan
+  // ishlash mumkin (aks holda `/oziq-ovqat/` formadagi chipga ham tushib ketadi).
+  await screen.findByRole('heading', { name: 'Yozuvlar', level: 1 })
 }
 
 it('tayyor kategoriyalar chip boʻlib chiqadi va yozuv bazaga saqlanadi', async () => {
@@ -55,9 +66,6 @@ it('tayyor kategoriyalar chip boʻlib chiqadi va yozuv bazaga saqlanadi', async 
   render(<App />)
 
   await yozuvQoshdi(odam, '45000')
-
-  // Saqlangach forma yopiladi va odam roʻyxatga qaytadi (dizayn: «Saqlash» qatori).
-  await screen.findByRole('heading', { name: 'Yozuvlar', level: 1 })
 
   const yozuvlar = await hammaYozuvlar()
   expect(yozuvlar).toHaveLength(1)
@@ -112,7 +120,7 @@ it('roʻyxatdagi qator tahrirlash formasini toʻldirilgan holda ochadi (mezon 18
   expect(screen.getByRole('heading', { name: 'Yozuvni tahrirlash', level: 1 })).toBeDefined()
   expect((screen.getByLabelText('Summa') as HTMLInputElement).value).toBe('45 000')
   expect(tugma('Chiqim').getAttribute('aria-pressed')).toBe('true')
-  expect(tugma('oziq-ovqat').getAttribute('aria-pressed')).toBe('true')
+  expect((await chipniKut('oziq-ovqat')).getAttribute('aria-pressed')).toBe('true')
 })
 
 it('tahrirlangan yozuv roʻyxatda darhol yangilanadi (mezon 10, 18)', async () => {
@@ -126,31 +134,43 @@ it('tahrirlangan yozuv roʻyxatda darhol yangilanadi (mezon 10, 18)', async () =
   await odam.clear(summa)
   await odam.type(summa, '50000')
   await odam.click(tugma('Saqlash'))
+  await screen.findByRole('heading', { name: 'Yozuvlar', level: 1 })
 
   expect(await screen.findByText('−50 000 soʻm')).toBeDefined()
   expect(screen.queryByText('−45 000 soʻm')).toBeNull()
   expect(await hammaYozuvlar()).toHaveLength(1)
 })
 
-it('yashirilgan kategoriyadagi eski yozuv tahrirlanganda nomi koʻrinadi (mezon 14, 18)', async () => {
+it('mezon 14c, 14d — yashirilgan kategoriyali yozuv tahrirlanganda chip tanlangan turadi', async () => {
   const odam = userEvent.setup()
   render(<App />)
 
   await yozuvQoshdi(odam, '45000')
-  await screen.findByRole('heading', { name: 'Yozuvlar', level: 1 })
 
-  // Kategoriya yashiriladi — yozuv oʻz joyida qoladi (0013).
-  const kategoriyalar = await hammaKategoriyalar()
-  const oziq = kategoriyalar.find((k) => k.id === 'oziq-ovqat')
-  expect(oziq).toBeDefined()
-  await kategoriyaniYashir('oziq-ovqat')
-
+  // Kategoriya ekran orqali yashiriladi — yozuv oʻz joyida qoladi (0013).
+  await odam.click(tugma('‹ Orqaga'))
+  await odam.click(tugma('Boshqarish'))
+  await odam.click(qatorTugmasi('oziq-ovqat', 'Yashirish'))
+  await screen.findByText('Yashirilgan')
   await odam.click(tugma('‹ Orqaga'))
   await odam.click(tugma('Yopish'))
-  await odam.click(await screen.findByRole('button', { name: /oziq-ovqat/ }))
 
+  await odam.click(await screen.findByRole('button', { name: /oziq-ovqat/ }))
   expect(screen.getByRole('heading', { name: 'Yozuvni tahrirlash', level: 1 })).toBeDefined()
-  expect(tugma('oziq-ovqat').getAttribute('aria-pressed')).toBe('true')
+
+  // 14c: oʻz kategoriyasi chipda tanlangan; boshqa yashirilganlar yoʻq.
+  expect((await chipniKut('oziq-ovqat')).getAttribute('aria-pressed')).toBe('true')
+  expect(screen.getByRole('button', { name: 'transport' })).toBeDefined()
+
+  // 14d: faqat izoh oʻzgartirilsa kategoriya oʻzgarmaydi va yashirilganicha qoladi.
+  await odam.type(screen.getByLabelText('Izoh'), 'tushlik')
+  await odam.click(tugma('Saqlash'))
+  await screen.findByRole('heading', { name: 'Yozuvlar', level: 1 })
+
+  const yozuvlar = await hammaYozuvlar()
+  expect(yozuvlar[0]).toMatchObject({ kategoriyaId: 'oziq-ovqat', izoh: 'tushlik' })
+  const oziq = (await hammaKategoriyalar()).find((k) => k.id === 'oziq-ovqat')
+  expect(oziq?.yashirilgan).toBe(true)
 })
 
 it('oʻchirilgan yozuv roʻyxatdan yoʻqoladi va «QAYTARISH» uni tiklaydi (mezon 11, 20)', async () => {
@@ -220,7 +240,7 @@ it('qoʻshilgan kategoriya formadagi chiplarda darhol paydo boʻladi (mezon 13)'
   expect(screen.getAllByRole('button', { name: 'Yashirish' })).toHaveLength(9)
 
   await odam.click(tugma('‹ Orqaga'))
-  expect(tugma('dorixona')).toBeDefined()
+  expect(await chipniKut('dorixona')).toBeDefined()
 })
 
 it('yashirilgan kategoriya formadagi chiplardan darhol yoʻqoladi (mezon 14)', async () => {
@@ -228,7 +248,7 @@ it('yashirilgan kategoriya formadagi chiplardan darhol yoʻqoladi (mezon 14)', a
   render(<App />)
 
   await odam.click(await screen.findByRole('button', { name: 'Chiqim' }))
-  expect(tugma('kiyim')).toBeDefined()
+  expect(await chipniKut('kiyim')).toBeDefined()
 
   await odam.click(tugma('Boshqarish'))
   await odam.click(qatorTugmasi('kiyim', 'Yashirish'))
@@ -237,12 +257,16 @@ it('yashirilgan kategoriya formadagi chiplardan darhol yoʻqoladi (mezon 14)', a
   expect(await screen.findByRole('button', { name: 'Koʻrsatish' })).toBeDefined()
 
   await odam.click(tugma('‹ Orqaga'))
+  await screen.findByRole('heading', { name: 'Yangi yozuv', level: 1 })
   expect(screen.queryByRole('button', { name: 'kiyim' })).toBeNull()
 
   await odam.click(tugma('Boshqarish'))
   await odam.click(tugma('Koʻrsatish'))
+  await waitFor(() => {
+    expect(screen.queryByText('Yashirilgan')).toBeNull()
+  })
   await odam.click(tugma('‹ Orqaga'))
-  expect(tugma('kiyim')).toBeDefined()
+  expect(await chipniKut('kiyim')).toBeDefined()
 })
 
 it('tanlangan kategoriya yashirilib qaytilsa tanlov bekor boʻladi', async () => {
@@ -250,11 +274,12 @@ it('tanlangan kategoriya yashirilib qaytilsa tanlov bekor boʻladi', async () =>
   render(<App />)
 
   await odam.click(await screen.findByRole('button', { name: 'Chiqim' }))
-  await odam.click(tugma('oziq-ovqat'))
-  expect(tugma('oziq-ovqat').getAttribute('aria-pressed')).toBe('true')
+  await odam.click(await chipniKut('oziq-ovqat'))
+  expect((await chipniKut('oziq-ovqat')).getAttribute('aria-pressed')).toBe('true')
 
   await odam.click(tugma('Boshqarish'))
   await odam.click(qatorTugmasi('oziq-ovqat', 'Yashirish'))
+  await screen.findByText('Yashirilgan')
   await odam.click(tugma('‹ Orqaga'))
 
   expect(screen.queryByRole('button', { name: 'oziq-ovqat' })).toBeNull()
@@ -272,14 +297,18 @@ it('yashirib, keyin «Koʻrsatish» bilan qaytarilsa tanlov joyida qoladi', asyn
   render(<App />)
 
   await odam.click(await screen.findByRole('button', { name: 'Chiqim' }))
-  await odam.click(tugma('oziq-ovqat'))
+  await odam.click(await chipniKut('oziq-ovqat'))
 
   await odam.click(tugma('Boshqarish'))
   await odam.click(qatorTugmasi('oziq-ovqat', 'Yashirish'))
   await odam.click(await screen.findByRole('button', { name: 'Koʻrsatish' }))
+  // Roʻyxat yangilandi: «Yashirilgan» boʻlimi yoʻqoldi.
+  await waitFor(() => {
+    expect(screen.queryByText('Yashirilgan')).toBeNull()
+  })
   await odam.click(tugma('‹ Orqaga'))
 
-  expect(tugma('oziq-ovqat').getAttribute('aria-pressed')).toBe('true')
+  expect((await chipniKut('oziq-ovqat')).getAttribute('aria-pressed')).toBe('true')
   expect(screen.queryByText('Tanlangan kategoriya yashirildi — boshqasini tanlang.')).toBeNull()
 })
 
@@ -291,6 +320,7 @@ it('yashirilgan nom bilan qoʻshishga urinish rad etiladi (mezon 14a, 14b)', asy
   await odam.click(tugma('Boshqarish'))
 
   await odam.click(qatorTugmasi('kiyim', 'Yashirish'))
+  await screen.findByText('Yashirilgan')
   const oldingiSoni = (await hammaKategoriyalar()).length
 
   await odam.click(tugma('＋ Yangi kategoriya'))

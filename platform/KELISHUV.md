@@ -305,3 +305,27 @@ buni `src/data/baza.test.ts` 1-versiyali bazani yasab koʻrsatadi.
 - Kategoriyani butunlay oʻchirish — faqat yashirish bor (0013).
 - Kategoriya nomini tahrirlash — qarorlarda yoʻq, soʻralmagan.
 - Kategoriyalar ekrani, tanlov roʻyxatining koʻrinishi va tartib tugmalari — ekranniki.
+
+---
+
+## 11. Pul chegarasi — aylantirish natijasi ham tekshiriladi (mezon 4g)
+
+Summa (`summaniOqi`) va kurs (`kursniOqi`) alohida-alohida `Number.MAX_SAFE_INTEGER`
+chegarasiga tekshiriladi (mezon 4e, 4f) — **lekin bu yetmaydi**: ikkalasi ham sigib,
+koʻpaytmasi sigmasligi mumkin (masalan 10 000 $ × 9 007 199 254 740). Oʻshanda soʻmdagi
+qiymat jimgina notoʻgʻri raqamga aylanadi (1a1, 1a2).
+
+`src/domain/pul.ts` da ikkita tekshiruv turadi:
+
+| Funksiya | Qaytaradi |
+|---|---|
+| `dollarSomgaSigadimi(sent, kurs)` | `boolean` — `sent × kurs` xavfsiz chegaraga sigadimi |
+| `somDollargaSigadimi(som)` | `boolean` — `som × 100` sigadimi |
+
+`yozuvniTekshir` dollardagi yozuvda shuni chaqiradi va sigmasa mavjud xatoni qaytaradi:
+maydon `summa`, kod `summa-notogri`, xabar **«Summa juda katta.»** — ekran uchun yangi kod
+yoʻq. Tekshiruv **koʻpaytmaga** qoʻyiladi (boʻlishdan oldingi qadam): oraliq qiymat aniq
+boʻlmasa yaxlitlash ham notoʻgʻri chiqadi.
+
+**T4 uchun:** qarz va qarz toʻlovi aylantirishi ham shu ikki funksiyadan oʻtsin — chegara
+bitta joyda yopilgan, uni takrorlab yozish shart emas.

@@ -13,7 +13,7 @@ oflayn ishlaydigan, serversiz veb-sayt (0003).
 2. `lessons/qoidalar.md` — takrorlanmasligi kerak boʻlgan xatolar.
 3. `memory/` dagi eng yangi fayl — qayerda toʻxtaganimiz.
 4. `discovery/` — ochiq savollar (boʻsh boʻlishi mumkin).
-5. `decisions/` — 0001 dan 0056 gacha. **Hammasi majburiy va bahsga tushmaydi.**
+5. `decisions/` — 0001 dan 0057 gacha. **Hammasi majburiy va bahsga tushmaydi.**
 6. `prds/daftar-prd.md` — mahsulot chegarasi.
 7. Oʻz qismingiz speci: `prds/kirim-chiqim.md`, `prds/qarz-daftari.md`,
    `prds/oylik-hisobot.md`, `prds/dashboard.md`.
@@ -50,7 +50,10 @@ Roʻyxatda yoʻq narsani «foydali boʻlardi» deb qoʻshmang. Kerak boʻlsa —
   qilinganda avtomatik deploy (0003, 0025, 0046).
 - Hamma maʼlumot faqat foydalanuvchi qurilmasida (0004).
 - Interfeys faqat oʻzbekcha, lotin yozuvida (0009).
-- Pul summalari butun sonda saqlanadi: dollar sentda, soʻm soʻmda (0008, 0033).
+- Pul summalari butun sonda saqlanadi: dollar sentda, soʻm soʻmda (0008, 0033). Mahsulotda
+  yuqori chegara yoʻq, lekin xavfsiz butun son chegarasidan (`Number.MAX_SAFE_INTEGER`) oshgan
+  summa, kurs yoki aylantirish natijasi saqlanmaydi — texnik zarurat (0008, 0033;
+  `prds/kirim-chiqim.md` 1a1).
 - Har yozuv va qarz toʻlovi `yaratilgan` vaqt maydoni bilan saqlanadi va u zaxira fayliga
   kiradi. Bu texnik tartib maydoni: koʻrsatilmaydi, tahrirlashda oʻzgarmaydi va foydalanuvchi
   koʻradigan `sana` dan ayri (0047).

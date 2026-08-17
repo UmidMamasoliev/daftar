@@ -2,6 +2,18 @@
 
 Eng yangisi tepada.
 
+## 2026-08-17 — 0057 va texnik chegara (QA T8 dan)
+
+- **0057:** tahrirlash rejimida chiplar = koʻrinadigan kategoriyalar + shu yozuvning oʻz
+  kategoriyasi (yashirilgan boʻlsa ham). 0013 faqat «yangi yozuv tanlovi» haqida edi.
+- **Texnik chegara** (`Number.MAX_SAFE_INTEGER`) `prds/kirim-chiqim.md` 1a1/1a2 bandlariga va
+  4e–4g mezonlariga yozildi, `prds/qarz-daftari.md` ga 13a havolasi. Bu **qaror emas** —
+  0008/0033 dan kelib chiqadigan zarurat; shuning uchun `decisions/` ga tushmadi.
+- **Naqsh:** har agent qatlami oʻz turdagi boʻshliqni topadi — dizayn: muddat/boshlangʻich
+  holat; backend: nom bandligi kabi chekka holatlar; QA: rejimlar orasidagi farq (yangi yozuv
+  vs. tahrirlash) va texnik chegaralar. «Qoida X rejimga ham tegishlimi?» degan savolni har
+  qoida uchun ataylab berish kerak.
+
 ## 2026-08-17 — 0056: netto faqat ochiq qarzlardan; hamma discovery yopildi
 
 - **0056:** kontakt netto qoldigʻi faqat ochiq qarzlardan; chegara bilan yopilgan qarzning

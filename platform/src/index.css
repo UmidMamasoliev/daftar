@@ -189,6 +189,30 @@ body {
   color: var(--matn-ochiq);
 }
 
+/*
+ * Kurs bloki «dollar» tanlanganda 150 ms soʻnish bilan ochiladi (dizayn: «Dollar
+ * tanlanganda»). Uslubda ruxsat etilgan yagona animatsiya — 150 ms rang/soʻnish.
+ */
+.kurs-blok {
+  animation: sonish 150ms ease-out;
+}
+
+@keyframes sonish {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Harakatni kamaytirishni soʻraganlar uchun animatsiya oʻchadi. */
+@media (prefers-reduced-motion: reduce) {
+  .kurs-blok {
+    animation: none;
+  }
+}
+
 /* Summa maydoni — 56 px, matni `raqam-katta`, oʻngida valyuta soʻzi. */
 .summa-maydon {
   display: flex;

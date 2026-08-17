@@ -38,6 +38,21 @@ tayanadi.
 | `harakat-fon` | `#EFF4FF` | tanlangan chip foni |
 | `qora-panel` | `#1A1D21` | «qaytarish» pastki paneli foni |
 
+### PWA va brauzer ranglari
+
+Ilova brauzer panelini va ochilish ekranini ham boʻyaydi. Ikkalasi uchun bittadan qiymat
+belgilanadi — qiymat shu yerda turadi, kodda ikkinchi manba boʻlmaydi:
+
+| Nom | Qiymat | Qayerda |
+|---|---|---|
+| `theme-color` | `#FFFFFF` | brauzer paneli / holat qatori rangi. Manifest faylida ham, sahifadagi `<meta name="theme-color">` da ham **aynan shu bitta qiymat** turadi |
+| `background_color` | `#F4F5F7` | manifestdagi ochilish (splash) ekrani foni |
+
+Nega `theme-color` — oq: brauzer panelining ostidagi birinchi element — ilovaning oq yuqori
+paneli (`yuza`). Oq qoʻyilganda ular orasida chok koʻrinmaydi va ekran bitta boʻlak boʻlib
+turadi. Ochilish ekrani esa hali panel koʻrinmagan payt chiqadi, shuning uchun u ekranning
+umumiy foni (`fon`, `#F4F5F7`) bilan boʻyaladi — ilova ochilganda rang sakramaydi.
+
 Boshqa rang qoʻshilmaydi. Soya faqat ikki joyda: pastda turgan «Saqlash» paneli va «qaytarish»
 paneli — `0 -1px 0 rgba(0,0,0,.06)` va `0 2px 8px rgba(0,0,0,.24)`. Kartochkalarda soya yoʻq,
 chegara yetadi.

@@ -3,7 +3,7 @@
 Sana: 2026-08-17 (birinchi variant 2026-08-16). Asos: `prds/daftar-prd.md` (8–15-bandlar, va shu
 featurega tegishli 5, 6-band).
 Qarorlar: 0011, 0012, 0013, 0014, 0023, 0026, 0028, 0029, 0032, 0033, 0034, 0042, 0043, 0044,
-0045, 0047, 0048, 0049, 0050, 0051.
+0045, 0047, 0048, 0049, 0050, 0051, 0057.
 
 Nima uchun: Foydalanuvchi pulning har harakatini — kirimni ham, chiqimni ham — bir necha
 soniyada yozib qoʻyadi va qoʻlidagi hamda kartadagi pul qanchaligini bilib turadi. Bu daftarning
@@ -16,6 +16,15 @@ poydevori: qolgan uch qism (qarz daftari, oylik hisobot, dashboard) shu yozuvlar
 1. Yozuv qoʻshadi. Majburiy: summa, kirim yoki chiqim ekani, kategoriya. (PRD 8; 0012)
 1a. Summa soʻmda butun son, dollarda ikki kasrgacha (sent). Nol summa saqlanmaydi, manfiy son
    kiritilmaydi, yuqori chegara yoʻq. (PRD 8; 0033)
+1a1. «Yuqori chegara yoʻq» — mahsulot qoidasi: daftar odamning summasini cheklamaydi. Lekin
+   hisob butunligi uchun texnik chegara bor: summalar butun sonda saqlanadi (0008, 0033) va
+   JavaScript butun sonni faqat xavfsiz chegaragacha (`Number.MAX_SAFE_INTEGER`,
+   9 007 199 254 740 991) aniq hisoblaydi. Undan oshgan qiymat jimgina notoʻgʻri raqamga
+   aylanadi, shuning uchun bunday summa **saqlanmaydi** va xato koʻrsatiladi. Bu yangi qaror
+   emas — 0008 va 0033 dan kelib chiqadigan texnik zarurat.
+1a2. Shu chegara saqlanadigan qiymatga tegishli: soʻmda soʻm, dollarda sent (0008, 0033).
+   Kurs maydoniga ham xuddi shu chegara qoʻyiladi (0042, 0049), hamda summa kurs bilan
+   aylantirilgandagi natijaga ham — natija chegaradan oshsa yozuv saqlanmaydi.
 1b. Tur («kirim» yoki «chiqim») uchun standart qiymat yoʻq: forma ochilganda hech biri
    tanlanmagan boʻladi va foydalanuvchi har safar oʻzi tanlaydi. Tanlanmasa yozuv saqlanmaydi
    va sabab koʻrsatiladi. (0050; 0012)
@@ -79,6 +88,10 @@ poydevori: qolgan uch qism (qarz daftari, oylik hisobot, dashboard) shu yozuvlar
     nomdagi kategoriya yashirilganini aytadi va uni «Koʻrsatish» bilan qaytarish mumkinligini
     koʻrsatadi; ilova kategoriyani oʻzi koʻrsatib yubormaydi. Xabar matni `design/` da.
     (0051; 0013)
+11b. **Tahrirlash rejimida** chiplarda koʻrinadigan (yashirilmagan) kategoriyalar va ustiga shu
+    yozuvning oʻz kategoriyasi chiqadi — u yashirilgan boʻlsa ham, tanlangan holatda. Boshqa
+    yashirilgan kategoriyalar chiqmaydi: foydalanuvchi oʻz kategoriyasini saqlab qola oladi,
+    lekin yashirilgan boshqasiga oʻta olmaydi. (0057; 0013)
 12. Yashirilgan kategoriyadagi eski yozuvlar joyida qoladi va hisobotda koʻrinadi; ular faqat
     yangi yozuv tanlovida chiqmaydi. (PRD 15; 0013)
 
@@ -114,6 +127,11 @@ poydevori: qolgan uch qism (qarz daftari, oylik hisobot, dashboard) shu yozuvlar
 4b. Soʻmda kasrli summa qabul qilinmaydi; dollarda ikki kasrli summa qabul qilinadi.
 4c. Nol summa saqlanmaydi va sabab koʻrsatiladi.
 4d. Manfiy son kiritilmaydi.
+4e. Xavfsiz butun son chegarasidan (`Number.MAX_SAFE_INTEGER`) oshgan summa saqlanmaydi va xato
+   koʻrsatiladi; chegaraning oʻzi va undan kichik qiymat saqlanadi (0008, 0033).
+4f. Xuddi shu chegaradan oshgan kurs ham saqlanmaydi va xato koʻrsatiladi.
+4g. Summa kurs bilan aylantirilgandagi natija chegaradan oshsa yozuv saqlanmaydi va xato
+   koʻrsatiladi.
 5. Izohi boʻsh yozuv saqlanadi.
 6. Valyuta «dollar» ga oʻzgartirilsa kurs maydoni ochiladi; kurs boʻsh qolsa yozuv saqlanmaydi.
 6a. Kurs `0` kiritilsa yozuv saqlanmaydi va «Kurs notoʻgʻri» koʻrsatiladi; manfiy kurs ham
@@ -138,6 +156,10 @@ poydevori: qolgan uch qism (qarz daftari, oylik hisobot, dashboard) shu yozuvlar
     etiladi: kategoriyalar soni oʻzgarmaydi, dublikat paydo boʻlmaydi (0051).
 14b. Shu holatdagi xato xabari kategoriya yashirilganini aytadi va «Koʻrsatish» yoʻlini
     koʻrsatadi; kategoriyaning oʻzi yashirilganicha qoladi — avtomatik koʻrsatilmaydi (0051).
+14c. Yashirilgan kategoriyali yozuv tahrirlashga ochilsa, oʻsha kategoriya chiplarda tanlangan
+    holda koʻrinadi; boshqa yashirilgan kategoriyalar chiplarda yoʻq (0057).
+14d. Shu yozuvning faqat izohi oʻzgartirilib saqlansa, kategoriya oʻzgarmaydi va yashirilganicha
+    qoladi (0057).
 15. Tayyor roʻyxat 0028 dagi nomlar bilan keladi: chiqimda sakkizta, kirimda uchta.
 16. Kirim kategoriyasi chiqim yozuvida tanlanmaydi va aksincha.
 17. Internet oʻchirilgan holda yozuv saqlanadi va ilova qayta ochilganda joyida turadi.

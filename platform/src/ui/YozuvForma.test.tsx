@@ -8,16 +8,29 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { bugun, kunMatni } from '../domain/sana.ts'
-import type { YangiYozuv, Yozuv } from '../domain/turlar.ts'
+import type { Kategoriya, YangiYozuv, Yozuv, YozuvTuri } from '../domain/turlar.ts'
 import type { KategoriyaRoyxati } from './YozuvForma.tsx'
 import { YozuvForma } from './YozuvForma.tsx'
 
+function kat(id: string, nom: string, turi: YozuvTuri, yashirilgan = false): Kategoriya {
+  return { id, nom, turi, yashirilgan }
+}
+
 const KATEGORIYALAR: KategoriyaRoyxati = {
-  chiqim: [
-    { id: 'k-oziq', nom: 'oziq-ovqat' },
-    { id: 'k-transport', nom: 'transport' },
-  ],
-  kirim: [{ id: 'k-oylik', nom: 'oylik' }],
+  chiqim: [kat('k-oziq', 'oziq-ovqat', 'chiqim'), kat('k-transport', 'transport', 'chiqim')],
+  kirim: [kat('k-oylik', 'oylik', 'kirim')],
+}
+
+/** Tahrirlash testlari uchun oddiy soʻmdagi yozuv. */
+const SOM_YOZUV: Yozuv = {
+  id: 'y-som',
+  yaratilgan: '2026-08-16T09:00:00.000Z',
+  turi: 'chiqim',
+  summa: 45000,
+  kategoriyaId: 'k-oziq',
+  sana: '2026-08-14',
+  hisob: 'karta',
+  valyuta: 'som',
 }
 
 const surildi = vi.fn()
@@ -26,6 +39,7 @@ type Ustama = {
   yozuv?: Yozuv
   yop?: () => void
   kategoriyalar?: KategoriyaRoyxati
+  yozuvKategoriyasi?: Kategoriya
 }
 
 function chiz(ustama: Ustama = {}) {
@@ -37,6 +51,7 @@ function chiz(ustama: Ustama = {}) {
       kategoriyalar={royxat}
       saqla={saqla}
       yozuv={ustama.yozuv}
+      yozuvKategoriyasi={ustama.yozuvKategoriyasi}
       yop={ustama.yop}
       boshqarishdanQaytish={qaytish}
     />
@@ -514,8 +529,8 @@ describe('yopish', () => {
 
 describe('tanlangan kategoriya «Boshqarish» da yashirilsa', () => {
   const YASHIRILGANDAN_KEYIN: KategoriyaRoyxati = {
-    chiqim: [{ id: 'k-transport', nom: 'transport' }],
-    kirim: [{ id: 'k-oylik', nom: 'oylik' }],
+    chiqim: [kat('k-transport', 'transport', 'chiqim')],
+    kirim: [kat('k-oylik', 'oylik', 'kirim')],
   }
 
   async function oziqniTanladi(odam: ReturnType<typeof chiz>['odam']): Promise<void> {
@@ -603,5 +618,156 @@ describe('tanlangan kategoriya «Boshqarish» da yashirilsa', () => {
 
     expect(tugma('oziq-ovqat').getAttribute('aria-pressed')).toBe('true')
     expect(screen.queryByText('Tanlangan kategoriya yashirildi — boshqasini tanlang.')).toBeNull()
+  })
+})
+
+describe('avtofokus va klaviatura (dizayn: 1-boʻlim)', () => {
+  it('forma ochilganda kursor summa maydonida turadi', () => {
+    chiz()
+    expect(document.activeElement).toBe(maydon('Summa'))
+    expect(maydon('Summa').getAttribute('inputmode')).toBe('decimal')
+  })
+
+  it('tahrirlash rejimida ham kursor summada turadi', () => {
+    chiz({ yozuv: SOM_YOZUV })
+    expect(document.activeElement).toBe(maydon('Summa'))
+  })
+})
+
+describe('kurs maydoni soʻnish bilan ochiladi (dizayn: «Dollar tanlanganda»)', () => {
+  it('kurs bloki soʻnish klassi bilan chiqadi', async () => {
+    const { odam } = chiz()
+    await odam.click(tugma('dollar'))
+
+    const blok = maydon('Kurs — 1 dollar necha soʻm').closest('.blok')
+    expect(blok?.classList.contains('kurs-blok')).toBe(true)
+  })
+})
+
+describe('texnik chegara (mezon 4e, 4f)', () => {
+  it('xavfsiz butun sondan oshgan summa saqlanmaydi va qizil xato chiqadi', async () => {
+    const { saqla, odam } = chiz()
+    await odam.type(maydon('Summa'), '9007199254740993')
+    await odam.click(tugma('Chiqim'))
+    await odam.click(tugma('oziq-ovqat'))
+    await odam.click(tugma('Saqlash'))
+
+    expect(screen.getByText('Summa juda katta.')).toBeDefined()
+    expect(maydon('Summa').getAttribute('aria-invalid')).toBe('true')
+    expect(saqla).not.toHaveBeenCalled()
+  })
+
+  it('chegaraning oʻzi saqlanadi', async () => {
+    const { saqla, odam } = chiz()
+    await odam.type(maydon('Summa'), '9007199254740991')
+    await odam.click(tugma('Chiqim'))
+    await odam.click(tugma('oziq-ovqat'))
+    await odam.click(tugma('Saqlash'))
+
+    expect(saqla.mock.calls[0]?.[0].summa).toBe(9007199254740991)
+  })
+
+  it('xavfsiz butun sondan oshgan kurs saqlanmaydi va qizil xato chiqadi', async () => {
+    const { saqla, odam } = chiz()
+    await odam.type(maydon('Summa'), '8,50')
+    await odam.click(tugma('Kirim'))
+    await odam.click(tugma('oylik'))
+    await odam.click(tugma('dollar'))
+    await odam.type(maydon('Kurs — 1 dollar necha soʻm'), '9007199254740993')
+    await odam.click(tugma('Saqlash'))
+
+    expect(screen.getByText('Kurs juda katta.')).toBeDefined()
+    expect(maydon('Kurs — 1 dollar necha soʻm').getAttribute('aria-invalid')).toBe('true')
+    expect(saqla).not.toHaveBeenCalled()
+  })
+})
+
+describe('tahrirlash rejimidagi chiplar (0057; mezon 14c, 14d)', () => {
+  const YASHIRIN = kat('k-kiyim', 'kiyim', 'chiqim', true)
+  const YASHIRIN_BOSHQA = kat('k-ijara', 'ijara', 'chiqim', true)
+
+  const YASHIRIN_YOZUV: Yozuv = {
+    id: 'y-3',
+    yaratilgan: '2026-08-16T09:00:00.000Z',
+    turi: 'chiqim',
+    summa: 45000,
+    kategoriyaId: 'k-kiyim',
+    sana: '2026-08-14',
+    hisob: 'karta',
+    izoh: 'eski',
+    valyuta: 'som',
+  }
+
+  it('mezon 14c — yozuvning yashirilgan kategoriyasi chipda tanlangan holda chiqadi', () => {
+    chiz({ yozuv: YASHIRIN_YOZUV, yozuvKategoriyasi: YASHIRIN })
+
+    expect(tugma('kiyim').getAttribute('aria-pressed')).toBe('true')
+    expect(tugma('oziq-ovqat').getAttribute('aria-pressed')).toBe('false')
+  })
+
+  it('mezon 14c — boshqa yashirilgan kategoriyalar chiplarda yoʻq', () => {
+    chiz({
+      yozuv: YASHIRIN_YOZUV,
+      yozuvKategoriyasi: YASHIRIN,
+      kategoriyalar: {
+        chiqim: [kat('k-oziq', 'oziq-ovqat', 'chiqim')],
+        kirim: [kat('k-oylik', 'oylik', 'kirim')],
+      },
+    })
+
+    expect(tugma('kiyim')).toBeDefined()
+    expect(screen.queryByRole('button', { name: 'ijara' })).toBeNull()
+    expect(YASHIRIN_BOSHQA.yashirilgan).toBe(true)
+  })
+
+  it('yashirilgan chip oddiy koʻrinishda — alohida belgi yoki rang yoʻq', async () => {
+    const { odam } = chiz({ yozuv: YASHIRIN_YOZUV, yozuvKategoriyasi: YASHIRIN })
+
+    // Matnda «yashirilgan» degan belgi yoʻq, klass esa oddiy tanlangan chipniki bilan bir xil.
+    expect(tugma('kiyim').textContent).toBe('kiyim')
+    const yashirinKlass = tugma('kiyim').className
+    await odam.click(tugma('oziq-ovqat'))
+    expect(tugma('oziq-ovqat').className).toBe(yashirinKlass)
+  })
+
+  it('mezon 14d — faqat izoh oʻzgartirilsa kategoriya oʻzgarmaydi', async () => {
+    const { saqla, odam } = chiz({ yozuv: YASHIRIN_YOZUV, yozuvKategoriyasi: YASHIRIN })
+
+    await odam.clear(maydon('Izoh'))
+    await odam.type(maydon('Izoh'), 'yangi izoh')
+    await odam.click(tugma('Saqlash'))
+
+    expect(saqla.mock.calls[0]?.[0]).toMatchObject({
+      kategoriyaId: 'k-kiyim',
+      izoh: 'yangi izoh',
+    })
+  })
+
+  it('tur oʻzgartirilsa tanlov bekor boʻladi va yashirilgan kategoriya chiqmaydi', async () => {
+    const { odam } = chiz({ yozuv: YASHIRIN_YOZUV, yozuvKategoriyasi: YASHIRIN })
+    await odam.click(tugma('Kirim'))
+
+    expect(screen.queryByRole('button', { name: 'kiyim' })).toBeNull()
+    expect(tugma('oylik').getAttribute('aria-pressed')).toBe('false')
+  })
+})
+
+describe('mezon 16 himoya qatlami — doʻkon roʻyxati bilan tekshiruv', () => {
+  it('roʻyxatda yoʻq kategoriya bilan saqlansa «Kategoriyani tanlang.» chiqadi', async () => {
+    const yoqolgan: Yozuv = {
+      id: 'y-4',
+      yaratilgan: '2026-08-16T09:00:00.000Z',
+      turi: 'chiqim',
+      summa: 45000,
+      kategoriyaId: 'yoq-bunday-id',
+      sana: '2026-08-14',
+      hisob: 'karta',
+      valyuta: 'som',
+    }
+    const { saqla, odam } = chiz({ yozuv: yoqolgan })
+
+    await odam.click(tugma('Saqlash'))
+    expect(screen.getByText('Kategoriyani tanlang.')).toBeDefined()
+    expect(saqla).not.toHaveBeenCalled()
   })
 })

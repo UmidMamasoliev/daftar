@@ -13,10 +13,10 @@ import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { bugun, kunMatni } from '../domain/sana.ts'
 import type { Yozuv } from '../domain/turlar.ts'
-import type { KategoriyaChipi } from './YozuvForma.tsx'
+import type { KategoriyaNomi } from './Yozuvlar.tsx'
 import { QAYTARISH_MUDDATI, Yozuvlar } from './Yozuvlar.tsx'
 
-const KATEGORIYALAR: readonly KategoriyaChipi[] = [
+const KATEGORIYALAR: readonly KategoriyaNomi[] = [
   { id: 'k-oziq', nom: 'oziq-ovqat' },
   { id: 'k-transport', nom: 'transport' },
   { id: 'k-oylik', nom: 'oylik' },

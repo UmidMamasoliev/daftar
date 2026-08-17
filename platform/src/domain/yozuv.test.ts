@@ -154,6 +154,41 @@ describe('yozuvniTekshir — valyuta va kurs (0023, 0042; mezon 6, 7, 22)', () =
   })
 })
 
+describe('yozuvniTekshir — aylantirish chegarasi (1a1, 1a2; mezon 4e, 4f, 4g)', () => {
+  /** Dollardagi forma — summa va kurs matn boʻlib beriladi. */
+  function dollarForma(summa: string, kurs: string): YozuvFormasi {
+    return forma({ summa, valyuta: 'dollar', kurs })
+  }
+
+  it('mezon 4g — summa × kurs xavfsiz chegaradan oshsa yozuv saqlanmaydi', () => {
+    const natija = yozuvniTekshir(dollarForma('10000', '9007199254740'))
+
+    expect(kodlar(natija)).toEqual(['summa-notogri'])
+    expect(natija.ok === false && natija.xatolar[0]?.xabar).toBe('Summa juda katta.')
+    expect(natija.ok === false && natija.xatolar[0]?.maydon).toBe('summa')
+  })
+
+  it('mezon 4g — chegaraga sigadigan katta summa va kurs saqlanaveradi', () => {
+    const natija = yozuvniTekshir(dollarForma('1000000', '12500'))
+
+    expect(natija.ok).toBe(true)
+    expect(natija.ok && natija.qiymat.summa).toBe(100000000)
+  })
+
+  it('mezon 4e va 4f — summa yoki kursning oʻzi chegaradan oshsa sabab bir marta qaytadi', () => {
+    expect(kodlar(yozuvniTekshir(dollarForma('99999999999999999', '12500')))).toEqual([
+      'summa-notogri',
+    ])
+    expect(kodlar(yozuvniTekshir(dollarForma('100', '99999999999999999')))).toEqual([
+      'kurs-notogri',
+    ])
+  })
+
+  it('soʻmdagi yozuvda aylantirish tekshiruvi ishlamaydi — kurs yoʻq', () => {
+    expect(yozuvniTekshir(forma({ summa: '9007199254740991' })).ok).toBe(true)
+  })
+})
+
 describe('yozuvniTekshir — kategoriya turi (0013, 0028; mezon 16)', () => {
   const kategoriyalar = tayyorKategoriyalar()
 

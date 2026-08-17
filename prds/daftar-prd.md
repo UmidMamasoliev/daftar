@@ -248,6 +248,7 @@ Mahsulot darajasidagi mezonlar — hammasi sanab boʻladigan:
 | 0054 | Avtomatik zaxira ham eksport sanaladi |
 | 0055 | Boʻsh daftarga importda avtomatik zaxira yoʻq |
 | 0056 | Netto faqat ochiq qarzlardan yigʻiladi |
+| 0057 | Tahrirlashda chiplar: koʻrinadiganlar + yozuvning oʻz kategoriyasi |
 
 ## Ochiq savollar
 

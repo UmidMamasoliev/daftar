@@ -9,7 +9,7 @@
 // Kategoriyalar ekrani ochilganda forma DOM da qoladi (`hidden`), chunki qaytilganda
 // forma toʻldirilgan holicha turishi kerak (dizayn: «Boshqarish» qatori).
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   hammaKategoriyalar,
   kategoriyaQosh,
@@ -44,6 +44,7 @@ export function App() {
   // «Boshqarish» dan har qaytishda ortadi — forma shu belgidan tanlangan
   // kategoriya hali koʻrinadimi degan tekshiruvni bir marta bajaradi.
   const [boshqarishdanQaytish, setBoshqarishdanQaytish] = useState(0)
+  const navbatRef = useRef<Promise<unknown>>(Promise.resolve())
   const [kategoriyalar, setKategoriyalar] = useState<readonly Kategoriya[]>([])
   const [yozuvlar, setYozuvlar] = useState<readonly Yozuv[]>([])
 
@@ -68,18 +69,33 @@ export function App() {
     setYozuvlar(holat.yozuvlar)
   }
 
-  // Yangi yozuvda faqat koʻrinadigan kategoriyalar; tahrirlashda hammasi, chunki eski
-  // yozuvning kategoriyasi yashirilgan boʻlishi mumkin (KELISHUV 10-boʻlim; mezon 14).
-  const formaRoyxati: KategoriyaRoyxati =
+  /**
+   * Doʻkonga tegadigan har amal navbatda bajariladi.
+   *
+   * Sababi «Koʻrsatish» + «‹ Orqaga» ketma-ketligi: qaytish belgisi doʻkon yangilanishidan
+   * oldin ortsa, forma eski roʻyxatga qarab tanlovni notoʻgʻri bekor qilardi. Navbat
+   * boʻshashini kutish shu poygani yopadi.
+   */
+  function navbatga<T>(ish: () => Promise<T>): Promise<T> {
+    const natija = navbatRef.current.then(ish)
+    navbatRef.current = natija.then(
+      () => undefined,
+      () => undefined,
+    )
+    return natija
+  }
+
+  // Chiplar har ikkala rejimda ham faqat koʻrinadigan kategoriyalar (0013). Tahrirlashda
+  // ustiga yozuvning oʻz kategoriyasi qoʻshiladi — yashirilgan boʻlsa ham (0057; mezon 14c);
+  // uni forma oʻzi joriy turga qarab qoʻshadi.
+  const formaRoyxati: KategoriyaRoyxati = {
+    kirim: korinadiganlar(kategoriyalar, 'kirim'),
+    chiqim: korinadiganlar(kategoriyalar, 'chiqim'),
+  }
+  const yozuvKategoriyasi =
     tahrirlanayotgan === null
-      ? {
-          kirim: korinadiganlar(kategoriyalar, 'kirim'),
-          chiqim: korinadiganlar(kategoriyalar, 'chiqim'),
-        }
-      : {
-          kirim: kategoriyalar.filter((kategoriya) => kategoriya.turi === 'kirim'),
-          chiqim: kategoriyalar.filter((kategoriya) => kategoriya.turi === 'chiqim'),
-        }
+      ? undefined
+      : kategoriyalar.find((kategoriya) => kategoriya.id === tahrirlanayotgan.kategoriyaId)
 
   const formaKerak = ekran === 'forma' || ekran === 'kategoriyalar'
 
@@ -91,13 +107,16 @@ export function App() {
             key={tahrirlanayotgan?.id ?? 'yangi'}
             kategoriyalar={formaRoyxati}
             yozuv={tahrirlanayotgan ?? undefined}
+            yozuvKategoriyasi={yozuvKategoriyasi}
             saqla={async (yangi: YangiYozuv) => {
-              if (tahrirlanayotgan === null) {
-                await yozuvQosh(yangi)
-              } else {
-                await yozuvniYangila(tahrirlanayotgan.id, yangi)
-              }
-              await yangila()
+              await navbatga(async () => {
+                if (tahrirlanayotgan === null) {
+                  await yozuvQosh(yangi)
+                } else {
+                  await yozuvniYangila(tahrirlanayotgan.id, yangi)
+                }
+                await yangila()
+              })
             }}
             yop={() => {
               setEkran('yozuvlar')
@@ -115,22 +134,30 @@ export function App() {
         <Kategoriyalar
           kategoriyalar={kategoriyalar}
           boshlangichTur={kategoriyaTuri}
-          qosh={async (nom, turi) => {
-            const natija = await kategoriyaQosh(nom, turi)
-            if (natija.ok) {
-              await yangila()
-            }
-            return natija
-          }}
+          qosh={async (nom, turi) =>
+            navbatga(async () => {
+              const natija = await kategoriyaQosh(nom, turi)
+              if (natija.ok) {
+                await yangila()
+              }
+              return natija
+            })
+          }
           yashir={async (id) => {
-            await kategoriyaniYashir(id)
-            await yangila()
+            await navbatga(async () => {
+              await kategoriyaniYashir(id)
+              await yangila()
+            })
           }}
           korsat={async (id) => {
-            await kategoriyaniKorsat(id)
-            await yangila()
+            await navbatga(async () => {
+              await kategoriyaniKorsat(id)
+              await yangila()
+            })
           }}
-          orqaga={() => {
+          orqaga={async () => {
+            // Boshlangan yashirish/koʻrsatish tugasin — forma yangi roʻyxatga qarasin.
+            await navbatRef.current
             setEkran('forma')
             setBoshqarishdanQaytish((oldingi) => oldingi + 1)
           }}
@@ -146,12 +173,16 @@ export function App() {
             setEkran('forma')
           }}
           ochir={async (yozuv) => {
-            await yozuvniOchir(yozuv.id)
-            await yangila()
+            await navbatga(async () => {
+              await yozuvniOchir(yozuv.id)
+              await yangila()
+            })
           }}
           qaytar={async (yozuv) => {
-            await yozuvniQaytar(yozuv)
-            await yangila()
+            await navbatga(async () => {
+              await yozuvniQaytar(yozuv)
+              await yangila()
+            })
           }}
           orqaga={() => {
             setTahrirlanayotgan(null)

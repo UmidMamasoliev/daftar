@@ -12,6 +12,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import { bugun } from '../domain/sana.ts'
 import type {
   Hisob,
+  Kategoriya,
   Valyuta,
   Xato,
   XatoMaydoni,
@@ -30,13 +31,13 @@ import {
 } from './format.ts'
 import { FORMA, OGOHLANTIRISH, xatoMatni } from './matnlar.ts'
 
-/** Chip boʻlib chiqadigan kategoriya — doʻkondagi `Kategoriya` shu shaklga toʻgʻri keladi. */
-export type KategoriyaChipi = { id: string; nom: string }
+/** Chip boʻlib chiqadigan kategoriya — doʻkondagi `Kategoriya` ning oʻzi. */
+export type KategoriyaChipi = Kategoriya
 
 /** Chip boʻlib chiqadigan kategoriyalar, tur boʻyicha ajratilgan (0013; mezon 16). */
 export type KategoriyaRoyxati = {
-  kirim: readonly KategoriyaChipi[]
-  chiqim: readonly KategoriyaChipi[]
+  kirim: readonly Kategoriya[]
+  chiqim: readonly Kategoriya[]
 }
 
 export type YozuvFormaProps = {
@@ -51,6 +52,12 @@ export type YozuvFormaProps = {
   saqla: (yangi: YangiYozuv) => Promise<void> | void
   /** Berilsa — tahrirlash rejimi: maydonlar shu yozuvning qiymatlari bilan toʻladi (0014). */
   yozuv?: Yozuv | undefined
+  /**
+   * Tahrirlashda: yozuvning **oʻz** kategoriyasi. Yashirilgan boʻlsa ham chip boʻlib
+   * chiqadi va tanlangan turadi; boshqa yashirilganlar chiqmaydi (0057; mezon 14c).
+   * Tur oʻzgartirilsa u ham chiqmaydi — roʻyxat yangi turning koʻrinadiganlari boʻladi.
+   */
+  yozuvKategoriyasi?: Kategoriya | undefined
   /** `×` bosilganda va saqlangandan keyin chaqiriladi. */
   yop?: (() => void) | undefined
   /**
@@ -95,6 +102,7 @@ export function YozuvForma({
   kategoriyalar,
   saqla,
   yozuv,
+  yozuvKategoriyasi,
   yop,
   boshqarish,
   boshqarishdanQaytish = 0,
@@ -142,7 +150,16 @@ export function YozuvForma({
 
   const bugungi = bugun()
   const dollar = forma.valyuta === 'dollar'
-  const royxat = forma.turi === '' ? [] : kategoriyalar[forma.turi]
+  const korinadigan = forma.turi === '' ? [] : kategoriyalar[forma.turi]
+  // 0057: tahrirlashda yozuvning oʻz kategoriyasi roʻyxatga qoʻshiladi — yashirilgan
+  // boʻlsa ham. Faqat oʻz turida: tur oʻzgartirilsa u chiqmaydi (mezon 14c).
+  const royxat =
+    yozuvKategoriyasi !== undefined &&
+    forma.turi !== '' &&
+    yozuvKategoriyasi.turi === forma.turi &&
+    !korinadigan.some((kategoriya) => kategoriya.id === yozuvKategoriyasi.id)
+      ? [...korinadigan, yozuvKategoriyasi]
+      : korinadigan
 
   /**
    * «Boshqarish» dan qaytilgandagi bir martalik tekshiruv (dizayn: «Tanlangan
@@ -283,7 +300,10 @@ export function YozuvForma({
   async function yubor(hodisa: FormEvent<HTMLFormElement>): Promise<void> {
     hodisa.preventDefault()
     // Tekshiruv «Saqlash» bosilganda bir yoʻla bajariladi (dizayn: «Xato holatlari»).
-    const natija = yozuvniTekshir(forma)
+    // Doʻkonning oʻz tekshiruvi: chipda koʻrinmaydigan yoki turi mos kelmaydigan
+    // kategoriya oʻtib ketmasin (KELISHUV 10-boʻlim; mezon 16). UI baribir
+    // oldindan toʻsadi — bu ikkinchi qatlam.
+    const natija = yozuvniTekshir(forma, royxat)
     if (!natija.ok) {
       setXatolar(natija.xatolar)
       xatoliMaydongaOt(natija.xatolar)
@@ -334,6 +354,9 @@ export function YozuvForma({
             <input
               ref={summaRef}
               className="summa-kirit"
+              // Forma ochilganda kursor shu yerda (dizayn: 1-boʻlim).
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus
               type="text"
               inputMode="decimal"
               autoComplete="off"
@@ -462,7 +485,7 @@ export function YozuvForma({
         </div>
 
         {dollar ? (
-          <div className="blok">
+          <div className="blok kurs-blok">
             <label className="yorliq" htmlFor={kursId}>
               {FORMA.kurs}
             </label>

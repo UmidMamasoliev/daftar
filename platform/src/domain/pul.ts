@@ -107,8 +107,31 @@ function engYaqiniga(bolinuvchi: number, bolgich: number): number {
 }
 
 /**
+ * Aylantirish xavfsiz butun son chegarasiga sigadimi (1a1, 1a2; mezon 4g).
+ *
+ * Summaning oʻzi ham, kursning oʻzi ham chegaraga sigishi mumkin, lekin ularning
+ * koʻpaytmasi sigmasligi mumkin — oʻshanda natija jimgina notoʻgʻri raqamga aylanadi.
+ * Tekshiruv aynan **koʻpaytmaga** qoʻyiladi: boʻlishdan oldingi qadam aniq boʻlmasa,
+ * yaxlitlash ham notoʻgʻri chiqadi.
+ *
+ * Bu yerda turishining sababi: dollardagi yozuv, qarz va qarz toʻlovi — hammasi shu
+ * aylantirishdan oʻtadi, demak chegara bitta joyda yopiladi.
+ */
+export function dollarSomgaSigadimi(sent: number, kurs: number): boolean {
+  return Number.isSafeInteger(sent * kurs)
+}
+
+/** Teskari yoʻnalish: soʻm sentga koʻpaytirilganda chegaraga sigadimi (mezon 4g). */
+export function somDollargaSigadimi(som: number): boolean {
+  return Number.isSafeInteger(som * 100)
+}
+
+/**
  * Dollardagi summani (sent) soʻmga aylantiradi: sent × kurs / 100,
  * natija eng yaqin soʻmga yaxlitlanadi (0042; mezon 21).
+ *
+ * Chaqiruvchi avval `dollarSomgaSigadimi` bilan tekshiradi: sigmagan qiymat bu yerda
+ * xatosiz, lekin notoʻgʻri natija berardi.
  */
 export function dollarniSomga(sent: number, kurs: number): number {
   return engYaqiniga(sent * kurs, 100)
@@ -117,6 +140,8 @@ export function dollarniSomga(sent: number, kurs: number): number {
 /**
  * Soʻmdagi summani dollarga aylantiradi: soʻm × 100 / kurs,
  * natija eng yaqin sentga yaxlitlanadi (0042).
+ *
+ * Chaqiruvchi avval `somDollargaSigadimi` bilan tekshiradi.
  */
 export function somniDollarga(som: number, kurs: number): number {
   return engYaqiniga(som * 100, kurs)

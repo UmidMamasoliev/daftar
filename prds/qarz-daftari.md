@@ -67,6 +67,9 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
 13. Summa soʻmda butun son, dollarda ikki kasrgacha; nol summa saqlanmaydi, manfiy son
     kiritilmaydi, yuqori chegara yoʻq. Bu qoidalar qarz summasiga ham, toʻlov summasiga ham
     tegishli. (PRD 8; 0033)
+13a. Xavfsiz butun son chegarasi (`Number.MAX_SAFE_INTEGER`) bu yerda ham amal qiladi: undan
+    oshgan qarz summasi, toʻlov summasi, kurs yoki aylantirish natijasi saqlanmaydi va xato
+    koʻrsatiladi. Taʼrifi `prds/kirim-chiqim.md` 1a1-bandida. (0008, 0033)
 14. Qarz berish, qarz olish va qarz toʻlovi sanasi faqat bugungi yoki undan oldingi kun.
     (PRD 9; 0034)
 15. Kurs maydoniga **1 dollar necha soʻm** ekani kiritiladi. (PRD 12; 0023)

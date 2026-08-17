@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest'
 
-import { dollarniSomga, kursniOqi, somniDollarga, summaniMatnga, summaniOqi } from './pul.ts'
+import {
+  dollarSomgaSigadimi,
+  dollarniSomga,
+  kursniOqi,
+  somDollargaSigadimi,
+  somniDollarga,
+  summaniMatnga,
+  summaniOqi,
+} from './pul.ts'
 import type { Natija } from './turlar.ts'
 
 /** Testni qisqartirish uchun: natijadagi xato kodlarini roʻyxat qilib beradi. */
@@ -126,6 +134,31 @@ describe('somniDollarga (0042)', () => {
   it('teng yarim yuqoriga ketadi', () => {
     // 1 soʻm × 100 / 200 = 0,5 sent → 1
     expect(somniDollarga(1, 200)).toBe(1)
+  })
+})
+
+describe('aylantirish chegarasi (1a1, 1a2; mezon 4g)', () => {
+  const CHEGARA = Number.MAX_SAFE_INTEGER
+
+  it('oddiy summa va kurs sigadi', () => {
+    expect(dollarSomgaSigadimi(10000, 12500)).toBe(true)
+  })
+
+  it('mezon 4g — 100 $ × 9 007 199 254 740 kurs chegaradan oshadi', () => {
+    // aynan QA topgan holat: summa '10000' (dollar) × kurs '9007199254740'
+    expect(dollarSomgaSigadimi(1000000, 9007199254740)).toBe(false)
+    // isbot: aylantirish natijasi jimgina xavfsiz chegaradan chiqib ketadi
+    expect(Number.isSafeInteger(dollarniSomga(1000000, 9007199254740))).toBe(false)
+  })
+
+  it('chegaraning oʻzi sigadi, undan bittasi ortigʻi sigmaydi', () => {
+    expect(dollarSomgaSigadimi(1, CHEGARA)).toBe(true)
+    expect(dollarSomgaSigadimi(2, CHEGARA)).toBe(false)
+  })
+
+  it('teskari aylantirish ham tekshiriladi — soʻm sentga koʻpaytiriladi', () => {
+    expect(somDollargaSigadimi(90071992547409)).toBe(true)
+    expect(somDollargaSigadimi(90071992547410)).toBe(false)
   })
 })
 
