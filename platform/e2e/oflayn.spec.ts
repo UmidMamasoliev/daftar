@@ -88,3 +88,62 @@ test('mezon 22 — internet oʻchiq holda qarz va toʻlov saqlanadi va joyida qo
 
   await context.setOffline(false)
 })
+
+// Mezon 25: «Internet oʻchirilgan holda eksport ham, import ham ishlaydi.» (0003, 0004)
+//
+// Fayl xotirada `Blob` boʻlib yasaladi va brauzerning oʻz yuklab olish yoʻli bilan
+// beriladi — serverga chiqmaydi, shuning uchun tarmoqsiz ham ishlaydi.
+
+test('mezon 25 — internet oʻchiq holda eksport va import ishlaydi', async ({
+  page,
+  context,
+}) => {
+  await page.goto('/')
+  await expect(page.getByRole('heading', { name: 'Yozuvlar', level: 1 })).toBeVisible()
+
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready
+  })
+
+  await context.setOffline(true)
+  await page.reload()
+
+  await page.getByRole('button', { name: 'Yozuv', exact: true }).click()
+  await page.getByRole('button', { name: 'Chiqim' }).click()
+  await page.getByLabel('Summa').fill('45000')
+  await page.getByRole('button', { name: 'oziq-ovqat' }).click()
+  await page.getByRole('button', { name: 'Saqlash' }).click()
+  await expect(page.getByText('−45 000 soʻm')).toBeVisible()
+
+  // Eksport — tarmoqsiz ham fayl chiqadi.
+  await page.getByRole('button', { name: 'Zaxira', exact: true }).click()
+  const yuklandi = page.waitForEvent('download')
+  await page.getByRole('button', { name: 'Eksport' }).click()
+  const fayl = await yuklandi
+  const yoli = await fayl.path()
+  await expect(page.getByText('Oxirgi zaxira: Bugun')).toBeVisible()
+
+  // Daftar oʻzgaradi, keyin oʻsha fayldan tiklanadi — hali ham oflayn.
+  await page.getByRole('button', { name: 'Yozuv', exact: true }).click()
+  await page.getByRole('button', { name: 'Chiqim' }).click()
+  await page.getByLabel('Summa').fill('90000')
+  await page.getByRole('button', { name: 'transport' }).click()
+  await page.getByRole('button', { name: 'Saqlash' }).click()
+  await expect(page.getByText('−90 000 soʻm')).toBeVisible()
+
+  await page.getByRole('button', { name: 'Zaxira', exact: true }).click()
+  const zaxiraYuklandi = page.waitForEvent('download')
+  await page.getByRole('button', { name: 'Import' }).click()
+  await page.getByLabel('Tiklanadigan fayl').setInputFiles(yoli)
+  const zaxira = await zaxiraYuklandi
+  await page.getByLabel('Zaxira fayli').setInputFiles(await zaxira.path())
+
+  await expect(page.getByText('Daftar fayldan tiklandi.')).toBeVisible()
+  await expect(page.getByText('1 yozuv · 0 kontakt · 0 qarz · 0 toʻlov')).toBeVisible()
+
+  await page.getByRole('button', { name: 'Yozuvlarni koʻrish' }).click()
+  await expect(page.getByText('−45 000 soʻm')).toBeVisible()
+  await expect(page.getByText('−90 000 soʻm')).toBeHidden()
+
+  await context.setOffline(false)
+})

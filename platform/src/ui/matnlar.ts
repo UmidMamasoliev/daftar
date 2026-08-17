@@ -102,6 +102,7 @@ export const NAVIGATSIYA = {
   yozuvlar: 'Yozuvlar',
   qarzDaftari: 'Qarz daftari',
   hisobot: 'Hisobot',
+  zaxira: 'Zaxira',
 } as const
 
 /** Netto qatoridagi soʻzlar (dizayn: `design/qarz-daftari.md` 0-boʻlim; 0037, 0056). */
@@ -222,6 +223,57 @@ export function taxminiyIzohi(kurs: string): string {
   return `taxminiy · ${kurs}`
 }
 
+/** «Zaxira» ekranidagi matnlar (dizayn: `design/zaxira.md`). */
+export const ZAXIRA = {
+  sarlavha: 'Zaxira',
+  // ── «Zaxira olish» kartochkasi (2-boʻlim) ──
+  olish: 'Zaxira olish',
+  zaxiraYoq: 'Hali zaxira olinmagan.',
+  eksportYordami:
+    'Butun daftar bitta faylga yoziladi va qurilmangizga yuklab olinadi.',
+  eksport: 'Eksport',
+  // ── «Fayldan tiklash» kartochkasi (3-boʻlim) ──
+  tiklash: 'Fayldan tiklash',
+  ogohBirinchiBoshi: 'Import hozirgi maʼlumot ',
+  ogohBirinchiKuchli: 'oʻrniga',
+  ogohBirinchiOxiri: ' fayldagisini yozadi.',
+  ogohIkkinchi:
+    'Shuning uchun ilova avval hozirgi maʼlumotni faylga chiqaradi — undan qaytish yoʻli qoladi.',
+  ogohBosh: 'Daftar boʻsh — yoʻqoladigan maʼlumot yoʻq, import bir qadamda oʻtadi.',
+  import: 'Import',
+  // Fayl tanlagichlar koʻrinmaydi — yordamchi nomi (`×` ning «Yopish» i kabi).
+  tiklanadiganYorligi: 'Tiklanadigan fayl',
+  zaxiraFayliYorligi: 'Zaxira fayli',
+  // ── 2- va 3-qadam ──
+  chiqarildi: 'Hozirgi maʼlumot faylga chiqarildi.',
+  qaytaribTanlang:
+    'Endi oʻsha faylni qaytarib tanlang — zaxira saqlanganini ilova shunda koʻradi.',
+  zaxiraFayliniTanlash: 'Zaxira faylini tanlash',
+  bekorQilish: 'Bekor qilish',
+  bekorBirinchi: 'Import bekor qilindi — daftardagi maʼlumot oʻzgarmadi.',
+  bekorIkkinchi: 'Chiqarilgan zaxira fayli qurilmangizda qoladi.',
+  // ── Xato va natija ──
+  ozgarmadi: 'Daftardagi maʼlumot oʻzgarmadi.',
+  tanlanmadi: 'Zaxira fayli tanlanmadi — import bajarilmadi.',
+  tiklandi: 'Daftar fayldan tiklandi.',
+  yozuvlarniKorish: 'Yozuvlarni koʻrish',
+} as const
+
+/** «Oxirgi zaxira: 16-avgust» (dizayn 2-boʻlim). */
+export function oxirgiZaxiraQatori(sana: string): string {
+  return `Oxirgi zaxira: ${sana}`
+}
+
+/** «Fayl yuklab olindi: daftar-zaxira-2026-08-17-1435.json». */
+export function yuklabOlindiQatori(nom: string): string {
+  return `Fayl yuklab olindi: ${nom}`
+}
+
+/** «Tiklanadigan fayl: daftar-zaxira-2026-08-10-0912.json» (2-qadam). */
+export function tiklanadiganQatori(nom: string): string {
+  return `Tiklanadigan fayl: ${nom}`
+}
+
 /** «Kontakt: Akmal» — qarz va toʻlov formasidagi qator (dizayn: 3- va 4-boʻlim). */
 export function kontaktQatori(ism: string): string {
   return `Kontakt: ${ism}`
@@ -309,6 +361,13 @@ const EKRAN_MATNLARI: Partial<Record<XatoKodi, string>> = {
   // Xuddi shu sabab: forma ochiq turganda kontakt boshqa joyda oʻchirilishi mumkin
   // (0030). Dizaynda matn yoʻq, chunki bitta tabda bu holatga yoʻl yoʻq.
   'kontakt-topilmadi': 'Kontakt topilmadi.',
+
+  // ── Zaxira (`design/zaxira.md` 5-boʻlim; KELISHUV 25-boʻlim) ──
+  // Ekran har xatoga ikkinchi qator qoʻshadi: «Daftardagi maʼlumot oʻzgarmadi.»
+  'zaxira-oqilmadi': 'Fayl oʻqilmadi — u buzilgan yoki daftar zaxirasi emas.',
+  'zaxira-versiya': 'Fayl versiyasi notanish — bu daftar oʻqiy oladigan zaxira emas.',
+  'zaxira-notolik': 'Faylda maʼlumot toʻliq emas — import qilinmadi.',
+  'zaxira-mos-emas': 'Bu fayl hozirgina chiqarilgan zaxira emas.',
   // 0030: doʻkon «qarzni yoping» deydi, dizayn «qarzlarni yoping» — ekran matni dizaynniki.
   'kontakt-ochiq-qarz': 'Ochiq qarzi bor kontakt oʻchirilmaydi — avval qarzlarni yoping.',
   // `qarz-summa-tolovdan-kam` bu roʻyxatda YOʻQ: uning matni raqamli va qarz valyutasiga

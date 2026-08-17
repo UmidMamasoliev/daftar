@@ -47,6 +47,14 @@ import {
   yozuvniYangila,
 } from './data/yozuvlar.ts'
 import { qoldaKurslarniOl, qoldaKursniQoy } from './data/sozlamalar.ts'
+import {
+  daftarBoshmi,
+  oxirgiEksportniOl,
+  zaxiraTasdigi,
+  zaxiraniChiqar,
+  zaxiraniImport,
+} from './data/zaxira.ts'
+import { zaxiraniOqi } from './domain/zaxira.ts'
 import type { Davr, Hisobot as HisobotTuri, Oy } from './domain/hisobot.ts'
 import { joriyOyDavri, oyDavri, oySur, sananingOyi } from './domain/hisobot.ts'
 import { korinadiganlar } from './domain/kategoriya.ts'
@@ -65,6 +73,8 @@ import type {
 import { bugun } from './domain/sana.ts'
 import { Hisobot } from './ui/Hisobot.tsx'
 import { qoldaKurslarManbalari } from './ui/kurslar.ts'
+import { faylniYuklabOl } from './ui/yuklash.ts'
+import { Zaxira } from './ui/Zaxira.tsx'
 import { Kategoriyalar } from './ui/Kategoriyalar.tsx'
 import { Kontakt } from './ui/Kontakt.tsx'
 import type { Bolim } from './ui/Navigatsiya.tsx'
@@ -85,9 +95,16 @@ type Ekran =
   | 'qarz-forma'
   | 'tolov-forma'
   | 'hisobot'
+  | 'zaxira'
 
 /** Navigatsiya paneli faqat shu ekranlarda koʻrinadi (dizayn, 0063). */
-const NAVLI_EKRANLAR: readonly Ekran[] = ['yozuvlar', 'qarz-daftari', 'kontakt', 'hisobot']
+const NAVLI_EKRANLAR: readonly Ekran[] = [
+  'yozuvlar',
+  'qarz-daftari',
+  'kontakt',
+  'hisobot',
+  'zaxira',
+]
 
 
 type Holat = {
@@ -128,6 +145,9 @@ export function App() {
   const [hisobot, setHisobot] = useState<HisobotTuri | null>(null)
   // «Oyga qaytish» davr tanlashdan **oldin** ochiq turgan oyni qaytaradi (dizayn 2-boʻlim).
   const [oldingiOy, setOldingiOy] = useState<Oy | null>(null)
+  // Zaxira ekrani: holat qatori va 0055 istisnosi shu ikki qiymatga tayanadi.
+  const [oxirgiEksport, setOxirgiEksport] = useState<string | null>(null)
+  const [daftarBosh, setDaftarBosh] = useState(false)
 
   /**
    * Birinchi oʻqish ham **navbatdan** oʻtadi.
@@ -190,6 +210,31 @@ export function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ekran, hisobotDavri, yozuvlar, kontaktlar, kategoriyalar])
 
+  /** Zaxira ekranidagi ikki qiymat — har ochilganda va har amaldan keyin qayta oʻqiladi. */
+  async function zaxiraHolatiniOqi(): Promise<void> {
+    const [sana, bosh] = await Promise.all([oxirgiEksportniOl(), daftarBoshmi()])
+    setOxirgiEksport(sana)
+    setDaftarBosh(bosh)
+  }
+
+  useEffect(() => {
+    if (ekran !== 'zaxira') {
+      return
+    }
+    let tirik = true
+    void navbatga(async () => {
+      const [sana, bosh] = await Promise.all([oxirgiEksportniOl(), daftarBoshmi()])
+      if (tirik) {
+        setOxirgiEksport(sana)
+        setDaftarBosh(bosh)
+      }
+    })
+    return () => {
+      tirik = false
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ekran])
+
   /**
    * Doʻkonga tegadigan har amal navbatda bajariladi.
    *
@@ -226,7 +271,13 @@ export function App() {
   const navKorinadi = NAVLI_EKRANLAR.includes(ekran)
   // «Kontakt» sahifasida faol boʻlim — «Qarz daftari» (dizayn).
   const faolBolim: Bolim =
-    ekran === 'yozuvlar' ? 'yozuvlar' : ekran === 'hisobot' ? 'hisobot' : 'qarz-daftari'
+    ekran === 'yozuvlar'
+      ? 'yozuvlar'
+      : ekran === 'hisobot'
+        ? 'hisobot'
+        : ekran === 'zaxira'
+          ? 'zaxira'
+          : 'qarz-daftari'
 
   /** Panel yoʻqolganda oʻchirish yakuniy boʻladi — nusxa tashlanadi (0029). */
   function kontaktPanelniUnut(): void {
@@ -243,6 +294,10 @@ export function App() {
     }
     if (bolim === 'yozuvlar') {
       setEkran('yozuvlar')
+      return
+    }
+    if (bolim === 'zaxira') {
+      setEkran('zaxira')
       return
     }
     if (bolim === 'hisobot') {
@@ -537,6 +592,47 @@ export function App() {
               const kurslar = await qoldaKursniQoy(kurs, bugun())
               setHisobot(await hisobotniOl(hisobotDavri, qoldaKurslarManbalari(kurslar)))
             })
+          }}
+        />
+      ) : null}
+
+      {ekran === 'zaxira' ? (
+        <Zaxira
+          oxirgiEksport={oxirgiEksport}
+          daftarBosh={daftarBosh}
+          eksport={async () =>
+            navbatga(async () => {
+              const chiqarilgan = await zaxiraniChiqar('qolda')
+              // Eksport oxirgi sanani yangilaydi (0054) — qator darhol oʻzgaradi.
+              await zaxiraHolatiniOqi()
+              return chiqarilgan
+            })
+          }
+          avtomatikZaxira={async () =>
+            navbatga(async () => {
+              const chiqarilgan = await zaxiraniChiqar('import-oldidan')
+              // Avtomatik zaxira ham eksport sanaladi (0054; 11b, 11c-mezonlar).
+              await zaxiraHolatiniOqi()
+              return chiqarilgan
+            })
+          }
+          faylniOqi={zaxiraniOqi}
+          tasdiqla={zaxiraTasdigi}
+          importQil={async (matn) =>
+            navbatga(async () => {
+              const natija = await zaxiraniImport(matn)
+              if (natija.ok) {
+                // Hamma ekran yangi maʼlumotni koʻrsatadi (spec 24, 25): qoldiqlar,
+                // qarzlar va hisobot fayldan **qayta hisoblanadi**.
+                await yangila()
+                await zaxiraHolatiniOqi()
+              }
+              return natija
+            })
+          }
+          yuklabOl={faylniYuklabOl}
+          yozuvlarniKor={() => {
+            setEkran('yozuvlar')
           }}
         />
       ) : null}

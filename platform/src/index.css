@@ -747,16 +747,32 @@ button:active {
 }
 
 /* Boʻlak eni teng, bosiladigan joyi butun boʻlak (kamida 44 px — bu yerda 56 px). */
+/*
+ * Matn sigʻmasa ikki qatorga oʻraladi va markazda turadi («Qarz» / «daftari») —
+ * qisqartma qoʻyilmaydi va `…` bilan kesilmaydi (uslub). Qator balandligi 1.2:
+ * ikki qator 13 px shu 56 px ichiga sigʻadi, panel balandligi oʻzgarmaydi.
+ */
 .nav-bolak {
   min-height: var(--nav-balandligi);
-  padding: 0 var(--bosh-2);
+  padding: 0 var(--bosh-1);
+  line-height: 1.2;
+  white-space: normal;
+  text-align: center;
   border: 0;
   background: transparent;
   color: var(--matn-ikkinchi);
   font: inherit;
-  font-size: 14px;
   font-weight: 400;
   cursor: pointer;
+}
+
+/* Oʻlchamning yagona manbai — `navMatnSinfi` (boʻlaklar sonidan hisoblanadi). */
+.nav-matn-kichik {
+  font-size: 14px;
+}
+
+.nav-matn-mayda {
+  font-size: 13px;
 }
 
 /* Faol boʻlim faqat rang bilan emas — qalinlik bilan ham ajratiladi (uslub). */
@@ -1406,4 +1422,96 @@ button:active {
 .hisobot-yol {
   padding: 0 var(--bosh-4);
   text-align: center;
+}
+
+/* ── «Zaxira» ekrani ─────────────────────────────────────────────────────── */
+
+/*
+ * Bu ekranda pastda yopishib turadigan tugma paneli yoʻq — ikkita ish bor va
+ * ikkalasi ham oʻz kartochkasida (dizayn 1-boʻlim).
+ */
+.zaxira-tanasi {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosh-4);
+  padding: var(--bosh-4);
+}
+
+.nav-bor .zaxira-tanasi {
+  padding-bottom: calc(var(--bosh-4) + var(--nav-toliq));
+}
+
+.zaxira-tanasi .kartochka {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosh-2);
+}
+
+.zaxira-holat {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--matn-ikkinchi);
+}
+
+/*
+ * Ogohlantirish **qizil emas**: maʼnoni matnning oʻzi tashiydi va qaytish yoʻli bor
+ * (0027). Qizil rang bu daftarda xato va oʻchirish uchun (uslub).
+ */
+.zaxira-ogoh,
+.zaxira-matn {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--matn);
+}
+
+.zaxira-kuchli {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.zaxira-sanoq {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--matn-ikkinchi);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Import oqimi kartochka ichida ochiladi — ekran almashmaydi (dizayn 3-boʻlim). */
+.zaxira-oqim {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosh-2);
+  padding: var(--bosh-3) 0 0;
+  border-top: 1px solid var(--chegara);
+}
+
+.zaxira-xato {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosh-1);
+}
+
+.zaxira-import {
+  width: 100%;
+}
+
+/*
+ * Fayl tanlagich koʻrinmaydi, lekin yordamchi texnologiyalar uchun DOM da qoladi:
+ * `display: none` boʻlsa tanlagichni tugmadan ochib boʻlmasdi.
+ */
+.fayl-kirit {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }

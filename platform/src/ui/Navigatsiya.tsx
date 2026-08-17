@@ -10,8 +10,8 @@
 
 import { NAVIGATSIYA } from './matnlar.ts'
 
-/** Panel boʻlaklari. «Zaxira» oʻz qismi tayyor boʻlganda qoʻshiladi (uslub: panel toʻldi). */
-export type Bolim = 'yozuv' | 'yozuvlar' | 'qarz-daftari' | 'hisobot'
+/** Panel boʻlaklari — **panel toʻldi**, boshqa boʻlak qoʻshilmaydi (uslub). */
+export type Bolim = 'yozuv' | 'yozuvlar' | 'qarz-daftari' | 'hisobot' | 'zaxira'
 
 export type NavigatsiyaProps = {
   /** Hozir qaysi boʻlimda turibmiz. «Kontakt» sahifasida — `'qarz-daftari'` (dizayn). */
@@ -25,6 +25,7 @@ const BOLAKLAR: readonly { bolim: Bolim; matn: string }[] = [
   { bolim: 'yozuvlar', matn: NAVIGATSIYA.yozuvlar },
   { bolim: 'qarz-daftari', matn: NAVIGATSIYA.qarzDaftari },
   { bolim: 'hisobot', matn: NAVIGATSIYA.hisobot },
+  { bolim: 'zaxira', matn: NAVIGATSIYA.zaxira },
 ]
 
 /**
