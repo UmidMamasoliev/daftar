@@ -6,11 +6,11 @@
 import { cleanup, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { Navigatsiya } from './Navigatsiya.tsx'
+import { Navigatsiya, navMatnSinfi } from './Navigatsiya.tsx'
 
 afterEach(cleanup)
 
-function chiz(faol: 'yozuv' | 'yozuvlar' | 'qarz-daftari' = 'yozuvlar') {
+function chiz(faol: 'yozuv' | 'yozuvlar' | 'qarz-daftari' | 'hisobot' = 'yozuvlar') {
   const otish = vi.fn()
   render(<Navigatsiya faol={faol} otish={otish} />)
   return { otish, odam: userEvent.setup() }
@@ -21,18 +21,30 @@ function bolak(nom: string): HTMLElement {
 }
 
 describe('boʻlaklar (dizayn: «Nima koʻrinadi»)', () => {
-  it('uchta boʻlak turadi: Yozuv, Yozuvlar, Qarz daftari', () => {
+  it('toʻrtta boʻlak turadi: Yozuv, Yozuvlar, Qarz daftari, Hisobot', () => {
     chiz()
     expect(bolak('Yozuv')).toBeDefined()
     expect(bolak('Yozuvlar')).toBeDefined()
     expect(bolak('Qarz daftari')).toBeDefined()
-    expect(screen.getAllByRole('button')).toHaveLength(3)
+    expect(bolak('Hisobot')).toBeDefined()
+    expect(screen.getAllByRole('button')).toHaveLength(4)
   })
 
-  it('«Hisobot» va «Zaxira» hali yoʻq — qismlar tayyor boʻlganda qoʻshiladi', () => {
+  it('«Zaxira» hali yoʻq — oʻz qismi tayyor boʻlganda qoʻshiladi', () => {
     chiz()
-    expect(screen.queryByRole('button', { name: 'Hisobot' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'Zaxira' })).toBeNull()
+  })
+
+  // Uslub: «Matn — `kichik` (14 px); boʻlak **toʻrttadan koʻp** boʻlganda `mayda` (13 px)».
+  // Qoida boʻlaklar sonidan hisoblanadi: «Zaxira» qoʻshilganda oʻlcham oʻzi kichrayadi.
+  it('toʻrtta boʻlakda matn `kichik`, toʻrttadan koʻpida `mayda` boʻladi', () => {
+    expect(navMatnSinfi(4)).toBe('nav-matn-kichik')
+    expect(navMatnSinfi(5)).toBe('nav-matn-mayda')
+  })
+
+  it('joriy panel oʻz boʻlaklari soniga mos sinfni oladi', () => {
+    chiz()
+    expect(bolak('Hisobot').className).toContain('nav-matn-kichik')
   })
 })
 
@@ -56,7 +68,8 @@ describe('bosilganda', () => {
     const { otish, odam } = chiz()
     await odam.click(bolak('Yozuv'))
     await odam.click(bolak('Qarz daftari'))
-    expect(otish.mock.calls).toEqual([['yozuv'], ['qarz-daftari']])
+    await odam.click(bolak('Hisobot'))
+    expect(otish.mock.calls).toEqual([['yozuv'], ['qarz-daftari'], ['hisobot']])
   })
 
   it('faol boʻlimning oʻzi bosilsa ham chaqiruv ketadi', async () => {

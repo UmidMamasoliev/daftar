@@ -101,6 +101,7 @@ export const NAVIGATSIYA = {
   yozuv: 'Yozuv',
   yozuvlar: 'Yozuvlar',
   qarzDaftari: 'Qarz daftari',
+  hisobot: 'Hisobot',
 } as const
 
 /** Netto qatoridagi soʻzlar (dizayn: `design/qarz-daftari.md` 0-boʻlim; 0037, 0056). */
@@ -172,6 +173,54 @@ export const TOLOV_FORMA = {
   summa: 'Summa',
   saqlash: 'Saqlash',
 } as const
+
+/** «Hisobot» ekranidagi matnlar (dizayn: `design/oylik-hisobot.md`). */
+export const HISOBOT = {
+  sarlavha: 'Hisobot',
+  // `‹` va `›` — koʻrinadigan matni belgi, shuning uchun yordamchi nomi beriladi.
+  oldingiOy: 'Oldingi oy',
+  keyingiOy: 'Keyingi oy',
+  davrTanlash: 'Davr tanlash',
+  oygaQaytish: 'Oyga qaytish',
+  sanadan: 'Sanadan',
+  sanagacha: 'Sanagacha',
+  korsatish: 'Koʻrsatish',
+  yopish: UMUMIY.yopish,
+  davrTartibi: 'Boshlanish sanasi tugash sanasidan keyin boʻlmasin.',
+  jamiKirim: 'Jami kirim',
+  jamiChiqim: 'Jami chiqim',
+  farq: 'Farq',
+  farqYordami: 'kirim − chiqim',
+  kursKerak: 'Taxminiy jamini koʻrsatish uchun kurs kerak.',
+  kursSaqlash: 'Saqlash',
+  hisoblanmadi: 'Taxminiy jami hisoblanmadi — summalar juda katta.',
+  chiqimAjratmasi: 'Chiqim — kategoriyalar boʻyicha',
+  kirimAjratmasi: 'Kirim — kategoriyalar boʻyicha',
+  somGuruhi: 'soʻm',
+  dollarGuruhi: 'dollar',
+  qarz: 'Qarz',
+  qarzIzohi: 'Qarz summalari jami kirim va jami chiqimga qoʻshilmagan.',
+  qarzBerildi: 'Qarzga berildi',
+  qarzdanQaytdi: 'Qarzdan qaytdi',
+  qarzOlindi: 'Qarz olindi',
+  qarzQaytarildi: 'Qarz qaytarildi',
+  chiqimYoq: 'Bu davrda chiqim yozuvi yoʻq.',
+  kirimYoq: 'Bu davrda kirim yozuvi yoʻq.',
+  qarzHarakatiYoq: 'Bu davrda qarz harakati yoʻq.',
+  boshqaDavr: 'Boshqa davrni yuqoridan tanlang.',
+  boshBirinchi: 'Hali bitta ham yozuv yoʻq.',
+  boshIkkinchi: 'Birinchi yozuvni pastdagi «Yozuv» boʻlimi bilan qoʻshasiz.',
+} as const
+
+/** «≈ +10 500 000 soʻm» — taxminiy jami qatori (0023). */
+export function taxminiyMatni(somMatni: string): string {
+  return `≈ ${somMatni}`
+}
+
+/** «taxminiy · 1 $ = 12 500 soʻm» — qaysi kurs bilan hisoblangani (dizayn 3-boʻlim). */
+export function taxminiyIzohi(kurs: string): string {
+  return `taxminiy · ${kurs}`
+}
 
 /** «Kontakt: Akmal» — qarz va toʻlov formasidagi qator (dizayn: 3- va 4-boʻlim). */
 export function kontaktQatori(ism: string): string {

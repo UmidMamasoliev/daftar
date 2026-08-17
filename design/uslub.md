@@ -174,9 +174,10 @@ yoʻq (ikonka kutubxonasi yoʻq):
 | **«Yozuvlar»** | «Yozuvlar» ekrani (oʻsha fayl, 2-boʻlim) |
 | **«Qarz daftari»** | «Qarz daftari» — kontaktlar roʻyxati (`design/qarz-daftari.md` 1-boʻlim) |
 | **«Hisobot»** | «Hisobot» ekrani (`design/oylik-hisobot.md`) — har ochilganda joriy oy bilan |
+| **«Zaxira»** | «Zaxira» ekrani (`design/zaxira.md`) — eksport va import |
 
-Zaxira qismi tayyor boʻlganda shu panelga **«Zaxira»** boʻlagi xuddi shu naqshda qoʻshiladi.
-Boshqa boʻlak qoʻshilmaydi — panelda koʻpi bilan beshta boʻlak boʻladi.
+**Panel toʻldi: beshta boʻlak.** Boshqa boʻlak qoʻshilmaydi. Boʻlaklar toʻrttadan koʻp
+boʻlgani uchun matn oʻlchami `mayda` (13 px) — pastdagi jadvalning «Matn» qatori.
 
 ### Oʻlchamlari va rangi
 
@@ -198,8 +199,10 @@ ham qaysi boʻlimda turganini bilsin (uslubning umumiy qoidasi).
 
 ### Qayerda koʻrinadi, qayerda yoʻq
 
-- **Koʻrinadi:** «Yozuvlar», «Qarz daftari», «Kontakt» sahifasi, «Hisobot». «Kontakt» da faol
-  boʻlim — **«Qarz daftari»**.
+- **Koʻrinadi:** «Yozuvlar», «Qarz daftari», «Kontakt» sahifasi, «Hisobot», «Zaxira».
+  «Kontakt» da faol boʻlim — **«Qarz daftari»**. «Zaxira» ekranida import oqimi yarim
+  qolgan boʻlsa ham panel joyida turadi va boshqa boʻlimga oʻtish oqimni bekor qiladi
+  (`design/zaxira.md` 6-boʻlim).
 - **Koʻrinmaydi:** `×` bilan ochiladigan forma ekranlarida («Yangi yozuv», «Yozuvni
   tahrirlash», «Yangi qarz», «Qarzni tahrirlash», «Toʻlov») va forma ichidan ochiladigan
   «Kategoriyalar» ekranida. U yerda pastda **«Saqlash»** yoki **«＋ Yangi kategoriya»** paneli

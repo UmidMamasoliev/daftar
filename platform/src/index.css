@@ -1123,3 +1123,287 @@ button:active {
 .chip:disabled {
   cursor: default;
 }
+
+/* ── «Hisobot» ekrani ────────────────────────────────────────────────────── */
+
+/*
+ * Bu ekranda asosiy tugma paneli yoʻq, shuning uchun pastda faqat navigatsiya
+ * panelining joyi qoldiriladi (dizayn 1-boʻlim, 7-band).
+ */
+.hisobot-tanasi {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosh-4);
+  padding: var(--bosh-4);
+}
+
+.nav-bor .hisobot-tanasi {
+  padding-bottom: calc(var(--bosh-4) + var(--nav-toliq));
+}
+
+/* Davr qatori yuqori panel ostida yopishib turadi — surilganda ham koʻrinsin. */
+.davr-qatori {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosh-1);
+  padding: var(--bosh-2) var(--bosh-4);
+  background: var(--fon);
+  border-bottom: 1px solid var(--chegara);
+}
+
+.oy-tanlagich {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bosh-4);
+}
+
+.oy-nomi {
+  min-width: 140px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.davr-matni {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Havola oʻngga tekislanadi (dizayn 2-boʻlim). */
+.davr-havola {
+  align-self: flex-end;
+}
+
+/* Oʻchiq strelka: bosilmaydi va kursor oʻzgarmaydi (uslub: «Oʻchiq»). */
+.belgi-tugma:disabled {
+  color: var(--matn-ochiq);
+  cursor: default;
+}
+
+.davr-bloki {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosh-3);
+  margin: var(--bosh-3) var(--bosh-4) 0;
+  padding: var(--bosh-3);
+  background: var(--yuza);
+  border: 1px solid var(--chegara);
+  border-radius: var(--radius);
+}
+
+.davr-maydon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bosh-3);
+}
+
+.davr-maydon .yorliq {
+  margin-bottom: 0;
+}
+
+.davr-maydon .sana-tanlagich {
+  min-width: 150px;
+}
+
+.davr-tugmalar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bosh-2);
+}
+
+/* ── Kartochkalar ────────────────────────────────────────────────────────── */
+
+.kartochka {
+  padding: var(--bosh-3) var(--bosh-4);
+  background: var(--yuza);
+  border: 1px solid var(--chegara);
+  border-radius: var(--radius);
+}
+
+.kartochka-sarlavha {
+  margin: 0 0 var(--bosh-2);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.kartochka-izoh {
+  margin: var(--bosh-2) 0 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--matn-ikkinchi);
+}
+
+.kartochka-bosh {
+  margin: 0;
+  padding: var(--bosh-3) var(--bosh-4);
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--matn-ikkinchi);
+}
+
+/* Jami kartochkasi: uchta boʻlak, orasi 12 px (dizayn 3-boʻlim). */
+.jami-kartochka {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosh-3);
+}
+
+/*
+ * Boʻlak: chapda yorliq, oʻngda valyuta qatorlari. `raqam-katta` (28 px) bu ekranda
+ * ishlatilmaydi — olti katta raqam ekranni oʻqib boʻlmas qilardi (dizayn 1-boʻlim).
+ */
+.jami-bolak {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--bosh-3);
+  min-height: 40px;
+}
+
+.jami-yorliq {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.jami-bolak .yorliq {
+  margin-bottom: 0;
+}
+
+.jami-yorliq .yordam {
+  display: block;
+}
+
+.jami-qatorlar {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--bosh-1);
+}
+
+.jami-summa {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.jami-summa.kirim {
+  color: var(--kirim);
+}
+
+.jami-summa.chiqim {
+  color: var(--chiqim);
+}
+
+/* Taxminiy raqam neytral rangda — haqiqiy raqamdek koʻrinmasin (dizayn 3-boʻlim). */
+.taxminiy-jami {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--matn);
+  font-variant-numeric: tabular-nums;
+}
+
+.taxminiy-izoh {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--matn-ikkinchi);
+}
+
+.taxminiy-xato {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--chiqim);
+}
+
+/* Kurs soʻrash bloki «≈ jami soʻmda» qatori turadigan joyda ochiladi. */
+.kurs-sorov {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosh-1);
+  align-items: stretch;
+  text-align: left;
+}
+
+.kurs-sorov-qatori {
+  display: flex;
+  align-items: center;
+  gap: var(--bosh-2);
+}
+
+.kurs-sorov-qatori .maydon {
+  flex: 1;
+  min-width: 0;
+}
+
+.kurs-sorov-qatori .qoshish-tugma {
+  flex: none;
+  width: auto;
+  padding: 0 var(--bosh-4);
+}
+
+/* ── Ajratma va qarz qatorlari (bosilmaydi — 0064) ───────────────────────── */
+
+.ajratma {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ajratma-qator {
+  /* Qator bosiladigan koʻrinishga keltirilmaydi: fon ham, kursor ham oʻzgarmaydi. */
+  cursor: default;
+}
+
+.ajratma-ichi {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--bosh-3);
+  min-height: 40px;
+}
+
+.ajratma-nomi {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.guruh-sarlavha {
+  margin: var(--bosh-2) 0 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--matn-ikkinchi);
+}
+
+/* Bitta yorliq ostida ikki valyuta qatori boʻlishi mumkin (dizayn 5-boʻlim). */
+.qarz-summalar {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--bosh-1);
+}
+
+.hisobot-yol {
+  padding: 0 var(--bosh-4);
+  text-align: center;
+}

@@ -23,6 +23,7 @@ import { hozirYaratilgan } from '../domain/vaqt.ts'
 import { yozuvniTekshir } from '../domain/yozuv.ts'
 import { YOZUVLAR_OMBORI, idYarat, omborda } from './baza.ts'
 import { hammaTolovlar, qarzQoldiqlariniOl } from './qarzlar.ts'
+import { qoldaKurslarniOl } from './sozlamalar.ts'
 
 export { bazaniTozala, bazaniYop } from './baza.ts'
 
@@ -139,18 +140,35 @@ export async function qoldiqlarniOl(): Promise<Qoldiqlar> {
  * «Oxirgi kurs» — yozuvlar, qarz toʻlovlari va berilgan qoʻshimcha manbalardan
  * hisoblanadi (0044, 0045; qarz speci 15b-band).
  *
- * `qoshimcha` — «≈ jami soʻmda» uchun qoʻlda soʻralgan kurslar. Qarz toʻlovlari
- * kurslari endi shu yerda avtomatik qatnashadi; qarzning oʻzida kurs yoʻq, demak u
- * manba emas. Birorta manba boʻlmasa `null` — u holda kurs soʻraladi (mezon 23g).
+ * Uchala manba avtomatik qatnashadi: yozuv kurslari, qarz toʻlovlari kurslari va
+ * **qoʻlda soʻralgan kurs** (0043 — `sozlamalar` omborida, sanasi bilan saqlanadi).
+ * Qarzning oʻzida kurs yoʻq, demak u manba emas. Birorta manba boʻlmasa `null` — u holda
+ * kurs foydalanuvchidan soʻraladi (mezon 23g; zaxira mezon 24a–24d).
+ *
+ * `qoshimcha` — hali saqlanmagan qiymatni sinab koʻrish uchun (masalan forma ichida).
  */
 export async function oxirgiKursniOl(
   qoshimcha: readonly KursManbai[] = [],
 ): Promise<number | null> {
   const yozuvlar = await hammaYozuvlar()
   const tolovlar = await hammaTolovlar()
+  const qoldaKurslar = await qoldaKurslarniOl()
+  const qolda: KursManbai[] =
+    qoldaKurslar.dollar === undefined
+      ? []
+      : [
+          {
+            kurs: qoldaKurslar.dollar.kurs,
+            sana: qoldaKurslar.dollar.sana,
+            // Qoʻlda soʻralgan kursning ortida yozuv yoʻq (0045): bir xil sanada u
+            // yozuvlardan keyin kiritilgan deb qaraladi — oxirgi javob gʻolib boʻlsin.
+            yaratilgan: `${qoldaKurslar.dollar.sana}T23:59:59.999Z`,
+          },
+        ]
   return oxirgiKurs([
     ...yozuvlardanKurslar(yozuvlar),
     ...tolovlardanKurslar(tolovlar),
+    ...qolda,
     ...qoshimcha,
   ])
 }

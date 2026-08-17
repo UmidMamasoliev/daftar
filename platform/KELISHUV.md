@@ -4,8 +4,11 @@ Bu fayl qisqa xarita: qaysi funksiya qanday nom bilan, nima qabul qiladi, nima q
 xato qanday bildiriladi. **Manba — TypeScript tiplarining oʻzi** (`src/domain/turlar.ts`);
 bu yerda faqat yoʻl koʻrsatiladi.
 
-Holat: **T2 — maʼlumot modeli va pul yadrosi** tayyor. Kategoriyalar roʻyxati (0028), qarz
-daftari, hisobot va zaxira keyingi vazifalarda quriladi.
+Holat (2026-08-17): maʼlumot qatlamining **toʻrt qismi ham tayyor** — kirim-chiqim va
+kategoriyalar (1–11-boʻlimlar), qarz daftari (12–17), oylik hisobot (18–21), zaxira
+eksport/import (22–26). Dashboard ataylab qurilmagan (3.10 darsi). Baza sxemasi:
+**4-versiya** (`yozuvlar`, `kategoriyalar`, `kontaktlar`, `qarzlar`, `tolovlar`,
+`sozlamalar`).
 
 Fayllar:
 
@@ -330,6 +333,11 @@ boʻlmasa yaxlitlash ham notoʻgʻri chiqadi.
 **T4 uchun:** qarz va qarz toʻlovi aylantirishi ham shu ikki funksiyadan oʻtsin — chegara
 bitta joyda yopilgan, uni takrorlab yozish shart emas.
 
+**Yopildi (H2):** `taxminiyJamiSomda` ning chegara tekshiruvisiz qolgani — endi chegara
+tekshiruvli yoʻl bor: `xavfsizTaxminiyJami(jami, kurs)` (`src/domain/hisobot.ts`, 19-boʻlim).
+Eski funksiya imzosi **oʻzgarmadi** (uni ishlatayotgan kod buzilmaydi), lekin yangi joylar —
+hisobot ham, keyin dashboard ham — shu yangi yoʻldan yursin.
+
 ---
 
 # QARZ DAFTARI (Q1) — 12–17-boʻlimlar
@@ -626,3 +634,297 @@ indeksi) va `tolovlar` (`qarzId` indeksi) omborlari qoʻshildi. Eski `yozuvlar` 
   formati — ekranniki; doʻkon faqat `tolovOldindanKorish` raqamini beradi.
 - Qarzni boshqa kontaktga koʻchirish — **doʻkon darajasida taqiqlangan**: `qarzniTahrirla`
   formada boshqa `kontaktId` kelsa `qarz-kontakt-ozgarmas` bilan rad etadi (dizayn 5-boʻlim).
+
+---
+
+# OYLIK HISOBOT (H2) — 18–21-boʻlimlar
+
+Yuqoridagi 1–17-boʻlimlar **oʻzgarmadi** (11-boʻlimga faqat «yopildi» eslatmasi qoʻshildi).
+Quyidagilar oylik hisobotning hisob-kitob qatlami uchun qoʻshildi. **Ekran hali qurilmagan** —
+bu boʻlim faqat maʼlumot tomonini yozadi.
+
+Yangi fayllar:
+
+```
+src/domain/hisobot.ts   — davr, «qaysi yozuv qaysi qatorga tushadi», hisobotni yigʻish
+src/data/hisobot.ts     — hisobot doʻkoni: ekran shu fayl bilan gaplashadi
+```
+
+Qarorlar: 0013, 0017, 0018, 0019, 0021, 0023, 0026, 0035, 0038, 0042, 0043, 0044, 0045,
+0047, 0064. Spec — `prds/oylik-hisobot.md`, dizayn — `design/oylik-hisobot.md`.
+
+## 18. Davr va «qaysi yozuv qaysi qatorga tushadi» — `src/domain/hisobot.ts`
+
+```ts
+type Davr = { boshlanish: string; tugash: string }   // 'YYYY-MM-DD', ikkala chekka ichkarida
+type Oy   = { yil: number; oy: number }              // oy: 1–12
+```
+
+| Funksiya | Qabul qiladi | Qaytaradi |
+|---|---|---|
+| `joriyOyDavri(bugungiSana?)` | `string` (standart — `bugun()`) | `Davr` — ekran shu bilan ochiladi (mezon 1) |
+| `oyDavri(oy)` | `Oy` | `Davr` — oyning 1-sanasidan oxirgi sanasigacha |
+| `sananingOyi(sana)` | `string` | `Oy` |
+| `oySur(oy, qadam)` | `Oy`, `number` | `Oy` — `‹` va `›` tugmalari uchun; yil chegarasidan oʻzi oʻtadi |
+| `davrTogrimi(davr)` | `Davr` | `boolean` — boshlanish tugashdan keyin emasmi |
+| `davrgaKiradimi(sana, davr)` | `string`, `Davr` | `boolean` (mezon 4, 5, 6) |
+
+**Davr xatolari (dizayn 9-boʻlim) yangi xato kodi qoʻshmaydi:** kelajak sanasi mavjud
+`sananiTekshir` bilan (`sana-kelajak`, 0034), tartib esa `davrTogrimi` bilan tekshiriladi.
+Ekran ikkalasini chaqiradi va oʻz matnini qoʻyadi.
+
+### Sanoq ochiq — manzil funksiyalari
+
+Dizayn 6-boʻlimidagi qoidalar kod ichida **bitta joyda** turadi; hisobot aynan shularning
+ustiga qurilgan, ikkinchi yashirin qoida yoʻq:
+
+| Funksiya | Qaytaradi |
+|---|---|
+| `yozuvManzili(yozuv, davr)` | `{ qayerda: 'tashqarida' }` yoki `{ qayerda: 'ichkarida', bolak, valyuta, kategoriyaId, summa }` |
+| `qarzManzili(qarz, davr)` | `… { qator: 'berildi' \| 'olindi', valyuta, summa }` |
+| `tolovManzili(tolov, qarz \| null, davr)` | `… { qator: 'qaytdi' \| 'qaytarildi', valyuta, summa }`; qarz topilmasa `{ qayerda: 'qarzsiz' }` |
+
+- Davrni **faqat `sana`** aniqlaydi; `yaratilgan` taʼsir qilmaydi (0047).
+- Yozuv va qarz **oʻz valyutasida** qoladi — hisobotda hech qayerda aylantirilmaydi (0038).
+- **Toʻlov oʻz valyutasi va kiritilgan summasi bilan** sanaladi (0064): dollar qarziga
+  kelgan 625 000 soʻm hisobotning soʻm qatorida turadi, dollar qatoriga umuman tushmaydi.
+- Qarzning sanasi qarz qatorini, toʻlovning sanasi toʻlov qatorini davrga bogʻlaydi.
+
+## 19. «≈ jami soʻmda» — chegara tekshiruvli yoʻl
+
+```ts
+type TaxminiyJami =
+  | { holat: 'yoq' }            // boʻlakda dollar qatori yoʻq — qator chizilmaydi
+  | { holat: 'kurs-kerak' }     // daftarda birorta kurs yoʻq — ilova kursni soʻraydi (mezon 21)
+  | { holat: 'hisoblanmadi' }   // natija xavfsiz butun son chegarasidan oshdi (dizayn 9-boʻlim)
+  | { holat: 'bor'; somda: number; kurs: number }
+```
+
+`xavfsizTaxminiyJami(jami: ValyutaQoldigi, kurs: number | null)` — 11-boʻlimdagi texnik
+qarzning yopilishi: `dollarSomgaSigadimi` dan oʻtadi va yigʻindining oʻzini ham tekshiradi.
+Manfiy dollar qiymati («Farq» boʻlagi) simmetrik aylantiriladi. `holat: 'yoq'` ni **chaqiruvchi**
+hal qiladi — funksiya uchta qolgan javobni beradi.
+
+## 20. Hisobot koʻrinishi va doʻkon
+
+```ts
+type ValyutaQatori    = { valyuta: Valyuta; summa: number }
+type KategoriyaQatori = { kategoriyaId: string; valyuta: Valyuta; summa: number }
+type QarzQatori       = { qator: QarzQatoriTuri; valyuta: Valyuta; summa: number }
+type JamiBolagi       = { qatorlar: ValyutaQatori[]; taxminiy: TaxminiyJami }
+
+const QARZ_QATORLARI = ['berildi', 'qaytdi', 'olindi', 'qaytarildi']         // 0064
+const QARZ_QATOR_ISHORASI = { berildi: -1, qaytdi: 1, olindi: 1, qaytarildi: -1 }
+
+type Hisobot = {
+  davr: Davr
+  kirim: JamiBolagi; chiqim: JamiBolagi; farq: JamiBolagi
+  chiqimAjratmasi: KategoriyaQatori[]
+  kirimAjratmasi: KategoriyaQatori[]
+  qarz: QarzQatori[]
+  davrdaYozuvBormi: boolean          // dizayn 8-boʻlim boʻsh holat matnlari uchun
+  davrdaQarzHarakatiBormi: boolean   // 14g-mezon
+  daftardaYozuvBormi: boolean        // «Hali bitta ham yozuv yoʻq» (dizayn 8b)
+  kurs: number | null                // «taxminiy · 1 $ = …» qatori uchun
+}
+```
+
+| Funksiya | Qabul qiladi | Qaytaradi |
+|---|---|---|
+| `hisobotYasa(kirish)` | `{ davr, yozuvlar, qarzlar, tolovlar, kategoriyalar, kurs }` | `Hisobot` — sof hisob |
+| `hisobotniOl(davr, qoshimchaKurslar?)` | `Davr`, `KursManbai[]` | `Promise<Hisobot>` — doʻkon oʻzi oʻqiydi |
+| `joriyOyHisobotiniOl(qoshimchaKurslar?)` | `KursManbai[]` | `Promise<Hisobot>` (mezon 1) |
+
+Qoidalar bir joyda:
+
+- **Tenglik (0038; 10, 10a-mezonlar):** har valyutada ajratma qatorlari yigʻindisi oʻsha
+  valyutadagi jamiga **aynan** teng — hisobotning eng tekshiriladigan xossasi. Ajratmada kurs
+  umuman ishlatilmaydi.
+- **Valyuta qatori faqat oʻsha valyutada yozuv bor davrda** chiziladi (0038); «Farq» ning
+  dollar qatori kirimda **yoki** chiqimda dollar boʻlsa chiziladi. Boʻlak qatorsiz qolsa
+  bitta `{ valyuta: 'som', summa: 0 }` qatori bilan turadi (dizayn 8-boʻlim; mezon 17).
+- **Ishora ekranniki:** `kirim` va `chiqim` summalari **musbat** keladi, `farq` esa oʻz
+  ishorasi bilan. Qarz qatorlari uchun ishora `QARZ_QATOR_ISHORASI` da (0064).
+- **Ajratma tartibi** (dizayn 4-boʻlim): avval soʻm guruhi, keyin dollar; guruh ichida summa
+  kamayishi boʻyicha; teng boʻlsa 0028 roʻyxati tartibi, undan keyin foydalanuvchi qoʻshgani
+  qoʻshilish tartibida. Shuning uchun `kategoriyalar` roʻyxati kirishga beriladi.
+- **Yashirilgan kategoriya** ajratmada odatdagidek koʻrinadi va hech qanday belgi olmaydi
+  (0013; mezon 12).
+- **Qarz bloki** (0064): toʻrt yoʻnalish, valyuta boʻyicha alohida, nol qator chizilmaydi,
+  netto yigʻilmaydi. Bu summalar jami kirim/chiqimga va kategoriya ajratmasiga **kirmaydi**
+  (0017; 15, 16, 16a-mezonlar).
+- **≈ qatori faqat jami blokida** (0038, istisnosiz): kategoriya va qarz qatorlarida yoʻq.
+  Har boʻlak oʻz qatorlaridan hisoblanadi — «≈ kirim − ≈ chiqim» yoʻli bilan emas.
+- **Kurs davrga bogʻliq emas:** oʻtgan oy hisobotida ham eng yangi maʼlum kurs ishlatiladi
+  (spec 10b; 0044). Kurs saqlanmaydi — har oʻqishda hisoblanadi (0045).
+- **Hisobot saqlanmaydi:** yozuv tahrirlansa yoki oʻchirilsa keyingi oʻqishda raqam oʻz-oʻzidan
+  toʻgʻri chiqadi (0014; mezon 18). «Oy yopish» yoʻq.
+
+## 21. Hisobotda bu qatlamda YOʻQ narsalar
+
+- Ekranning oʻzi: davr tanlagich, kartochkalar, kurs soʻrash bloki va matnlar — ekranniki
+  (`design/oylik-hisobot.md`). Bu qatlam faqat raqam beradi.
+- Summani koʻrsatish formati: ishora, rang, mingliklar boʻshligʻi, `$` va «≈» belgisi,
+  kategoriya **nomi** (uni ekran `kategoriyaniTop` bilan topadi).
+- Kurs soʻrash blokining **qaysi boʻlakda** chizilishi (dizayn: birinchisida) — ekranniki;
+  bu qatlam har boʻlakka `kurs-kerak` holatini beradi.
+- Qoʻlda soʻralgan kursni **saqlash** (0043) — zaxira vazifasida; hozir u
+  `hisobotniOl(davr, qoshimchaKurslar)` ga parametr boʻlib kiradi.
+- Hisobotni PDF/CSV/rasm qilish, oʻtgan oy bilan solishtirish, grafik, filtr va kategoriya
+  qatoridan yozuvlarga oʻtish (0021, 0019, 0002, 0064).
+
+---
+
+# ZAXIRA (Z2) — 22–26-boʻlimlar
+
+Yuqoridagi 1–21-boʻlimlar **oʻzgarmadi**. Quyidagilar zaxira eksport/import uchun qoʻshildi.
+Bu qatlam faqat **matn va obyekt** bilan ishlaydi: faylni yuklab olish, tanlash va oqimning
+qadamlarini ekran boshqaradi (`design/zaxira.md`).
+
+Yangi fayllar:
+
+```
+src/domain/zaxira.ts    — fayl formati: yasash, matn, oʻqish/tekshirish, solishtirish
+src/data/zaxira.ts      — butun bazadan eksport va fayldan import (ustiga yozish)
+src/data/sozlamalar.ts  — yagona qiymatlar: oxirgi eksport sanasi va qoʻlda soʻralgan kurs
+```
+
+Qarorlar: 0007, 0024, 0027, **0041** (tasdiq — faylni qaytarib tanlash), 0043 (qoʻlda
+soʻralgan kurs sanasi bilan saqlanadi), 0045, 0047, 0053, 0054, 0055, 0065 (import sonlarni
+qaytaradi; qayta urinishda ikkinchi avtomatik zaxira yoʻq).
+
+## 22. Fayl formati — `src/domain/zaxira.ts`
+
+**Fayl kalitlari ilova maydonlari bilan bir xil emas** (spec 15) — oʻgirish shu faylda,
+bitta joyda:
+
+| Faylda | Ilovada |
+|---|---|
+| `yozuvlar[].kategoriya` | `Yozuv.kategoriyaId` |
+| `qarzlar[].kontakt`, `qarzlar[].yonalish` | `Qarz.kontaktId`, `Qarz.yonalishi` |
+| `tolovlar[].qarz` | `Tolov.qarzId` |
+| `izoh: ""`, `telefon: ""` (har doim bor) | maydon **umuman boʻlmaydi** (0012, 0031) |
+
+```ts
+type ZaxiraTuri = 'qolda' | 'import-oldidan'
+type QoldaKurs   = { kurs: number; sana: string }
+type QoldaKurslar = { dollar?: QoldaKurs }      // soʻm asos valyuta — unga kurs yozilmaydi
+
+type ZaxiraFayli = {
+  versiya: number                                // ZAXIRA_VERSIYASI = 1
+  eksport: { sana: string; vaqt: string; turi: ZaxiraTuri; 'oxirgi-eksport': string }
+  hisoblar: { id: Hisob; nom: string }[]         // oʻzgarmas: naqd va karta (0011)
+  kategoriyalar: FaylKategoriyasi[]              // `yaratilgan` — qoʻshilganlarida (tartib)
+  yozuvlar: FaylYozuvi[]                         // `kurs` faqat dollarda
+  kontaktlar: FaylKontakti[]
+  qarzlar: FaylQarzi[]                           // qoldiq ham, «yopiq» belgisi ham yoʻq
+  tolovlar: FaylTolovi[]                         // `kurs` faqat boshqa valyutada
+  kurslar: QoldaKurslar                          // faqat QOʻLDA soʻralgani (0045)
+}
+
+type ZaxiraSanoqlari = {
+  kategoriyalar: number; yozuvlar: number; kontaktlar: number; qarzlar: number; tolovlar: number
+}
+```
+
+| Funksiya | Qabul qiladi | Qaytaradi |
+|---|---|---|
+| `zaxiraYasa(mazmun)` | `DaftarMazmuni` | `ZaxiraFayli` |
+| `zaxiraMatni(fayl)` | `ZaxiraFayli` | `string` — **deterministik** JSON matn |
+| `zaxiraniOqi(matn)` | `string` | `Natija<ZaxiraFayli>` — tekshiruv (spec 22) |
+| `zaxiraBirXilmi(a, b)` | `string`, `string` | `boolean` — mazmun boʻyicha (0041) |
+| `zaxiraTasdigi(tanlangan, chiqarilgan)` | `string`, `string` | `Natija<true>` — 3-qadam javobi |
+| `faylNomi(turi, hozir)` | `ZaxiraTuri`, `Date` | `string` — `daftar-zaxira-2026-08-17-1435.json` |
+| `daftarBoshmi(mazmun)` | roʻyxatlar | `boolean` — 0055 taʼrifi |
+| `faylanYozuv/Kontakt/Qarz/Tolov/Kategoriya` | fayl qatori | ilova qiymati |
+
+**Determinizm shart** (0041): massivlar `id` boʻyicha saralanadi, kalitlar tartibi qatʼiy,
+matn oxirida bitta `\n`. Solishtirish esa **mazmun boʻyicha** — ikkala matn ham oʻqilib
+qayta yoziladi, shuning uchun boʻshliqlari boshqacha yozilgan bir xil fayl ham mos keladi.
+`eksport` bloki solishtiruvga **kiradi**: shu bilan «eski zaxira» va «boshqa fayl»
+ajratiladi (dizayn 5-boʻlim; 17c-mezon).
+
+## 23. Zaxira doʻkoni — `src/data/zaxira.ts` (hammasi `Promise`)
+
+| Funksiya | Qabul qiladi | Qaytaradi |
+|---|---|---|
+| `zaxiraniChiqar(turi, hozir?)` | `ZaxiraTuri`, `Date` | `{ nom, matn, fayl }` — **oxirgi eksport sanasini yangilaydi** (0054) |
+| `zaxiraniImport(matn)` | `string` | `Natija<ZaxiraSanoqlari>` — tekshiradi va ustiga yozadi |
+| `zaxiraniQoy(fayl)` | `ZaxiraFayli` | `ZaxiraSanoqlari` — tekshirilgan faylni qoʻyadi |
+| `daftarBoshmi()` | — | `boolean` — 0055 istisnosi shu javobga bogʻliq |
+| `zaxiraTasdigi(tanlangan, chiqarilgan)` | `string`, `string` | `Natija<true>` (domaindan qayta chiqarilgan) |
+| `oxirgiEksportniOl()` | — | `string \| null` — «Oxirgi zaxira: …» qatori uchun |
+
+**Ekran oqimi shu tartibda chaqiradi** (spec 17; dizayn 3-boʻlim):
+
+1. `zaxiraniOqi(tiklanadiganMatn)` — xato boʻlsa oqim umuman boshlanmaydi (dizayn 5-boʻlim).
+2. `daftarBoshmi()` → `true` boʻlsa **darhol** `zaxiraniImport(...)` (0055; 17e-mezon).
+3. Aks holda `zaxiraniChiqar('import-oldidan')` → `{nom, matn}`; ekran faylni yuklab olishga
+   beradi va **matnni oʻzida ushlab turadi**.
+4. Odam faylni qaytarib tanlaydi → `zaxiraTasdigi(tanlanganMatn, ushlab turilgan matn)`.
+5. `ok` boʻlsa `zaxiraniImport(tiklanadiganMatn)`.
+
+**Qayta urinishda 3-qadam takrorlanmaydi** (0065): ekran oʻsha chiqarilgan matnni ishlatadi —
+ikkinchi avtomatik zaxira chiqarilmaydi va eksport sanasi ikkinchi marta yangilanmaydi.
+
+**Import — bitta amalda** (spec 20, 23): olti ombor ham tozalanadi va fayldagi maʼlumot
+qoʻyiladi; yarim holat qolmaydi. `id` lar fayldagi holicha qoladi, shuning uchun bir xil
+faylni ikki marta import qilish nusxa koʻpaytirmaydi (mezon 19).
+
+**Sanoqlar haqiqatda qoʻyilgan qatorlardan olinadi** (0065), fayl massivining uzunligidan
+emas — takroriy `id` li faylda ikki qator bitta boʻlib qoladi va sanoq shuni koʻrsatadi
+(mezon 24e–24h). Ekrandagi qator toʻrt sonni koʻrsatadi (yozuv · kontakt · qarz · toʻlov);
+`kategoriyalar` ham qaytadi, lekin dizayn uni koʻrsatmaydi.
+
+Kontakt va qarzda `yaratilgan` faylda **yoʻq** (spec sxemasi) — import ularni oʻzi qoʻyadi
+(fayldagi tartibda). Yozuv va toʻlovda `yaratilgan` majburiy va oʻzgarishsiz tiklanadi
+(0047; mezon 6d, 6e, 6f).
+
+## 24. Sozlamalar doʻkoni — `src/data/sozlamalar.ts`
+
+Daftarning **yagona qiymatlari** shu yerda (yozuv emas, hisoblanadigan qiymat ham emas):
+
+| Funksiya | Qaytaradi |
+|---|---|
+| `oxirgiEksportniOl()` | `string \| null` — `YYYY-MM-DD`; `null` = hech qachon eksport qilinmagan (mezon 11) |
+| `oxirgiEksportniQoy(sana)` | `string` — har muvaffaqiyatli eksport chaqiradi (0054) |
+| `qoldaKurslarniOl()` | `QoldaKurslar` — hech qachon soʻralmagan boʻlsa `{}` |
+| `qoldaKursniQoy(kurs, sana)` | `QoldaKurslar` — «≈ jami soʻmda» uchun soʻralgan javob (0043) |
+| `qoldaKurslarniQoy(kurslar)` | `QoldaKurslar` — butun blokni almashtiradi (import) |
+
+**Valyuta parametri yoʻq**: soʻm asos valyuta va unga kurs yozilmaydi (spec 10a), demak
+saqlanadigan yagona kurs — dollarniki. Ekran kursni soʻraganda `qoldaKursniQoy(12500, bugun())`
+ni chaqiradi; keyin `oxirgiKursniOl()` uni **oʻzi** hisobga oladi va kurs qayta soʻralmaydi
+(mezon 24a, 24b).
+
+`oxirgiKursniOl()` endi uch manbani qamraydi: yozuv kurslari + toʻlov kurslari + qoʻlda
+soʻralgan kurs (0044 qoidasi bilan solishtiriladi — eng kech sanali gʻolib). Bir xil sanada
+qoʻlda soʻralgan javob gʻolib boʻladi: u oʻsha kunning oxirgi javobi (0045).
+
+Shundan kelib chiqadi: `hisobotniOl(davr, qoshimchaKurslar)` (20-boʻlim) saqlangan kursni
+**oʻzi** oladi — u ichida `oxirgiKursniOl` ni chaqiradi. `qoshimchaKurslar` parametri
+oʻzgarmadi va hali saqlanmagan javobni sinab koʻrish uchun qolaveradi; 21-boʻlimdagi
+«saqlash zaxira vazifasida» qatori shu boʻlim bilan yopildi.
+
+## 25. Zaxira xato kodlari (maydon — `'fayl'`)
+
+| Kod | Xabar (standart) | Qachon |
+|---|---|---|
+| `zaxira-oqilmadi` | `Fayl oʻqilmadi — u buzilgan yoki daftar zaxirasi emas.` | JSON emas yoki yarim yozilgan (mezon 20) |
+| `zaxira-versiya` | `Fayl versiyasi notanish — bu daftar oʻqiy oladigan zaxira emas.` | `versiya ≠ 1` (mezon 21) |
+| `zaxira-notolik` | `Faylda maʼlumot toʻliq emas — import qilinmadi.` | blok/maydon yetishmaydi; `yaratilgan` va `eksport.oxirgi-eksport` ham shu yerda (mezon 22, 6e) |
+| `zaxira-mos-emas` | `Bu fayl hozirgina chiqarilgan zaxira emas.` | 3-qadamdagi tasdiq oʻtmadi (mezon 17c, 17d) |
+
+Matnlar `design/zaxira.md` 5-boʻlimidagi bilan bir xil; ekran ikkinchi qatorni
+(«Daftardagi maʼlumot oʻzgarmadi.») oʻzi qoʻshadi. **Xato boʻlganda hech narsa
+oʻzgarmaydi** — tekshiruv ustiga yozishdan oldin bajariladi.
+
+## 26. Zaxirada bu qatlamda YOʻQ narsalar
+
+- Faylni yuklab olish, fayl tanlagich, «Bekor qilish» va oqimning ekrandagi holati —
+  ekranniki (dizayn 3, 6-boʻlimlar).
+- 30 kunlik eslatmaning oʻzi — dashboardniki (0024); bu qatlam faqat **sanani** beradi.
+- Fayl nomini ekranda koʻrsatish va sanani «Bugun/Kecha» qilib yozish — ekranniki.
+- Eski fayl versiyasini yangisiga oʻgirish (spec: hozir versiya bitta).
+- Qisman import, birlashtirish, dublikat topish, CSV/Excel (0027, 0007).
+- Import/eksport jurnali va tarixi (0014).

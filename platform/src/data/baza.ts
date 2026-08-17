@@ -11,9 +11,12 @@ export const BAZA_NOMI = 'daftar'
  * Sxema versiyasi. Yangi ombor qoʻshilganda bittaga oshadi.
  * 1 → 2: `kategoriyalar` ombori qoʻshildi (T3; 0013, 0028).
  * 2 → 3: qarz daftari omborlari qoʻshildi — `kontaktlar`, `qarzlar`, `tolovlar`
- * (Q1; 0015, 0016). Eski omborlar va ulardagi maʼlumot ikkala qadamda ham tegilmaydi.
+ * (Q1; 0015, 0016).
+ * 3 → 4: `sozlamalar` ombori qoʻshildi — oxirgi eksport sanasi (0053) va qoʻlda soʻralgan
+ * kurs (0043) shu yerda yashaydi (Z2). Eski omborlar va ulardagi maʼlumot har qadamda
+ * tegilmaydi.
  */
-export const BAZA_VERSIYASI = 3
+export const BAZA_VERSIYASI = 4
 
 /** Kirim-chiqim yozuvlari ombori. */
 export const YOZUVLAR_OMBORI = 'yozuvlar'
@@ -30,6 +33,15 @@ export const QARZLAR_OMBORI = 'qarzlar'
 /** Qarz toʻlovlari ombori: qoldiq shulardan hisoblanadi (0016). */
 export const TOLOVLAR_OMBORI = 'tolovlar'
 
+/**
+ * Sozlamalar ombori — kalit/qiymat juftliklari (`keyPath: 'kalit'`).
+ *
+ * Bu yerda daftarning maʼlumoti emas, **yagona qiymatlari** turadi: oxirgi eksport sanasi
+ * (0053, 0054) va «≈ jami soʻmda» uchun qoʻlda soʻralgan kurs (0043). Ikkalasi ham zaxira
+ * fayliga kiradi va import bilan tiklanadi.
+ */
+export const SOZLAMALAR_OMBORI = 'sozlamalar'
+
 /** Bazadagi hamma omborlar — tozalash va yangilash shu roʻyxatdan yuradi. */
 const OMBORLAR = [
   YOZUVLAR_OMBORI,
@@ -37,6 +49,7 @@ const OMBORLAR = [
   KONTAKTLAR_OMBORI,
   QARZLAR_OMBORI,
   TOLOVLAR_OMBORI,
+  SOZLAMALAR_OMBORI,
 ]
 
 let ochiq: IDBDatabase | null = null
@@ -75,6 +88,9 @@ export function bazaniOch(): Promise<IDBDatabase> {
         const ombor = baza.createObjectStore(TOLOVLAR_OMBORI, { keyPath: 'id' })
         // Qarz qoldigʻi oʻz toʻlovlaridan hisoblanadi (mezon 5, 7).
         ombor.createIndex('qarzId', 'qarzId', { unique: false })
+      }
+      if (!baza.objectStoreNames.contains(SOZLAMALAR_OMBORI)) {
+        baza.createObjectStore(SOZLAMALAR_OMBORI, { keyPath: 'kalit' })
       }
     }
 

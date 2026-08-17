@@ -15,6 +15,7 @@ import {
   KATEGORIYALAR_OMBORI,
   KONTAKTLAR_OMBORI,
   QARZLAR_OMBORI,
+  SOZLAMALAR_OMBORI,
   TOLOVLAR_OMBORI,
   YOZUVLAR_OMBORI,
   bazaniOch,
@@ -67,13 +68,14 @@ describe('baza sxemasi — 1-versiyadan joriy versiyaga (0028; mezon 15)', () =>
   it('versiya koʻtariladi va yetishmagan omborlar qoʻshiladi', async () => {
     const baza = await bazaniOch()
 
-    expect(BAZA_VERSIYASI).toBe(3)
-    expect(baza.version).toBe(3)
+    expect(BAZA_VERSIYASI).toBe(4)
+    expect(baza.version).toBe(4)
     expect([...baza.objectStoreNames].sort()).toEqual(
       [
         KATEGORIYALAR_OMBORI,
         KONTAKTLAR_OMBORI,
         QARZLAR_OMBORI,
+        SOZLAMALAR_OMBORI,
         TOLOVLAR_OMBORI,
         YOZUVLAR_OMBORI,
       ].sort(),

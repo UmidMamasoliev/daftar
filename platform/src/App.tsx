@@ -18,6 +18,7 @@
 // qaytilganda forma toʻldirilgan holicha turishi kerak (dizayn: «Boshqarish» qatori).
 
 import { useEffect, useRef, useState } from 'react'
+import { hisobotniOl } from './data/hisobot.ts'
 import {
   hammaKategoriyalar,
   kategoriyaQosh,
@@ -45,6 +46,9 @@ import {
   yozuvniQaytar,
   yozuvniYangila,
 } from './data/yozuvlar.ts'
+import { qoldaKurslarniOl, qoldaKursniQoy } from './data/sozlamalar.ts'
+import type { Davr, Hisobot as HisobotTuri, Oy } from './domain/hisobot.ts'
+import { joriyOyDavri, oyDavri, oySur, sananingOyi } from './domain/hisobot.ts'
 import { korinadiganlar } from './domain/kategoriya.ts'
 import type {
   Kategoriya,
@@ -58,6 +62,9 @@ import type {
   Yozuv,
   YozuvTuri,
 } from './domain/turlar.ts'
+import { bugun } from './domain/sana.ts'
+import { Hisobot } from './ui/Hisobot.tsx'
+import { qoldaKurslarManbalari } from './ui/kurslar.ts'
 import { Kategoriyalar } from './ui/Kategoriyalar.tsx'
 import { Kontakt } from './ui/Kontakt.tsx'
 import type { Bolim } from './ui/Navigatsiya.tsx'
@@ -77,9 +84,11 @@ type Ekran =
   | 'kontakt'
   | 'qarz-forma'
   | 'tolov-forma'
+  | 'hisobot'
 
 /** Navigatsiya paneli faqat shu ekranlarda koʻrinadi (dizayn, 0063). */
-const NAVLI_EKRANLAR: readonly Ekran[] = ['yozuvlar', 'qarz-daftari', 'kontakt']
+const NAVLI_EKRANLAR: readonly Ekran[] = ['yozuvlar', 'qarz-daftari', 'kontakt', 'hisobot']
+
 
 type Holat = {
   kategoriyalar: Kategoriya[]
@@ -113,6 +122,12 @@ export function App() {
   const [tolovQarzId, setTolovQarzId] = useState<string | null>(null)
   // Oʻchirilgan kontakt «Qarz daftari» roʻyxatida «qaytarish» paneli boʻlib turadi (0030).
   const [ochirilganKontakt, setOchirilganKontakt] = useState<OchirilganKontakt | null>(null)
+  // Hisobot ekrani: `oy` — oy holati, `null` — ixtiyoriy davr holati (dizayn 2-boʻlim).
+  const [hisobotOyi, setHisobotOyi] = useState<Oy | null>(() => sananingOyi(bugun()))
+  const [hisobotDavri, setHisobotDavri] = useState<Davr>(() => joriyOyDavri())
+  const [hisobot, setHisobot] = useState<HisobotTuri | null>(null)
+  // «Oyga qaytish» davr tanlashdan **oldin** ochiq turgan oyni qaytaradi (dizayn 2-boʻlim).
+  const [oldingiOy, setOldingiOy] = useState<Oy | null>(null)
 
   /**
    * Birinchi oʻqish ham **navbatdan** oʻtadi.
@@ -150,6 +165,32 @@ export function App() {
   }
 
   /**
+   * Hisobot ekran ochilganda va davr oʻzgarganda qayta oʻqiladi.
+   *
+   * Hech qayerda saqlanmaydi (0014, 0045; mezon 18): yozuv tahrirlansa yoki oʻchirilsa
+   * keyingi oʻqishda raqam oʻz-oʻzidan toʻgʻri chiqadi. Oʻqish navbatdan oʻtadi —
+   * boshqa ekrandagi saqlash tugamasdan eskirgan surat kelib qolmasin.
+   */
+  useEffect(() => {
+    if (ekran !== 'hisobot') {
+      return
+    }
+    let tirik = true
+    void navbatga(async () => {
+      const kurslar = await qoldaKurslarniOl()
+      const manbalar = qoldaKurslarManbalari(kurslar)
+      const natija = await hisobotniOl(hisobotDavri, manbalar)
+      if (tirik) {
+        setHisobot(natija)
+      }
+    })
+    return () => {
+      tirik = false
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ekran, hisobotDavri, yozuvlar, kontaktlar, kategoriyalar])
+
+  /**
    * Doʻkonga tegadigan har amal navbatda bajariladi.
    *
    * Sababi «Koʻrsatish» + «‹ Orqaga» ketma-ketligi: qaytish belgisi doʻkon yangilanishidan
@@ -184,7 +225,8 @@ export function App() {
   const formaKerak = ekran === 'forma' || ekran === 'kategoriyalar'
   const navKorinadi = NAVLI_EKRANLAR.includes(ekran)
   // «Kontakt» sahifasida faol boʻlim — «Qarz daftari» (dizayn).
-  const faolBolim: Bolim = ekran === 'yozuvlar' ? 'yozuvlar' : 'qarz-daftari'
+  const faolBolim: Bolim =
+    ekran === 'yozuvlar' ? 'yozuvlar' : ekran === 'hisobot' ? 'hisobot' : 'qarz-daftari'
 
   /** Panel yoʻqolganda oʻchirish yakuniy boʻladi — nusxa tashlanadi (0029). */
   function kontaktPanelniUnut(): void {
@@ -201,6 +243,14 @@ export function App() {
     }
     if (bolim === 'yozuvlar') {
       setEkran('yozuvlar')
+      return
+    }
+    if (bolim === 'hisobot') {
+      // Ekran **har ochilganda** joriy kalendar oy bilan ochiladi; tanlangan oy eslab
+      // qolinmaydi (0018; mezon 1, dizayn 2-boʻlim).
+      setHisobotOyi(sananingOyi(bugun()))
+      setHisobotDavri(joriyOyDavri())
+      setEkran('hisobot')
       return
     }
     setKontaktId(null)
@@ -453,6 +503,41 @@ export function App() {
             })
           }
           yop={kontaktgaQayt}
+        />
+      ) : null}
+
+      {ekran === 'hisobot' ? (
+        <Hisobot
+          hisobot={hisobot}
+          kategoriyalar={kategoriyalar}
+          oy={hisobotOyi}
+          joriyOy={sananingOyi(bugun())}
+          oyniSur={(qadam) => {
+            if (hisobotOyi === null) {
+              return
+            }
+            const yangi = oySur(hisobotOyi, qadam)
+            setHisobotOyi(yangi)
+            setHisobotDavri(oyDavri(yangi))
+          }}
+          davrniQoy={(davr) => {
+            // Oy holatidan davr holatiga oʻtiladi; «Oyga qaytish» eski oyni tiklaydi.
+            setOldingiOy(hisobotOyi)
+            setHisobotOyi(null)
+            setHisobotDavri(davr)
+          }}
+          oygaQaytar={() => {
+            const qaytadigan = oldingiOy ?? sananingOyi(bugun())
+            setHisobotOyi(qaytadigan)
+            setHisobotDavri(oyDavri(qaytadigan))
+          }}
+          kursniSaqla={async (kurs) => {
+            await navbatga(async () => {
+              // 0043: kurs oʻsha kunning sanasi bilan saqlanadi va qayta soʻralmaydi.
+              const kurslar = await qoldaKursniQoy(kurs, bugun())
+              setHisobot(await hisobotniOl(hisobotDavri, qoldaKurslarManbalari(kurslar)))
+            })
+          }}
         />
       ) : null}
 

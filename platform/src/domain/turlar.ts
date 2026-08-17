@@ -274,6 +274,7 @@ export type XatoMaydoni =
   | 'yonalishi'
   | 'kontaktId'
   | 'qarzId'
+  | 'fayl'
 
 /** Xato kodlari roʻyxati — testlar va forma shu kodlarga tayanadi, matnga emas. */
 export type XatoKodi =
@@ -313,6 +314,10 @@ export type XatoKodi =
   | 'qarz-summa-tolovdan-kam'
   | 'tolov-ortiqcha'
   | 'tolov-nol-aylanma'
+  | 'zaxira-oqilmadi'
+  | 'zaxira-versiya'
+  | 'zaxira-notolik'
+  | 'zaxira-mos-emas'
 
 /** Bitta xato: qaysi maydon, qaysi kod va odamga koʻrsatiladigan sabab. */
 export type Xato = {

@@ -26,6 +26,7 @@ import {
   tolovMatni,
   tolovTafsiloti,
 } from './format.ts'
+import { davrMatni, oyMatni, sanaMatni } from './format.ts'
 
 const BUGUN = '2026-08-17'
 
@@ -296,5 +297,53 @@ describe('toʻlov qatori (dizayn 0-boʻlim: «Toʻlov qatori»)', () => {
 describe('kursMatni (0023, 0042)', () => {
   it('toʻliq yozilishi — 1 $ = 12 500 soʻm', () => {
     expect(kursMatni(12500)).toBe('1 $ = 12 500 soʻm')
+  })
+})
+
+// ─── Hisobot ekranining formatlari (design/oylik-hisobot.md 2-boʻlim) ──────────
+
+describe('sanaMatni — «Bugun»/«Kecha» soʻzisiz sana (dizayn 2-boʻlim)', () => {
+  it('joriy yildagi sana yilsiz yoziladi', () => {
+    expect(sanaMatni('2026-08-14', BUGUN)).toBe('14-avgust')
+  })
+
+  it('bugungi va kechagi kun ham sana boʻlib yoziladi — davr chekkasi soʻz olmaydi', () => {
+    expect(sanaMatni(BUGUN, BUGUN)).toBe('17-avgust')
+    expect(sanaMatni('2026-08-16', BUGUN)).toBe('16-avgust')
+  })
+
+  it('boshqa yildagi sana yil bilan', () => {
+    expect(sanaMatni('2025-12-28', BUGUN)).toBe('28-dekabr 2025')
+  })
+})
+
+describe('oyMatni — davr qatoridagi oy nomi (0018)', () => {
+  it('joriy yildagi oy yilsiz', () => {
+    expect(oyMatni({ yil: 2026, oy: 8 }, 2026)).toBe('avgust')
+  })
+
+  it('boshqa yildagi oy yil bilan', () => {
+    expect(oyMatni({ yil: 2025, oy: 8 }, 2026)).toBe('avgust 2025')
+    expect(oyMatni({ yil: 2025, oy: 1 }, 2026)).toBe('yanvar 2025')
+  })
+})
+
+describe('davrMatni — «1-avgust — 15-avgust» (dizayn 2-boʻlim)', () => {
+  it('joriy yildagi davr yilsiz', () => {
+    expect(davrMatni({ boshlanish: '2026-08-01', tugash: '2026-08-15' }, BUGUN)).toBe(
+      '1-avgust — 15-avgust',
+    )
+  })
+
+  it('yil chegarasidan oʻtgan davrda eski sana yil bilan', () => {
+    expect(davrMatni({ boshlanish: '2025-12-28', tugash: '2026-01-05' }, BUGUN)).toBe(
+      '28-dekabr 2025 — 5-yanvar',
+    )
+  })
+
+  it('bitta kunlik davr ham ikki chekka bilan yoziladi', () => {
+    expect(davrMatni({ boshlanish: '2026-08-14', tugash: '2026-08-14' }, BUGUN)).toBe(
+      '14-avgust — 14-avgust',
+    )
   })
 })

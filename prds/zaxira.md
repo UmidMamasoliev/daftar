@@ -3,7 +3,7 @@
 Sana: 2026-08-16. Asos: `prds/daftar-prd.md` (29–30-bandlar, va shu featurega tegishli 2, 5, 6,
 15-bandlar). Qarorlar: 0003, 0004, 0006, 0007, 0008, 0009, 0011, 0013, 0014, 0016, 0021, 0023,
 0024, 0026, 0027, 0029, 0031, 0033, 0034, 0040, 0041, 0042, 0043, 0044, 0045, 0047, 0053, 0054,
-0055.
+0055, 0065.
 
 Nima uchun: 0004 boʻyicha hamma maʼlumot faqat foydalanuvchi brauzerida turadi — brauzer uni
 oʻzi tozalab yuborsa yoki telefon yoʻqolsa, daftar butunlay ketadi. Zaxira fayli shu xavfni
@@ -162,6 +162,16 @@ Faylning tuzilishi:
 19b. Tasdiq qadamida foydalanuvchi importdan voz kecha oladi. Voz kechilganda ham daftardagi
     maʼlumot oʻzgarmaydi; chiqarilgan zaxira fayli esa foydalanuvchi qurilmasida qolaveradi.
     (0027, 0041)
+19c. **Qayta urinish shu yerda:** tasdiq mos kelmasa yoki fayl tanlanmasa, foydalanuvchi zaxira
+    ekranini tashlab ketmasdan faylni **yana tanlay oladi**. Urinishlar soni cheklanmaydi.
+    (0065; 0041)
+19d. **Ikkinchi avtomatik zaxira chiqarilmaydi:** qayta urinishda 2-qadam takrorlanmaydi —
+    birinchi chiqarilgan fayl kuchda qoladi va tasdiq oʻsha bilan solishtiriladi. Oxirgi
+    eksport sanasi ham qayta yangilanmaydi, u birinchi avtomatik zaxirada allaqachon
+    yangilangan (26a-band). (0065; 0054)
+19e. **Zaxira ekranidan chiqib ketilsa oqim bekor boʻladi:** ilova yarim holatni eslab qolmaydi.
+    Keyingi import 1-qadamdan boshlanadi va unda yangi avtomatik zaxira chiqariladi; tasdiq
+    oʻshanga tegishli boʻladi. (0065; 0027)
 20. Ustiga yozish — toʻliq almashtirish: hamma doʻkon tozalanadi va fayldagi maʼlumot qoʻyiladi.
     Birlashtirish, qoʻshish yoki dublikat topish yoʻq. (0027)
 21. Import natijasi — faylda nima boʻlsa, daftarda ham oʻsha: `id` lar, yashirilgan
@@ -181,6 +191,11 @@ Faylning tuzilishi:
     qoldiqlari, qarz qoldiqlari, oylik hisobot. Fayldan hisoblangan qiymat olinmaydi. (0016)
 25. Importdan keyin dashboard, «yozuvlar», qarz daftari va hisobot ekranlari yangi maʼlumotni
     koʻrsatadi.
+25a. Import tugagach muvaffaqiyat blokida **sanoq qatori** koʻrsatiladi: **«N yozuv · N kontakt ·
+    N qarz · N toʻlov»**. Raqamlar fayldan emas, **haqiqatda qoʻyilgan** maʼlumotdan olinadi —
+    import amali bloklar boʻyicha sonlarni qaytaradi. Qator matni `design/` da. (0065; 0041)
+25b. Sanoq qatori boʻsh daftar istisnosida ham (17a) xuddi shunday koʻrsatiladi — u avtomatik
+    zaxiraga emas, importning natijasiga bogʻliq. (0065; 0055)
 
 ### Zaxira eslatmasi
 
@@ -272,6 +287,15 @@ sanab boʻladigan:
     zaxira), moslik tasdiqlanmaydi: import bajarilmaydi va maʼlumot oʻzgarmaydi (0041).
 17d. Tasdiq qadamida buzilgan yoki yarim yozilgan fayl tanlansa ham import bajarilmaydi va
     maʼlumot oʻzgarmaydi (0041).
+17j. Tasdiqda notoʻgʻri fayl tanlangach, foydalanuvchi shu ekranning oʻzida toʻgʻri faylni
+    tanlaydi va import oxirigacha oʻtadi — yangi oqim boshlash talab qilinmaydi (19c).
+17k. Shu qayta urinishda **ikkinchi avtomatik zaxira fayli yaratilmaydi** (yuklab olish bir
+    marta boʻlgan) va oxirgi eksport sanasi ham oʻzgarmaydi — u birinchi zaxirada
+    yangilangan (19d; 0054).
+17l. Tasdiq qadamida zaxira ekranidan chiqib ketilib qaytilsa, import 1-qadamdan boshlanadi va
+    yangi avtomatik zaxira chiqariladi; eski oqim davom etmaydi (19e).
+17m. Butun shu yoʻlning har nuqtasida daftardagi maʼlumot oʻzgarmagan boʻladi — ustiga yozish
+    faqat tasdiq oʻtgach bajariladi (19a, 23-band).
 17e. Butunlay boʻsh daftarda (yozuv, kontakt, qarz, toʻlov yoʻq; kategoriyalar tayyor holatida)
     import bir qadamda oʻtadi: avtomatik zaxira fayli yaratilmaydi va tasdiq soʻralmaydi
     (0055).
@@ -301,6 +325,13 @@ sanab boʻladigan:
     (0045).
 24d. Importdan keyin «≈ jami soʻmda» fayldagi yozuv, toʻlov va `kurslar` blokidan 0044 qoidasi
     bilan hisoblanadi: eng kech sanali kurs gʻolib (0044, 0045).
+24e. 3 yozuv, 2 kontakt, 2 qarz va 4 toʻlovi bor fayl import qilingach, muvaffaqiyat blokidagi
+    sanoq qatori aynan **«3 yozuv · 2 kontakt · 2 qarz · 4 toʻlov»** boʻladi (25a).
+24f. Sanoq qatoridagi raqamlar daftarda haqiqatda turgan sonlarga teng — bir xil faylni ikki
+    marta import qilinganda ham raqamlar oʻzgarmaydi (19-mezon bilan bir xil ildiz).
+24g. Boʻsh bloki bor fayl import qilingach oʻsha blok uchun `0` koʻrsatiladi (masalan kontakti
+    yoʻq faylda «0 kontakt»).
+24h. Boʻsh daftarga bir qadamli importda ham sanoq qatori koʻrinadi (25b; 0055).
 25. Internet oʻchirilgan holda eksport ham, import ham ishlaydi.
 26. Importdan keyin ilova qayta ochilganda tiklangan maʼlumot joyida turadi.
 
@@ -329,3 +360,8 @@ Hal qilinganlar:
   yangilanadi va eslatma 30 kunga tinadi (5, 26a-bandlar).
 - Daftar boʻsh boʻlganda ham avtomatik zaxira olinadimi → **0055**: olinmaydi, import bir
   qadamda oʻtadi; «boʻsh daftar» taʼrifi 17b-bandda.
+
+2026-08-17 da dizayn ikkita savol ochdi va bosh agent ularni 0058 vakolati bilan yopdi →
+**0065**: import natijasida sanoq qatori koʻrsatiladi (25a, 25b-bandlar, 24e–24h-mezonlar);
+yarim qolgan import oʻsha ekranda qayta urinilishi mumkin, ikkinchi avtomatik zaxira
+chiqarilmaydi, ekrandan chiqilsa oqim bekor boʻladi (19c–19e-bandlar, 17j–17m-mezonlar).

@@ -2,6 +2,27 @@
 
 Yangi yozuv yuqoriga qoʻshiladi. Qisqa yozing.
 
+## 2026-08-17 — Z1: zaxira ekrani
+
+- `design/zaxira.md`: bitta ekran, ikkita kartochka («Zaxira olish», «Fayldan tiklash»).
+  Import — kartochka ichida ochiladigan blok, qadamlab; modal yoʻq (loyihaning umumiy qoidasi).
+- **Koʻp qadamli oqimda har qadam uchun jadval yozing:** «ekranda nima turadi / nima bosiladi /
+  keyin nima boʻladi». Fayl tanlagich bekor qilingani ham alohida qator boʻladi — 0041 oqimida
+  aynan shu holat testda (17b-mezon).
+- **Fayl nomi ekranda aynan koʻrsatiladi** (`daftar-import-oldidan-...json`): tasdiq qadami shu
+  nomga tayanadi. Uslubdagi «vaqt koʻrsatilmaydi» qoidasi bunga tegishli emas (u `yaratilgan`
+  haqida, 0047) — buni faylda ochiq yozish kerak, aks holda QA ziddiyat deb topadi.
+- **Xato bloki ikki qatorli:** sabab (`chiqim`) + har doim bir xil «Daftardagi maʼlumot
+  oʻzgarmadi.» (`matn-ikkinchi`). Maʼlumotga tegadigan amalda odamning birinchi savoli shu.
+- **Rang tanlovi:** import tugmasi xavfli tugma EMAS va ogohlantirish qizil emas — qaytish
+  yoʻli bor (0027) va eng koʻp uchraydigan holat boʻsh daftarga tiklash (0055). Qizil rang
+  faqat oʻchirish va xato uchun.
+- Ikkala TAKLIF **0065** bilan qabul qilindi: (1) muvaffaqiyat blokida sanoq qatori
+  «128 yozuv · 12 kontakt · 9 qarz · 14 toʻlov» (nol ham qoladi, kategoriya sanalmaydi);
+  (2) 3-qadamda qayta urinish, ikkinchi avtomatik zaxira yoʻq, ekrandan chiqish — bekor.
+  H1 dagi kabi: aniq yozilgan TAKLIF (matni, formati, sababi bilan) bir turda qabul qilinadi
+  va matnni qayta yozish kerak boʻlmaydi.
+
 ## 2026-08-17 — H1: oylik hisobot ekrani
 
 - Fayllar: `design/uslub.md` (bitta manba: rang, oʻlcham, format, navigatsiya),

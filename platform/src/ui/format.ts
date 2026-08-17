@@ -44,13 +44,37 @@ export function sanaYorligi(sana: string, bugungi: string): string {
   if (sana === kechagiKun(bugungi)) {
     return FORMA.kecha
   }
+  return sanaMatni(sana, bugungi)
+}
+
+/**
+ * Sana **soʻzsiz**: `14-avgust`, boshqa yildagi kun uchun `16-avgust 2025`.
+ *
+ * «Bugun»/«Kecha» soʻzlari qoʻyilmaydi — hisobotning davr qatorida davr chekkalari
+ * har doim sana boʻlib turadi (`design/oylik-hisobot.md` 2-boʻlim): «1-avgust —
+ * 15-avgust» degan qatorda «Bugun» soʻzi ikki chekkani solishtirib boʻlmas qilardi.
+ */
+export function sanaMatni(sana: string, bugungi: string): string {
   const qismlar = sana.split('-')
   const yil = qismlar[0] ?? ''
   const oy = Number(qismlar[1] ?? '0')
   const kun = Number(qismlar[2] ?? '0')
-  const oyNomi = OYLAR[oy - 1] ?? ''
-  const asos = `${kun}-${oyNomi}`
+  const asos = `${kun}-${OYLAR[oy - 1] ?? ''}`
   return yil === bugungi.slice(0, 4) ? asos : `${asos} ${yil}`
+}
+
+/** Davr qatoridagi oy nomi: `avgust`, boshqa yildagi oy uchun `avgust 2025` (0018). */
+export function oyMatni(oy: { yil: number; oy: number }, joriyYil: number): string {
+  const nom = OYLAR[oy.oy - 1] ?? ''
+  return oy.yil === joriyYil ? nom : `${nom} ${String(oy.yil)}`
+}
+
+/** Davr holatidagi matn: `1-avgust — 15-avgust` (dizayn 2-boʻlim). */
+export function davrMatni(
+  davr: { boshlanish: string; tugash: string },
+  bugungi: string,
+): string {
+  return `${sanaMatni(davr.boshlanish, bugungi)} — ${sanaMatni(davr.tugash, bugungi)}`
 }
 
 /** Berilgan kundan bir kun oldingi kun, `YYYY-MM-DD`. */

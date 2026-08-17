@@ -412,7 +412,9 @@ it('mezon 17, 18 — hamma qarzi yopilgan kontakt oʻchadi, «QAYTARISH» tarixi
   // Ekran roʻyxatga qaytadi va panel oʻsha yerda chiqadi (dizayn 2-boʻlim).
   expect(await screen.findByText('Kontakt oʻchirildi')).toBeDefined()
   expect(screen.getByRole('heading', { name: 'Qarz daftari', level: 1 })).toBeDefined()
-  expect(screen.getByText('Hali bitta ham kontakt yoʻq.')).toBeDefined()
+  // Panel doʻkon oʻchirishni tugatishi bilan chiqadi, roʻyxat esa keyingi oʻqishdan
+  // keyin boʻshaydi (`yangila`) — shuning uchun boʻsh holat **kutiladi**.
+  expect(await screen.findByText('Hali bitta ham kontakt yoʻq.')).toBeDefined()
   expect(await hammaQarzlar()).toHaveLength(0)
 
   await odam.click(tugma('QAYTARISH'))

@@ -10,8 +10,8 @@
 
 import { NAVIGATSIYA } from './matnlar.ts'
 
-/** Panel boʻlaklari. «Hisobot» va «Zaxira» oʻz qismlari tayyor boʻlganda qoʻshiladi. */
-export type Bolim = 'yozuv' | 'yozuvlar' | 'qarz-daftari'
+/** Panel boʻlaklari. «Zaxira» oʻz qismi tayyor boʻlganda qoʻshiladi (uslub: panel toʻldi). */
+export type Bolim = 'yozuv' | 'yozuvlar' | 'qarz-daftari' | 'hisobot'
 
 export type NavigatsiyaProps = {
   /** Hozir qaysi boʻlimda turibmiz. «Kontakt» sahifasida — `'qarz-daftari'` (dizayn). */
@@ -24,9 +24,22 @@ const BOLAKLAR: readonly { bolim: Bolim; matn: string }[] = [
   { bolim: 'yozuv', matn: NAVIGATSIYA.yozuv },
   { bolim: 'yozuvlar', matn: NAVIGATSIYA.yozuvlar },
   { bolim: 'qarz-daftari', matn: NAVIGATSIYA.qarzDaftari },
+  { bolim: 'hisobot', matn: NAVIGATSIYA.hisobot },
 ]
 
+/**
+ * Boʻlak matnining oʻlchami boʻlaklar sonidan chiqadi (uslub: «Oʻlchamlari va rangi»):
+ * `kichik` (14 px), **toʻrttadan koʻp** boʻlakda esa `mayda` (13 px).
+ *
+ * Qoida sonlab yozilgani uchun «Zaxira» qoʻshilganda oʻlcham oʻz-oʻzidan kichrayadi —
+ * ikkinchi joyda qoʻlda tuzatish kerak boʻlmaydi.
+ */
+export function navMatnSinfi(bolaklarSoni: number): string {
+  return bolaklarSoni > 4 ? 'nav-matn-mayda' : 'nav-matn-kichik'
+}
+
 export function Navigatsiya({ faol, otish }: NavigatsiyaProps) {
+  const matnSinfi = navMatnSinfi(BOLAKLAR.length)
   return (
     <nav className="navigatsiya" aria-label={NAVIGATSIYA.yorliq}>
       <div className="navigatsiya-ichi">
@@ -34,7 +47,7 @@ export function Navigatsiya({ faol, otish }: NavigatsiyaProps) {
           <button
             key={bolim}
             type="button"
-            className={bolim === faol ? 'nav-bolak faol' : 'nav-bolak'}
+            className={`nav-bolak ${matnSinfi}${bolim === faol ? ' faol' : ''}`}
             aria-current={bolim === faol ? 'page' : undefined}
             onClick={() => {
               otish(bolim)
