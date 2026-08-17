@@ -64,6 +64,10 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
    Oʻzgarishdan keyin qarz qoldigʻi, yopiqlik (8a), netto va hisob qoldiqlari darhol qayta
    hisoblanadi; oʻzgarish tarixi saqlanmaydi (0014) va `yaratilgan` maydoni tegilmaydi (0047).
    (0059)
+9b0. **Kontakt oʻzgarmaydi:** qarz boshqa kontaktga koʻchirilmaydi. Tahrir rejimida kontakt
+   qatori faqat koʻrsatiladi; boshqa kontakt bilan saqlash urinishi rad etiladi. Notoʻgʻri
+   kontaktga yozilgan qarz oʻchiriladi va toʻgʻrisiga qaytadan kiritiladi (9c). (0059; 0015,
+   0037)
 9b1. **Valyuta — istisno:** valyuta faqat **toʻlovi yoʻq** qarzda oʻzgartiriladi. Toʻlovi bor
    qarzda urinish rad etiladi va sabab koʻrsatiladi (xabar matni `design/` da); qarz oʻz
    valyutasida qoladi. Sababi: toʻlovlar toʻlov paytidagi kursda aylantirilgan (10-band) va
@@ -151,6 +155,7 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
 - Qarzni kategoriyaga bogʻlash. (0017)
 - Qarzlar boʻyicha qidiruv va filtr. (0002)
 - Qarz va kontaktning oʻzgarish tarixi, audit izi. (0014; 0059, 0060)
+- Qarzni boshqa kontaktga koʻchirish — tahrirda kontakt oʻzgarmaydi. (0059; 9b0-band)
 - Toʻlovi bor qarzning valyutasini oʻzgartirish. (0059)
 - **Toʻlovning oʻzini tahrirlash** — toʻlov faqat oʻchiriladi va kerak boʻlsa qaytadan
   kiritiladi; tahrir rejimi yoʻq (9-band; 0029, 0048).
@@ -242,6 +247,8 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
     koʻrsatiladi.
 32. Toʻlovi bor qarzda valyutani oʻzgartirish urinishi rad etiladi, sabab koʻrsatiladi va qarz
     oʻz valyutasida qoladi.
+32a. Qarzni boshqa kontaktga koʻchirish urinishi rad etiladi: qarz oʻz kontaktida qoladi va
+    ikkala kontaktning nettosi ham oʻzgarmaydi (9b0).
 33. 1 000 000 soʻm qarzda 300 000 soʻm toʻlov bor; qarz summasi 300 000 ga tahrirlansa qoldiq
     nol boʻladi va qarz oʻsha zahoti «Yopilgan» boʻlib koʻrinadi — yopiqlik qaytadan
     hisoblanadi (8b).

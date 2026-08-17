@@ -988,7 +988,7 @@ describe('qarzni tahrirlash (0059)', () => {
     expect((await qarzniTahrirla(qarz.id, { ...forma, summa: '49,99' })).ok).toBe(true)
   })
 
-  it('qarz boshqa kontaktga koʻchirilmaydi — tahrir rad etiladi (0059; dizayn 5-boʻlim)', async () => {
+  it('mezon 32a — qarz boshqa kontaktga koʻchirilmaydi, tahrir rad etiladi (0059; dizayn 5-boʻlim)', async () => {
     const birinchi = await kontakt('Akmal')
     const ikkinchi = await kontakt('Dilnoza')
     const qarz = await somQarzi(birinchi.id)

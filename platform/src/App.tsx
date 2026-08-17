@@ -30,11 +30,11 @@ import {
   kontaktniOchir,
   kontaktniQaytar,
   kontaktniTahrirla,
-  qarzQosh,
+  qarzSaqla,
   qarzniOchir,
   qarzniQaytar,
-  qarzniYangila,
-  tolovQosh,
+  qarzniTahrirla,
+  tolovSaqla,
   tolovniOchir,
   tolovniQaytar,
 } from './data/qarzlar.ts'
@@ -52,13 +52,12 @@ import type {
   Natija,
   OchirilganKontakt,
   Qarz,
-  YangiQarz,
-  YangiTolov,
+  QarzFormasi,
+  TolovFormasi,
   YangiYozuv,
   Yozuv,
   YozuvTuri,
 } from './domain/turlar.ts'
-import { ha } from './domain/turlar.ts'
 import { Kategoriyalar } from './ui/Kategoriyalar.tsx'
 import { Kontakt } from './ui/Kontakt.tsx'
 import type { Bolim } from './ui/Navigatsiya.tsx'
@@ -409,12 +408,19 @@ export function App() {
           qarz={joriyQarz?.qarz}
           tolovlarSoni={joriyQarz?.tolovlar.length ?? 0}
           tolangan={joriyQarz?.tolangan ?? 0}
-          saqla={async (yangi: YangiQarz): Promise<Natija<Qarz>> =>
+          /*
+           * Ikkalasi ham doʻkonning **tekshiruvli** yoʻli (KELISHUV 14-boʻlim):
+           * `qarzSaqla` kontakt hali bor-yoʻqligini bazadan tekshiradi (0030),
+           * `qarzniTahrirla` esa qarzni va toʻlovlarini qayta oʻqib 0059/0061e
+           * chegaralarini qoʻyadi. Ekrandagi holat eskirgan boʻlsa ham (ilova ikki
+           * tabda ochilishi mumkin) qarz jimgina notoʻgʻri joyga tushmaydi.
+           */
+          saqla={async (forma: QarzFormasi): Promise<Natija<Qarz>> =>
             navbatga(async () => {
               const natija =
                 joriyQarz === undefined
-                  ? ha(await qarzQosh(yangi))
-                  : await qarzniYangila(joriyQarz.qarz.id, yangi)
+                  ? await qarzSaqla(forma)
+                  : await qarzniTahrirla(joriyQarz.qarz.id, forma)
               if (natija.ok) {
                 await yangila()
               }
@@ -431,11 +437,19 @@ export function App() {
           kontakt={joriyKontakt.kontakt}
           qarz={tolovQarzi.qarz}
           tolovlar={tolovQarzi.tolovlar}
-          saqla={async (yangi: YangiTolov) =>
+          /*
+           * `tolovSaqla` — doʻkonning **tekshiruvli** yoʻli (KELISHUV 14-boʻlim): u qarzni
+           * va uning toʻlovlarini oʻzi qayta oʻqiydi. Shu sababli 0061 chegarasi ekrandagi
+           * (eskirishi mumkin boʻlgan) holatga emas, bazadagi holatga qoʻyiladi — ilova
+           * ikki tabda ochilsa ham yopilgan qarzga toʻlov oʻtib ketmaydi.
+           */
+          saqla={async (forma: TolovFormasi) =>
             navbatga(async () => {
-              const tolov = await tolovQosh(yangi)
-              await yangila()
-              return ha(tolov)
+              const natija = await tolovSaqla(forma)
+              if (natija.ok) {
+                await yangila()
+              }
+              return natija
             })
           }
           yop={kontaktgaQayt}

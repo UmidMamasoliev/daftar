@@ -1,7 +1,7 @@
 # Uslub — rang va shakl qoidalari
 
-Sana: 2026-08-17. Asos: `prds/daftar-prd.md`, qarorlar 0003, 0009, 0011, 0023, 0026, 0033, 0034,
-0063.
+Sana: 2026-08-17. Asos: `prds/daftar-prd.md`, qarorlar 0003, 0009, 0011, 0017, 0023, 0026, 0033,
+0034, 0038, 0042, 0044, 0063.
 
 Bu fayl butun daftar uchun bitta joyda turadi: har ekranda rang, oʻlcham va boʻshliq qaytadan
 oʻylanmaydi. Ekran tavsiflari (`design/kirim-chiqim.md` va keyingilari) shu yerdagi nomlarga
@@ -88,13 +88,18 @@ Bitta istisno: **qarz toʻlovining summasi rang olmaydi** (`matn`) va oldida faq
 U yerda `−` «qarz qoldigʻidan ayirildi» degani, pul chiqimi degani emas — «berdim» qarziga
 kelgan toʻlov aslida pulni hisobga qoʻshadi. Toʻliq tavsif: `design/qarz-daftari.md`.
 
+**Hisobotdagi qarz qatorlari boshqa savolga javob beradi** va shuning uchun ishorasi ham
+boshqacha: u yerda `+` va `−` «bu davrda pul hisobga tushdimi yoki undan chiqdimi» degani
+(0017). Yaʼni «Qarzga berildi» — `−` va `chiqim`, «Qarzdan qaytdi» — `+` va `kirim`; netto
+qatoridagi ishora bilan chalkashtirmaslik uchun tavsif `design/oylik-hisobot.md` 5-boʻlimida.
+
 ## Matn oʻlchamlari
 
 Asos 16 px. 13 px dan kichik matn yoʻq.
 
 | Nom | Oʻlcham / qalinlik / qator balandligi | Qayerda |
 |---|---|---|
-| `raqam-katta` | 28 / 700 / 1.2 | qoldiq va jami raqamlari |
+| `raqam-katta` | 28 / 700 / 1.2 | qoldiq va yagona jami raqami (hisobot ekranida ishlatilmaydi — u yerda uchta jami yonma-yon turadi, sababi `design/oylik-hisobot.md` 1-boʻlim) |
 | `sarlavha` | 20 / 600 / 1.3 | ekran sarlavhasi |
 | `summa` | 17 / 600 / 1.2 | roʻyxat qatoridagi summa |
 | `matn` | 16 / 400 / 1.4 | asosiy matn, maydon ichidagi matn, tugma matni |
@@ -118,6 +123,7 @@ Raqamlar `font-variant-numeric: tabular-nums` bilan — summalar ustunda tekis t
 | Segment (2 boʻlak) | bitta qatorda, eni teng, balandligi 48 px, 1 px `chegara`, ichki radius 8 px; tanlangan boʻlak foni — `kirim` yoki `chiqim`, matni oq |
 | Chip | balandligi 40 px, ichki chekka 14 px; tanlanmagan: foni `yuza`, 1 px `chegara`; tanlangan: foni `harakat-fon`, 1 px `harakat`, matni `harakat` |
 | Roʻyxat qatori | foni `yuza`, balandligi kamida 64 px, tagida 1 px `chegara` chiziq |
+| Hisobot qatori | kartochka ichidagi bosilmaydigan qator: balandligi 40 px, chegara chizigʻi yoʻq, chapda matn, oʻngda son (`design/oylik-hisobot.md`) |
 | Kun sarlavhasi | foni `fon`, matni `kichik` + `matn-ikkinchi`, ustidan yopishib turadi (sticky) |
 
 ## Holatlar
@@ -167,9 +173,10 @@ yoʻq (ikonka kutubxonasi yoʻq):
 | **«Yozuv»** | «Yangi yozuv» formasi (`design/kirim-chiqim.md` 1-boʻlim) |
 | **«Yozuvlar»** | «Yozuvlar» ekrani (oʻsha fayl, 2-boʻlim) |
 | **«Qarz daftari»** | «Qarz daftari» — kontaktlar roʻyxati (`design/qarz-daftari.md` 1-boʻlim) |
+| **«Hisobot»** | «Hisobot» ekrani (`design/oylik-hisobot.md`) — har ochilganda joriy oy bilan |
 
-Keyingi qismlar tayyor boʻlganda shu panelga **«Hisobot»** va **«Zaxira»** boʻlaklari xuddi shu
-naqshda qoʻshiladi. Boshqa boʻlak qoʻshilmaydi.
+Zaxira qismi tayyor boʻlganda shu panelga **«Zaxira»** boʻlagi xuddi shu naqshda qoʻshiladi.
+Boshqa boʻlak qoʻshilmaydi — panelda koʻpi bilan beshta boʻlak boʻladi.
 
 ### Oʻlchamlari va rangi
 
@@ -179,7 +186,8 @@ naqshda qoʻshiladi. Boshqa boʻlak qoʻshilmaydi.
 | Panel ustidagi chiziq | 1 px `chegara` |
 | Panel balandligi | 56 px + qurilmaning pastki xavfsiz zonasi |
 | Boʻlak | eni teng (panel eniga boʻlinadi), bosiladigan joyi butun boʻlak — kamida 44 px baland |
-| Matn | `kichik` (14 px) |
+| Matn | `kichik` (14 px); boʻlak **toʻrttadan koʻp** boʻlganda `mayda` (13 px) |
+| Matn sigʻmasa | Boʻlak matni ikki qatorga oʻraladi va markazda turadi (masalan «Qarz» / «daftari»). Qisqartma qoʻyilmaydi va `…` bilan kesilmaydi — boʻlim nomi har doim toʻliq oʻqiladi. Panel balandligi oʻzgarmaydi: ikki qator 13 px shu 56 px ichiga sigʻadi |
 | **Faol boʻlim** | matni `harakat`, qalinligi 600 |
 | Faol boʻlmagan boʻlim | matni `matn-ikkinchi`, qalinligi 400 |
 | Bosilgan holat | fon 8 % ga toʻqlashadi (umumiy qoida), oʻlcham oʻzgarmaydi |
@@ -190,8 +198,8 @@ ham qaysi boʻlimda turganini bilsin (uslubning umumiy qoidasi).
 
 ### Qayerda koʻrinadi, qayerda yoʻq
 
-- **Koʻrinadi:** «Yozuvlar», «Qarz daftari», «Kontakt» sahifasi. «Kontakt» da faol boʻlim —
-  **«Qarz daftari»**.
+- **Koʻrinadi:** «Yozuvlar», «Qarz daftari», «Kontakt» sahifasi, «Hisobot». «Kontakt» da faol
+  boʻlim — **«Qarz daftari»**.
 - **Koʻrinmaydi:** `×` bilan ochiladigan forma ekranlarida («Yangi yozuv», «Yozuvni
   tahrirlash», «Yangi qarz», «Qarzni tahrirlash», «Toʻlov») va forma ichidan ochiladigan
   «Kategoriyalar» ekranida. U yerda pastda **«Saqlash»** yoki **«＋ Yangi kategoriya»** paneli
@@ -232,7 +240,10 @@ qachon panel ostida qolmaydi.
 - **Ishora:** summadan oldin `+` yoki `−`, keyin boʻsh joysiz son: `−45 000 soʻm`, `+12,50 $`.
 - **Kurs:** butun soʻm, mingliklar orasi boʻsh joy; toʻliq yozilishi `1 $ = 12 500 soʻm`
   (0023, 0042).
-- **Taxminiy jami:** oldida `≈` turadi va tagida `mayda` oʻlchamda «taxminiy» soʻzi (0023).
+- **Taxminiy jami:** oldida `≈`, keyin boʻsh joy va odatdagi ishorali summa:
+  `≈ +10 500 000 soʻm`. Tagida `mayda` oʻlchamda «taxminiy» soʻzi va ishlatilgan kurs, orasida
+  ` · `: `taxminiy · 1 $ = 12 500 soʻm` (0023, 0044). Kurs koʻrsatilishining sababi — taxminiy
+  raqamni odam faqat shunda tekshira oladi. Taxminiy summa rang olmaydi (`matn`).
 - **Sana:** `16-avgust`. Boshqa yildagi sana yil bilan: `16-avgust 2025`. Bugungi va kechagi
   kun uchun soʻz ishlatiladi: «Bugun», «Kecha».
 - **Oy nomlari:** yanvar, fevral, mart, aprel, may, iyun, iyul, avgust, sentabr, oktabr,

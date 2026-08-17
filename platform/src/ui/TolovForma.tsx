@@ -30,7 +30,6 @@ import type {
   Valyuta,
   Xato,
   XatoMaydoni,
-  YangiTolov,
 } from '../domain/turlar.ts'
 import {
   belgilarSoni,
@@ -58,8 +57,15 @@ export type TolovFormaProps = {
   qarz: Qarz
   /** Shu qarzning saqlangan toʻlovlari — qoldiq va 0061 chegarasi ular bilan hisoblanadi. */
   tolovlar: readonly Tolov[]
-  /** Tekshiruvdan oʻtgan toʻlovni saqlaydi (`tolovQosh`). */
-  saqla: (yangi: YangiTolov) => Promise<Natija<Tolov>>
+  /**
+   * Formani **oʻz holicha** saqlaydi — `tolovSaqla` (KELISHUV 14-boʻlim).
+   *
+   * Ataylab tekshirilgan `YangiTolov` emas: doʻkon qarzni va uning toʻlovlarini oʻzi
+   * qayta oʻqiydi, demak 0061 chegarasi **yangi** maʼlumotga qarab qoʻyiladi. Ilova
+   * ikki tabda ochilishi mumkin (PWA) va bu formadagi `qarz`/`tolovlar` props eskirgan
+   * boʻlishi mumkin — oxirgi soʻz doʻkonniki.
+   */
+  saqla: (forma: TolovFormasi) => Promise<Natija<Tolov>>
   /** `×` bosilganda va saqlangandan keyin. */
   yop?: (() => void) | undefined
 }
@@ -204,14 +210,17 @@ export function TolovForma({ kontakt, qarz, tolovlar, saqla, yop }: TolovFormaPr
 
   async function yubor(hodisa: FormEvent<HTMLFormElement>): Promise<void> {
     hodisa.preventDefault()
-    // Hamma tekshiruv bir yoʻla: 0061 chegaralari ham shu yerda (qarz va toʻlovlar bilan).
+    // Birinchi qatlam — ekrandagi maʼlumot boʻyicha: maydon xatolari darhol koʻrinsin va
+    // ekran birinchi xatoli maydonga surilsin (dizayn: «Xato holatlari»).
     const tekshirilgan = tolovniTekshir(forma, qarz, tolovlar)
     if (!tekshirilgan.ok) {
       setXatolar(tekshirilgan.xatolar)
       xatoliMaydongaOt(tekshirilgan.xatolar)
       return
     }
-    const natija = await saqla(tekshirilgan.qiymat)
+    // Ikkinchi qatlam va oxirgi soʻz — doʻkon: u qarzni va toʻlovlarini qayta oʻqib
+    // 0061 chegarasini yangi maʼlumotga qoʻyadi (eskirgan holat chetlab oʻtilmasin).
+    const natija = await saqla(forma)
     if (!natija.ok) {
       setXatolar(natija.xatolar)
       xatoliMaydongaOt(natija.xatolar)

@@ -18,6 +18,15 @@ kontaktni oʻchirish kerak emas.
    qarzda valyuta oʻzgartirilmaydi: urinish rad etiladi va sabab koʻrsatiladi (matni `design/`
    da).
 
+**ANIQLIK (bosh agent vakolat bilan, 0058):** qarz **boshqa kontaktga koʻchirilmaydi**. Tahrir
+rejimida kontakt qatori faqat koʻrsatiladi, oʻzgartirilmaydi; boshqa kontakt bilan saqlash
+urinishi rad etiladi (backendda `qarz-kontakt-ozgarmas` kodi bilan). Sabab: qarz kontaktga
+bogʻlanadi (0015) va koʻchirish ikkala kontaktning nettosini hamda «kimga qancha qoldi» degan
+javobni jimgina oʻzgartirardi — bitta tahrirda ikkita ekran boshqacha boʻlib qolardi. Notoʻgʻri
+kontaktga yozilgan qarz oʻchiriladi va toʻgʻrisiga qaytadan kiritiladi (9c-band): qadam koʻp,
+lekin natija koʻrinib turadi. Kirish yoʻli ham shuni qoʻllab-quvvatlaydi — «Yangi qarz» formasi
+faqat kontakt sahifasidan ochiladi va kontaktni tanlash umuman yoʻq.
+
 **Eslatma — izoh maydoni.** Qarzda izoh maydoni yoʻq: `prds/qarz-daftari.md` uni sanamaydi va
 `design/qarz-daftari.md` (3 va 7-boʻlimlar) uni ataylab qoʻymagan. Shuning uchun 3-banddagi
 tahrirlanadigan maydonlar roʻyxatida ham izoh yoʻq — bu qaror yangi maydon yaratmaydi. Qarzga
@@ -41,6 +50,8 @@ Koʻrilgan boshqa variantlar:
   oʻylab topgan kursni qoʻyardi.
 - **Oʻchirishda tasdiq oynasi** (qarz toʻlovdan «ogʻirroq» narsa). Rad etildi: 0029 tasdiq
   oynasini butun daftar boʻyicha rad etgan.
+- **Qarzni boshqa kontaktga koʻchirish** (tahrirda kontakt tanlanadigan boʻlsin). Rad etildi:
+  yuqoridagi ANIQLIK qatoridagi sabab — bitta tahrir ikkala kontaktning nettosini oʻzgartirardi.
 
 Nimani oʻzgartiradi:
 - `prds/qarz-daftari.md`: qarzni tahrirlash va oʻchirish bandlari va mezonlari qoʻshiladi;

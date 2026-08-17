@@ -13,7 +13,7 @@ oflayn ishlaydigan, serversiz veb-sayt (0003).
 2. `lessons/qoidalar.md` — takrorlanmasligi kerak boʻlgan xatolar.
 3. `memory/` dagi eng yangi fayl — qayerda toʻxtaganimiz.
 4. `discovery/` — ochiq savollar (boʻsh boʻlishi mumkin).
-5. `decisions/` — 0001 dan 0063 gacha. **Hammasi majburiy va bahsga tushmaydi.**
+5. `decisions/` — 0001 dan 0064 gacha. **Hammasi majburiy va bahsga tushmaydi.**
 6. `prds/daftar-prd.md` — mahsulot chegarasi.
 7. Oʻz qismingiz speci: `prds/kirim-chiqim.md`, `prds/qarz-daftari.md`,
    `prds/oylik-hisobot.md`, `prds/dashboard.md`.
@@ -86,7 +86,10 @@ Roʻyxatda yoʻq narsani «foydali boʻlardi» deb qoʻshmang. Kerak boʻlsa —
   yoʻq — sabab bir xil (0062).
 - Yashirilgan kategoriya nomi band sanaladi: shu nom bilan qoʻshish rad etiladi va xato
   yashirilganlikni aytib «Koʻrsatish» yoʻlini koʻrsatadi; avtomatik koʻrsatish yoʻq (0051).
-- Qarz pul qoldigʻiga taʼsir qiladi, lekin hisobotda alohida qatorda turadi (0017).
+- Qarz pul qoldigʻiga taʼsir qiladi, lekin hisobotda alohida qatorda turadi (0017). Hisobotdagi
+  qarz bloki toʻrt yoʻnalishdan iborat: berildi (−), qaytdi (+), olindi (+), qaytarildi (−);
+  toʻlov esa kiritilgan summasi bilan oʻz valyutasida sanaladi, aylantirilgan qiymatda emas
+  (0064, 0038).
 - Qarz oʻz valyutasida yuritiladi; boshqa valyutadagi toʻlov toʻlov kursida aylantiriladi (0023).
 - Qarz qoldigʻi chegaradan oshmasa qarz yopilgan sanaladi: dollarda ≤ 1 sent, soʻmda ≤ 100 soʻm
   (0052). Yopiqlik holat maydoni emas — har safar qoldiqdan hisoblanadi (0016).
@@ -96,8 +99,9 @@ Roʻyxatda yoʻq narsani «foydali boʻlardi» deb qoʻshmang. Kerak boʻlsa —
 - Chegara faqat qarz yopiqligiga va nettoga tegishli — naqd va karta qoldiqlari haqiqiy pul
   harakatidan chiqadi va tuzatilmaydi (0056, 0017, 0035).
 - Qarzning oʻzi ham tahrirlanadi va oʻchiriladi (0014 ruhida): summa, sana, hisob, yoʻnalish
-  erkin; **valyuta faqat toʻlovi yoʻq qarzda** oʻzgaradi. Qarz oʻchirilsa toʻlovlari ham birga
-  oʻchadi, «qaytarish» ikkalasini birga qaytaradi (0059).
+  erkin; **valyuta faqat toʻlovi yoʻq qarzda** oʻzgaradi, **kontakt esa umuman oʻzgarmaydi** —
+  qarz boshqa kontaktga koʻchirilmaydi. Qarz oʻchirilsa toʻlovlari ham birga oʻchadi,
+  «qaytarish» ikkalasini birga qaytaradi (0059).
 - Kontakt tahrirlanadi: ism va telefon oʻzgaradi, ism boʻsh boʻlmaydi (0060; 0015, 0031).
 - Toʻlov qarz qoldigʻidan 0052 chegarasidan (1 sent / 100 soʻm) koʻp oshsa rad etiladi; chegara
   ichida oshsa qabul qilinadi, qarz yopiladi va qoldiq nol koʻrsatiladi — hisobga esa haqiqiy

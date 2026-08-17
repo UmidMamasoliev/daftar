@@ -1,5 +1,26 @@
 # QA eslatmalari — Daftar (loyiha)
 
+## 2026-08-17 — Q4: qarz-daftari toʻliq tekshiruvi
+- Suite: `npm test` 682/682 (2× barqaror), `tsc -b` toza, `npx playwright test` 7/7
+  (qarz e2e + oflayn qarz oqimi bor). Mezon xaritasi ishlaydi: `grep "mezon N"` qarz
+  testlarida 1–47 hammasi bor; faqat yangi 32a testda nom bilan emas — mazmun testi
+  `qarzlar.test.ts` «qarz boshqa kontaktga koʻchirilmaydi» da.
+- Jonli probe (preview 4173, playwright kutubxonasi scratchpaddan `createRequire`
+  bilan): 4 skript, 74 tekshiruv — hammasi PASS. Chegara raqamlari AYNAN moslashdi
+  (700 100/700 101; 50,01/50,02; 49,99/49,98; 100/101 soʻm; 1/2 sent; 8,00/8,01 $).
+- **Probe tuzogʻi:** `getByRole(name: 'sport')` substring boʻlib «transport» ni ham
+  oladi — chip nomlarida doim `exact: true`. (Bitta soxta FAIL berdi.)
+- Hisob qoldiqlarini (mezon 13–15b, 15h, 28, 29 pul tomoni) jonli UI da KOʻRIB
+  BOʻLMAYDI — dashboard 3.10 gacha yoʻq; bular faqat doʻkon Vitest testlari bilan
+  yopilgan. Dashboard qurilganda jonli qaytish kerak.
+- Topilma (past): `App.tsx` toʻlovni himoyasiz `tolovQosh` bilan saqlaydi —
+  doʻkonning tekshiruvli `tolovSaqla` yoʻli ishlatilmaydi; ikki tab stsenariysida
+  0061 chegarasi chetlab oʻtilishi mumkin. KELISHUV «doʻkon darajasida ham rad» deydi.
+- Hujjat: KELISHUV.md 372/602-qatorlarda «kurs yoʻq (0063)» — notoʻgʻri ishora,
+  toʻgʻrisi 0044/0045. PRDdagi 32a-mezon 33-dan keyin turibdi (raqam tartibi).
+- v2→v3 migratsiya jonli usuli T8 dagi bilan bir xil ishladi (route abort → v2 baza →
+  reload); urugʻlanish takrorlanmasligini `count()` bilan tekshirish qulay.
+
 ## 2026-08-17 — T8: kirim-chiqim toʻliq tekshiruvi
 - Buyruqlar (hammasi `platform/` ichida): `npm test` (Vitest, 307 test), `npx tsc -b`,
   `npx playwright test` (3 e2e), `npm run build` → `npm run preview -- --port 4173`.

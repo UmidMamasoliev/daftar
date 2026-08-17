@@ -14,8 +14,15 @@ import { cleanup, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, expect, it } from 'vitest'
 import { App } from './App.tsx'
-import { bazaniTozala, hammaQarzlar, hammaTolovlar } from './data/qarzlar.ts'
-import { kunMatni } from './domain/sana.ts'
+import {
+  bazaniTozala,
+  hammaKontaktlar,
+  hammaQarzlar,
+  hammaTolovlar,
+  kontaktniOchir,
+  tolovSaqla,
+} from './data/qarzlar.ts'
+import { bugun, kunMatni } from './domain/sana.ts'
 
 afterEach(async () => {
   cleanup()
@@ -454,4 +461,92 @@ it('mezon 23, 26 — ism tahrirlansa roʻyxatda alifbodagi yangi oʻrniga oʻtad
     .map((q) => q.textContent?.split('olaman')[0] ?? '')
   expect(ismlar[0]).toBe('Anvar')
   expect(ismlar[1]).toBe('Botir')
+})
+
+// ─── Eskirgan holat: doʻkon tekshiruvi oxirgi soʻzni aytadi (0061) ──────────
+//
+// Ilova ikki tabda ochilishi mumkin (PWA), va «Toʻlov» formasi ochilgan payt qarz
+// holati boshqa joyda oʻzgarishi mumkin. Forma props dagi (eskirgan) holatga qarab
+// tekshiradi, shuning uchun **oxirgi soʻz doʻkonniki**: `tolovSaqla` qarzni va uning
+// toʻlovlarini oʻzi qayta oʻqiydi (KELISHUV 14-boʻlim). Aks holda 0061 chegarasi
+// chetlab oʻtilardi va qarz qoldigʻi jimgina manfiy boʻlib qolardi.
+
+/** «Boshqa tab» — ekran koʻrmagan holda doʻkonga toʻlov yozadi. */
+async function boshqaTabToladi(summa: string): Promise<void> {
+  const qarz = (await hammaQarzlar())[0]
+  if (qarz === undefined) {
+    throw new Error('Qarz topilmadi')
+  }
+  const natija = await tolovSaqla({
+    qarzId: qarz.id,
+    summa,
+    sana: bugun(),
+    hisob: 'karta',
+    valyuta: 'som',
+    kurs: '',
+  })
+  expect(natija.ok).toBe(true)
+}
+
+it('0061 — forma ochiq turganda qarz yopilsa, toʻlov doʻkon darajasida rad etiladi', async () => {
+  const odam = userEvent.setup()
+  render(<App />)
+
+  await akmalgaKirdi(odam)
+  await qarzQoshdi(odam, '1000000', 'Berdim')
+
+  await odam.click(tugma('＋ Toʻlov'))
+  await screen.findByRole('heading', { name: 'Toʻlov', level: 1 })
+  // Forma ochiq turganda qarz boshqa joyda toʻliq yopiladi.
+  await boshqaTabToladi('1000000')
+
+  await odam.type(screen.getByLabelText('Summa'), '500000')
+  await odam.click(tugma('Saqlash'))
+
+  expect(await screen.findByText('Qarz yopilgan — unga toʻlov qoʻshilmaydi.')).toBeDefined()
+  // Forma yopilmaydi va ikkinchi toʻlov saqlanmaydi.
+  expect(screen.getByRole('heading', { name: 'Toʻlov', level: 1 })).toBeDefined()
+  expect(await hammaTolovlar()).toHaveLength(1)
+})
+
+it('0061 — eskirgan qoldiq bilan ortiqcha toʻlov ham doʻkon darajasida rad etiladi', async () => {
+  const odam = userEvent.setup()
+  render(<App />)
+
+  await akmalgaKirdi(odam)
+  await qarzQoshdi(odam, '1000000', 'Berdim')
+
+  await odam.click(tugma('＋ Toʻlov'))
+  await screen.findByRole('heading', { name: 'Toʻlov', level: 1 })
+  // Qarz ochiq qoladi (qoldiq 100 000 soʻm), lekin ekrandagi qoldiq eskirgan.
+  await boshqaTabToladi('900000')
+
+  await odam.type(screen.getByLabelText('Summa'), '500000')
+  await odam.click(tugma('Saqlash'))
+
+  expect(await screen.findByText('Toʻlov qarz qoldigʻidan katta.')).toBeDefined()
+  expect(await hammaTolovlar()).toHaveLength(1)
+})
+
+it('0030 — forma ochiq turganda kontakt oʻchirilsa, qarz doʻkon darajasida rad etiladi', async () => {
+  const odam = userEvent.setup()
+  render(<App />)
+
+  await akmalgaKirdi(odam)
+  await odam.click(tugma('＋ Yangi qarz'))
+  await screen.findByRole('heading', { name: 'Yangi qarz', level: 1 })
+
+  // «Boshqa tab» kontaktni oʻchiradi — formadagi kontakt qatori eskiradi.
+  const kontaktlar = await hammaKontaktlar()
+  const ochirildi = await kontaktniOchir(kontaktlar[0]?.id ?? '')
+  expect(ochirildi.ok).toBe(true)
+
+  await odam.type(screen.getByLabelText('Summa'), '1000000')
+  await odam.click(tugma('Berdim'))
+  await odam.click(tugma('Saqlash'))
+
+  expect(await screen.findByText('Kontakt topilmadi.')).toBeDefined()
+  // Forma yopilmaydi va kontaktsiz qarz bazaga tushmaydi.
+  expect(screen.getByRole('heading', { name: 'Yangi qarz', level: 1 })).toBeDefined()
+  expect(await hammaQarzlar()).toHaveLength(0)
 })

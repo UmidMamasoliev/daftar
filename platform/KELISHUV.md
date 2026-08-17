@@ -345,8 +345,9 @@ src/data/qarzlar.ts    — qarz daftari doʻkoni: ekran shu fayl bilan gaplashad
 ```
 
 Qarorlar: 0015, 0016, 0017, 0023, 0029, 0030, 0031, 0034, 0035, 0037, 0042, 0044, 0045,
-0047, 0048, 0049, 0052, 0056 va yangi 0059–0063 (qarzni tahrirlash/oʻchirish, kontaktni
-tahrirlash, toʻlov chegaralari, qarz kurs manbai emasligi).
+0047, 0048, 0049, 0052, 0056 va yangi 0059 (qarzni tahrirlash/oʻchirish), 0060 (kontaktni
+tahrirlash), 0061 (toʻlov chegaralari), 0062 (yoʻnalish standarti yoʻq). «Qarz kurs manbai
+emas» — qaror emas, 0044/0045 ning oʻqilishi (spec 15d-band).
 
 ## 12. Qarz daftarining tiplari (`src/domain/turlar.ts`)
 
@@ -369,7 +370,7 @@ type Qarz = {
   valyuta: Valyuta          // qarz oʻz valyutasida yuritiladi (0023)
   sana: string              // 'YYYY-MM-DD', bugun yoki undan oldin (0034)
   hisob: Hisob              // pul shu hisobdan chiqadi/kiradi (0035)
-}                           // ← qarzda KURS ham, IZOH ham YOʻQ (0023, 0059, 0063)
+}                           // ← qarzda KURS ham, IZOH ham YOʻQ (0023, 0044, 0045, 0059)
 
 type Tolov = {
   id: string
@@ -599,7 +600,7 @@ kesilmaydi (mezon 33a–33d).
   toʻlov — soʻm qoldigʻiga kirim, dollar qarzi esa dollarda kamayadi, 0023).
 - `oxirgiKursniOl(qoshimcha?)` endi **toʻlov kurslarini** ham qamraydi (spec 15b-band; 0044,
   0045). Gʻolib eski qoidada: eng kech `sana`li, teng boʻlsa eng kech `yaratilgan`li.
-  **Qarzning oʻzi kurs manbai emas** — unda kurs yoʻq (0063). `qoshimcha` — «≈ jami soʻmda»
+  **Qarzning oʻzi kurs manbai emas** — unda kurs yoʻq (0044, 0045). `qoshimcha` — «≈ jami soʻmda»
   uchun qoʻlda soʻralgan kurs, avvalgidek.
 
 Yangi domain funksiyalari (ular kerak boʻlsa toʻgʻridan-toʻgʻri ishlatiladi):

@@ -8,7 +8,7 @@ import { cleanup, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { bugun } from '../domain/sana.ts'
-import type { Kontakt, Natija, Qarz, Tolov, YangiTolov } from '../domain/turlar.ts'
+import type { Kontakt, Natija, Qarz, Tolov, TolovFormasi } from '../domain/turlar.ts'
 import { TolovForma } from './TolovForma.tsx'
 
 const AKMAL: Kontakt = { id: 'k1', ism: 'Akmal', yaratilgan: '2026-08-17T09:00:00.000Z' }
@@ -42,14 +42,27 @@ function tolov(qism: Partial<Tolov> & { id: string }): Tolov {
 type Ustama = {
   qarz?: Qarz
   tolovlar?: readonly Tolov[]
+  natija?: Natija<Tolov>
 }
 
 function chiz(ustama: Ustama = {}) {
+  // Doʻkonning tekshiruvli yoʻli (`tolovSaqla`) formaning **oʻzini** qabul qiladi:
+  // qarzni va toʻlovlarini u qayta oʻqiydi, shuning uchun 0061 chegarasi eskirgan
+  // ekran holatiga emas, bazadagi holatga qoʻyiladi (KELISHUV 14-boʻlim).
   const saqla = vi.fn(
-    async (yangi: YangiTolov): Promise<Natija<Tolov>> => ({
-      ok: true,
-      qiymat: { ...yangi, id: 't1', yaratilgan: 'v' },
-    }),
+    async (forma: TolovFormasi): Promise<Natija<Tolov>> =>
+      ustama.natija ?? {
+        ok: true,
+        qiymat: {
+          id: 't1',
+          yaratilgan: 'v',
+          qarzId: forma.qarzId,
+          summa: 0,
+          valyuta: forma.valyuta,
+          sana: forma.sana,
+          hisob: forma.hisob,
+        },
+      },
   )
   const yop = vi.fn()
   const natija = render(
@@ -194,13 +207,14 @@ describe('saqlash va xatolar (mezon 10, 10c, 20, 37, 38, 39, 41; 0049, 0061)', (
     await odam.type(kursMaydoni(), '12500')
     await odam.click(tugma('Saqlash'))
 
+    // Forma doʻkonga oʻz qiymatlarini beradi — oʻqish va tekshirish doʻkonniki.
     expect(saqla).toHaveBeenCalledWith({
       qarzId: 'q1',
-      summa: 625000,
+      summa: '625 000',
       valyuta: 'som',
       sana: bugun(),
       hisob: 'karta',
-      kurs: 12500,
+      kurs: '12 500',
     })
     expect(yop).toHaveBeenCalledTimes(1)
   })
@@ -243,7 +257,7 @@ describe('saqlash va xatolar (mezon 10, 10c, 20, 37, 38, 39, 41; 0049, 0061)', (
     const { saqla, odam } = chiz({ tolovlar: [tolov({ id: 't0' })] })
     await odam.type(summaMaydoni(), '700100')
     await odam.click(tugma('Saqlash'))
-    expect(saqla.mock.calls[0]?.[0]).toMatchObject({ summa: 700100 })
+    expect(saqla.mock.calls[0]?.[0]).toMatchObject({ summa: '700 100' })
   })
 
   it('mezon 38 — chegaradan koʻp oshgan toʻlov rad etiladi (700 101 soʻm)', async () => {
@@ -260,7 +274,7 @@ describe('saqlash va xatolar (mezon 10, 10c, 20, 37, 38, 39, 41; 0049, 0061)', (
     const { saqla, odam } = chiz({ qarz: dollarQarz })
     await odam.type(summaMaydoni(), '50,01')
     await odam.click(tugma('Saqlash'))
-    expect(saqla.mock.calls[0]?.[0]).toMatchObject({ summa: 5001 })
+    expect(saqla.mock.calls[0]?.[0]).toMatchObject({ summa: '50,01' })
 
     cleanup()
     const ikkinchi = chiz({ qarz: dollarQarz })
@@ -288,6 +302,27 @@ describe('saqlash va xatolar (mezon 10, 10c, 20, 37, 38, 39, 41; 0049, 0061)', (
     await odam.click(tugma('Yopish'))
     expect(yop).toHaveBeenCalledTimes(1)
     expect(saqla).not.toHaveBeenCalled()
+  })
+
+  it('doʻkon rad etsa sabab formada koʻrinadi va forma yopilmaydi (0061)', async () => {
+    // Eskirgan holat: ekranda qarz ochiq koʻrinadi, doʻkonda esa allaqachon yopilgan.
+    const { yop, odam } = chiz({
+      natija: {
+        ok: false,
+        xatolar: [
+          {
+            maydon: 'qarzId',
+            kod: 'qarz-yopiq',
+            xabar: 'Qarz yopilgan — unga toʻlov qoʻshilmaydi.',
+          },
+        ],
+      },
+    })
+    await odam.type(summaMaydoni(), '100000')
+    await odam.click(tugma('Saqlash'))
+
+    expect(await screen.findByText('Qarz yopilgan — unga toʻlov qoʻshilmaydi.')).toBeDefined()
+    expect(yop).not.toHaveBeenCalled()
   })
 
   it('summa maydoni qoldiq bilan oldindan toʻldirilmaydi (dizayn)', () => {

@@ -252,6 +252,14 @@ const EKRAN_MATNLARI: Partial<Record<XatoKodi, string>> = {
   'yonalish-bosh': 'Berdim yoki oldim ekanini tanlang.',
   'tolov-ortiqcha': 'Toʻlov qarz qoldigʻidan katta.',
   'tolov-nol-aylanma': 'Toʻlov juda kichik — qarz valyutasida nolga aylanadi.',
+  // Dizaynda bu holat uchun matn yoʻq: yopilgan qarzda «＋ Toʻlov» havolasining oʻzi
+  // boʻlmaydi (0061). Lekin forma ochiq turganda qarz boshqa joyda (ikkinchi tabda)
+  // yopilishi mumkin — oʻshanda doʻkon rad etadi va sabab shu qator bilan aytiladi.
+  'qarz-yopiq': 'Qarz yopilgan — unga toʻlov qoʻshilmaydi.',
+  'qarz-topilmadi': 'Qarz topilmadi.',
+  // Xuddi shu sabab: forma ochiq turganda kontakt boshqa joyda oʻchirilishi mumkin
+  // (0030). Dizaynda matn yoʻq, chunki bitta tabda bu holatga yoʻl yoʻq.
+  'kontakt-topilmadi': 'Kontakt topilmadi.',
   // 0030: doʻkon «qarzni yoping» deydi, dizayn «qarzlarni yoping» — ekran matni dizaynniki.
   'kontakt-ochiq-qarz': 'Ochiq qarzi bor kontakt oʻchirilmaydi — avval qarzlarni yoping.',
   // `qarz-summa-tolovdan-kam` bu roʻyxatda YOʻQ: uning matni raqamli va qarz valyutasiga

@@ -32,7 +32,6 @@ import type {
   Valyuta,
   Xato,
   XatoMaydoni,
-  YangiQarz,
 } from '../domain/turlar.ts'
 import {
   belgilarSoni,
@@ -67,11 +66,16 @@ export type QarzFormaProps = {
    */
   tolangan?: number | undefined
   /**
-   * Tekshiruvdan oʻtgan qarzni saqlaydi: yangi qarzda `qarzQosh`, tahrirda
-   * `qarzniYangila`. Doʻkonning oʻz xatolari (valyuta muzlatilgani, summa toʻlovlardan
-   * kichikligi) `Natija` ichida qaytadi va formada koʻrsatiladi.
+   * Formani **oʻz holicha** saqlaydi: yangi qarzda `qarzSaqla`, tahrirda
+   * `qarzniTahrirla` (KELISHUV 14-boʻlim).
+   *
+   * Ataylab tekshirilgan `YangiQarz` emas: doʻkon kontaktni va (tahrirda) qarzning
+   * toʻlovlarini oʻzi qayta oʻqiydi. Ilova ikki tabda ochilishi mumkin (PWA) va
+   * formadagi `kontakt`/`qarz` props eskirgan boʻlishi mumkin — oxirgi soʻz doʻkonniki:
+   * 0030 (oʻchirilgan kontakt), 0059 (valyuta) va 0061e (summa toʻlovlardan kichik)
+   * bazadagi holatga qarab qoʻyiladi.
    */
-  saqla: (yangi: YangiQarz) => Promise<Natija<Qarz>>
+  saqla: (forma: QarzFormasi) => Promise<Natija<Qarz>>
   /** `×` bosilganda va saqlangandan keyin. */
   yop?: (() => void) | undefined
 }
@@ -217,16 +221,18 @@ export function QarzForma({
 
   async function yubor(hodisa: FormEvent<HTMLFormElement>): Promise<void> {
     hodisa.preventDefault()
-    // Tekshiruv «Saqlash» bosilganda bir yoʻla bajariladi (dizayn: «Xato holatlari»).
+    // Birinchi qatlam — ekrandagi maʼlumot boʻyicha: maydon xatolari bir yoʻla koʻrinsin
+    // va ekran birinchi xatoli maydonga surilsin (dizayn: «Xato holatlari»).
     const tekshirilgan = qarzniTekshir(forma)
     if (!tekshirilgan.ok) {
       setXatolar(tekshirilgan.xatolar)
       xatoliMaydongaOt(tekshirilgan.xatolar)
       return
     }
-    const natija = await saqla(tekshirilgan.qiymat)
+    // Ikkinchi qatlam va oxirgi soʻz — doʻkon: kontakt hali bormi (0030), valyutani
+    // oʻzgartirsa boʻladimi (0059), summa toʻlovlardan past emasmi (0061e).
+    const natija = await saqla(forma)
     if (!natija.ok) {
-      // Doʻkon darajasidagi sabablar: 0059 (valyuta) va 0061e (summa toʻlovlardan kichik).
       setXatolar(natija.xatolar)
       xatoliMaydongaOt(natija.xatolar)
       return

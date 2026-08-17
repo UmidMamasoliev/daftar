@@ -12,7 +12,7 @@ import { cleanup, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { bugun, kunMatni } from '../domain/sana.ts'
-import type { Kontakt, Natija, Qarz, YangiQarz } from '../domain/turlar.ts'
+import type { Kontakt, Natija, Qarz, QarzFormasi } from '../domain/turlar.ts'
 import { QarzForma } from './QarzForma.tsx'
 
 const AKMAL: Kontakt = { id: 'k1', ism: 'Akmal', yaratilgan: '2026-08-17T09:00:00.000Z' }
@@ -39,9 +39,21 @@ type Ustama = {
 }
 
 function chiz(ustama: Ustama = {}) {
+  // Doʻkonning tekshiruvli yoʻli (`qarzSaqla` / `qarzniTahrirla`) formaning **oʻzini**
+  // qabul qiladi: kontaktni va qarz toʻlovlarini u qayta oʻqiydi, shuning uchun 0030,
+  // 0059 va 0061e chegaralari eskirgan ekran holatiga emas, bazadagi holatga qoʻyiladi.
   const saqla = vi.fn(
-    async (yangi: YangiQarz): Promise<Natija<Qarz>> =>
-      ustama.natija ?? { ok: true, qiymat: { ...yangi, id: 'q1', yaratilgan: 'v' } },
+    async (kelgan: QarzFormasi): Promise<Natija<Qarz>> =>
+      ustama.natija ?? {
+        ok: true,
+        qiymat: {
+          ...qarz(),
+          kontaktId: kelgan.kontaktId,
+          sana: kelgan.sana,
+          hisob: kelgan.hisob,
+          valyuta: kelgan.valyuta,
+        },
+      },
   )
   const yop = vi.fn()
   const natija = render(
@@ -146,10 +158,11 @@ describe('saqlash (mezon 3, 4, 20, 46; 0062)', () => {
     await odam.click(tugma('Berdim'))
     await odam.click(tugma('Saqlash'))
 
+    // Forma doʻkonga oʻz qiymatlarini beradi — oʻqish va tekshirish doʻkonniki.
     expect(saqla).toHaveBeenCalledWith({
       kontaktId: 'k1',
       yonalishi: 'berdim',
-      summa: 1000000,
+      summa: '1 000 000',
       valyuta: 'som',
       sana: bugun(),
       hisob: 'karta',
@@ -162,7 +175,7 @@ describe('saqlash (mezon 3, 4, 20, 46; 0062)', () => {
     await odam.type(summaMaydoni(), '5000')
     await odam.click(tugma('Oldim'))
     await odam.click(tugma('Saqlash'))
-    expect(saqla.mock.calls[0]?.[0]).toMatchObject({ yonalishi: 'oldim', summa: 5000 })
+    expect(saqla.mock.calls[0]?.[0]).toMatchObject({ yonalishi: 'oldim', summa: '5 000' })
   })
 
   it('mezon 46 — yoʻnalish tanlanmasdan saqlashga urinish rad etiladi', async () => {
@@ -246,7 +259,7 @@ describe('tahrirlash rejimi (0059; mezon 27, 30, 31)', () => {
     await odam.clear(summaMaydoni())
     await odam.type(summaMaydoni(), '100,00')
     await odam.click(tugma('Saqlash'))
-    expect(saqla.mock.calls[0]?.[0]).toMatchObject({ valyuta: 'dollar', summa: 10000 })
+    expect(saqla.mock.calls[0]?.[0]).toMatchObject({ valyuta: 'dollar', summa: '100,00' })
   })
 })
 
