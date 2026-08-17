@@ -43,17 +43,19 @@ bir xil.
 
 8. Yozuv qoʻshadi. Majburiy: summa, kirim yoki chiqim ekani, kategoriya (0012). Summa soʻmda
    butun son, dollarda ikki kasrgacha (sent); nol summa saqlanmaydi, manfiy son kiritilmaydi,
-   yuqori chegara yoʻq (0033).
+   yuqori chegara yoʻq (0033). Tur uchun standart qiymat yoʻq — foydalanuvchi har safar oʻzi
+   tanlaydi (0050).
 9. Sana avtomatik ravishda bugungi kun boʻladi; foydalanuvchi uni oʻzgartira oladi, lekin faqat
    bugungi yoki undan oldingi kunga — kelajak sanasi kiritilmaydi (0012, 0034).
 10. Izoh ixtiyoriy — boʻsh qoldirilsa ham yozuv saqlanadi (0012).
 11. Hisob formada tayyor turadi, standart — **karta**; naqd kerak boʻlsa almashtiriladi (0011).
 12. Valyuta formada tayyor turadi, standart — **soʻm**. Tegilmasa kurs soʻralmaydi. Boshqa
     valyuta tanlansa, kurs maydoni ochiladi va oʻsha holatda majburiy boʻladi. Kursga
-    **1 dollar necha soʻm** ekani kiritiladi (0023).
+    **1 dollar necha soʻm** ekani kiritiladi (0023); kurs musbat butun son, nol qabul
+    qilinmaydi (0042, 0049).
 13. Har qanday yozuvni tahrirlaydi va oʻchiradi, jumladan oʻtgan oydagilarni ham. Oʻzgarish
-    tarixi saqlanmaydi (0014). Oʻchirish tasdiqsiz darhol bajariladi, lekin bir necha soniya
-    «qaytarish» tugmasi turadi (0029).
+    tarixi saqlanmaydi (0014). Oʻchirish tasdiqsiz darhol bajariladi, lekin 7 soniya
+    «qaytarish» tugmasi turadi (0029, 0048).
 14. Kategoriyalar tayyor roʻyxat bilan keladi; foydalanuvchi oʻz kategoriyasini qoʻsha oladi va
     keraksizini yashira oladi. Kirim va chiqim uchun roʻyxatlar alohida (0013). Tayyor roʻyxat —
     chiqim: oziq-ovqat, transport, ijara, kommunal, sogʻliq, kiyim, koʻngilochar, boshqa;
@@ -235,6 +237,9 @@ Mahsulot darajasidagi mezonlar — hammasi sanab boʻladigan:
 | 0045 | «Oxirgi kurs» saqlanmaydi — hisoblanadi |
 | 0046 | Hosting: Vercel |
 | 0047 | Yozuv va toʻlovda «yaratilgan» vaqt maydoni |
+| 0048 | «Qaytarish» tugmasi 7 soniya turadi |
+| 0049 | Nol kurs taqiqlanadi |
+| 0050 | Tur uchun standart qiymat yoʻq |
 
 ## Ochiq savollar
 

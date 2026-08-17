@@ -1,8 +1,9 @@
 # Kirim-chiqim yozuvlari
 
-Sana: 2026-08-16. Asos: `prds/daftar-prd.md` (8–15-bandlar, va shu featurega tegishli 5, 6-band).
+Sana: 2026-08-17 (birinchi variant 2026-08-16). Asos: `prds/daftar-prd.md` (8–15-bandlar, va shu
+featurega tegishli 5, 6-band).
 Qarorlar: 0011, 0012, 0013, 0014, 0023, 0026, 0028, 0029, 0032, 0033, 0034, 0042, 0043, 0044,
-0045, 0047.
+0045, 0047, 0048, 0049, 0050.
 
 Nima uchun: Foydalanuvchi pulning har harakatini — kirimni ham, chiqimni ham — bir necha
 soniyada yozib qoʻyadi va qoʻlidagi hamda kartadagi pul qanchaligini bilib turadi. Bu daftarning
@@ -15,6 +16,9 @@ poydevori: qolgan uch qism (qarz daftari, oylik hisobot, dashboard) shu yozuvlar
 1. Yozuv qoʻshadi. Majburiy: summa, kirim yoki chiqim ekani, kategoriya. (PRD 8; 0012)
 1a. Summa soʻmda butun son, dollarda ikki kasrgacha (sent). Nol summa saqlanmaydi, manfiy son
    kiritilmaydi, yuqori chegara yoʻq. (PRD 8; 0033)
+1b. Tur («kirim» yoki «chiqim») uchun standart qiymat yoʻq: forma ochilganda hech biri
+   tanlanmagan boʻladi va foydalanuvchi har safar oʻzi tanlaydi. Tanlanmasa yozuv saqlanmaydi
+   va sabab koʻrsatiladi. (0050; 0012)
 2. Sana avtomatik ravishda bugungi kun boʻladi; foydalanuvchi uni oʻzgartira oladi, lekin faqat
    bugungi yoki undan oldingi kunga. Bu qoida daftardagi hamma operatsiyada bir xil — qarz va
    qarz toʻlovida ham. (PRD 9; 0012, 0034)
@@ -27,6 +31,9 @@ poydevori: qolgan uch qism (qarz daftari, oylik hisobot, dashboard) shu yozuvlar
 6a. Kurs maydoniga **1 dollar necha soʻm** ekani kiritiladi. (PRD 12; 0023)
 6b. Kurs — butun son, soʻmda (masalan 12 500). Kurs maydoni kasr qabul qilmaydi va saqlashda ham
    butun soʻm boʻlib turadi. (PRD 12; 0042)
+6b1. Kurs **musbat** boʻlishi shart: `0` kiritilsa yozuv saqlanmaydi va «Kurs notoʻgʻri»
+   koʻrsatiladi. Manfiy son ham kiritilmaydi. Yaʼni kurs tekshiruvi uchta shartdan iborat —
+   boʻsh emas (0023), butun son (0042), musbat (0049). (PRD 12; 0049)
 6c. Kiritilgan kurs yozuvning ichida saqlanadi. «≈ jami soʻmda» qatori uchun ishlatiladigan
    «oxirgi kurs» esa alohida saqlanmaydi — u kerak boʻlganda yozuvlar va qarz toʻlovlaridagi
    kurslardan hisoblab topiladi. Bu kurs tarixi emas: hisob natijasi bitta qiymat. (0045; 0043,
@@ -53,8 +60,13 @@ poydevori: qolgan uch qism (qarz daftari, oylik hisobot, dashboard) shu yozuvlar
    tarixi saqlanmaydi. (PRD 13; 0014)
 8a. Alohida «yozuvlar» ekrani boʻladi: hamma yozuv sana boʻyicha tartiblangan holda turadi va
    pastga aylantirib koʻriladi. Tahrirlash va oʻchirish shu ekrandan bajariladi. (PRD 15a; 0032)
-9. Oʻchirish tasdiqsiz darhol bajariladi, lekin bir necha soniya «qaytarish» tugmasi turadi.
-   (PRD 13; 0029)
+9. Oʻchirish tasdiqsiz darhol bajariladi, lekin **7 soniya** «qaytarish» tugmasi turadi; muddat
+   tugagach tugma yoʻqoladi va oʻchirish yakuniy boʻladi. (PRD 13; 0029, 0048)
+9a. «Qaytarish» bir vaqtda faqat bitta oʻchirishga tegishli: u turganda ikkinchi yozuv
+   oʻchirilsa, birinchisi oʻsha zahoti yakuniy boʻladi va muddat yangi yozuv uchun boshidan
+   sanaladi. Ekrandan chiqib ketilsa yoki ilova yopilsa ham tugma yoʻqoladi va oʻchirish yakuniy
+   boʻladi. Muddat hisobi tugma koʻringan lahzadan boshlanadi, toʻxtatib turilmaydi.
+   (0029, 0048)
 
 ### Kategoriyalar
 
@@ -73,6 +85,7 @@ poydevori: qolgan uch qism (qarz daftari, oylik hisobot, dashboard) shu yozuvlar
 - Yozuvlar boʻyicha qidiruv va filtr — «yozuvlar» ekranida ham yoʻq. (0002, 0032)
 - Kelajakdagi sana bilan yozuv; rejalashtirilgan yoki kutilayotgan yozuv. (0034)
 - Soʻmda tiyin kiritish; nol yoki manfiy summa. (0033)
+- Nol yoki manfiy kurs. (0049)
 - Soʻm va dollardan boshqa valyuta; valyuta qoʻshish yoki tahrirlash. (0026)
 - Kursni internetdan avtomatik olish; kurs tarixini saqlash. (0002, 0010)
 - Kasrli kurs kiritish — kurs faqat butun soʻmda. (0042)
@@ -87,7 +100,10 @@ poydevori: qolgan uch qism (qarz daftari, oylik hisobot, dashboard) shu yozuvlar
 
 1. Soʻmdagi chiqim yozuvi uchta maydon bilan saqlanadi: summa, chiqim, kategoriya.
 2. Shu uchtadan biri boʻsh boʻlsa yozuv saqlanmaydi va sabab koʻrsatiladi.
-3. Yangi forma ochilganda sana bugungi kun, hisob «karta», valyuta «soʻm» boʻlib turadi.
+3. Yangi forma ochilganda sana bugungi kun, hisob «karta», valyuta «soʻm» boʻlib turadi; tur
+   («kirim» yoki «chiqim») esa **tanlanmagan** boʻlib turadi (0050).
+3a. Tur tanlanmasdan saqlashga urinilsa yozuv saqlanmaydi va sabab koʻrsatiladi (0050; 2-mezon
+   bilan bir xil qoida).
 4. Sana oʻtgan kunga oʻzgartirilsa, yozuv oʻsha sanada saqlanadi.
 4a. Sana tanlagichda ertangi va undan keyingi kunlar tanlanmaydi.
 4b. Soʻmda kasrli summa qabul qilinmaydi; dollarda ikki kasrli summa qabul qilinadi.
@@ -95,6 +111,8 @@ poydevori: qolgan uch qism (qarz daftari, oylik hisobot, dashboard) shu yozuvlar
 4d. Manfiy son kiritilmaydi.
 5. Izohi boʻsh yozuv saqlanadi.
 6. Valyuta «dollar» ga oʻzgartirilsa kurs maydoni ochiladi; kurs boʻsh qolsa yozuv saqlanmaydi.
+6a. Kurs `0` kiritilsa yozuv saqlanmaydi va «Kurs notoʻgʻri» koʻrsatiladi; manfiy kurs ham
+   kiritilmaydi (0049).
 7. Valyuta soʻmligicha qolsa kurs maydoni koʻrinmaydi va yozuvda kurs saqlanmaydi.
 8. Chiqim saqlanganda tanlangan hisobning oʻsha valyutadagi qoldigʻi shu summaga kamayadi;
    kirim saqlanganda koʻpayadi.
@@ -102,7 +120,12 @@ poydevori: qolgan uch qism (qarz daftari, oylik hisobot, dashboard) shu yozuvlar
 10. Tahrirlangan yozuv qoldiqni darhol yangilaydi; eski qiymat hech qayerda qolmaydi.
 11. Oʻchirilgan yozuv roʻyxatdan darhol yoʻqoladi va «qaytarish» tugmasi koʻrinadi; tugma
     bosilsa yozuv ham, qoldiq ham tiklanadi.
-12. «Qaytarish» muddati tugagach tugma yoʻqoladi va oʻsha yozuv qaytmaydi.
+12. «Qaytarish» tugmasi 7 soniya turadi: shu vaqt ichida bosilsa yozuv qaytadi, 7 soniyadan
+    keyin tugma yoʻqoladi va oʻsha yozuv qaytmaydi (0048).
+12a. «Qaytarish» turganda ikkinchi yozuv oʻchirilsa, birinchi yozuv qaytmaydi (yakuniy boʻlgan)
+    va tugma ikkinchisi uchun 7 soniya turadi (0029, 0048).
+12b. «Qaytarish» turganda boshqa ekranga oʻtilsa yoki ilova yopilib qayta ochilsa, tugma yoʻq va
+    oʻchirilgan yozuv qaytmaydi (0029, 0048).
 13. Yangi kategoriya qoʻshilgach u yozuv formasidagi roʻyxatda koʻrinadi.
 14. Yashirilgan kategoriya yangi yozuv roʻyxatida chiqmaydi, lekin oʻsha kategoriyadagi eski
     yozuv joyida qoladi va hisobotda koʻrinadi.

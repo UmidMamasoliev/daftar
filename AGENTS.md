@@ -13,7 +13,7 @@ oflayn ishlaydigan, serversiz veb-sayt (0003).
 2. `lessons/qoidalar.md` — takrorlanmasligi kerak boʻlgan xatolar.
 3. `memory/` dagi eng yangi fayl — qayerda toʻxtaganimiz.
 4. `discovery/` — ochiq savollar (boʻsh boʻlishi mumkin).
-5. `decisions/` — 0001 dan 0047 gacha. **Hammasi majburiy va bahsga tushmaydi.**
+5. `decisions/` — 0001 dan 0050 gacha. **Hammasi majburiy va bahsga tushmaydi.**
 6. `prds/daftar-prd.md` — mahsulot chegarasi.
 7. Oʻz qismingiz speci: `prds/kirim-chiqim.md`, `prds/qarz-daftari.md`,
    `prds/oylik-hisobot.md`, `prds/dashboard.md`.
@@ -36,7 +36,7 @@ oflayn ishlaydigan, serversiz veb-sayt (0003).
 - Oylik hisobotda oʻtgan oy bilan solishtirish (0019).
 - Rus tili, krill yozuvi, til tanlash sozlamasi (0009).
 - Kelajakdagi sana bilan yozuv (0034).
-- Kasrli kurs; yuqoriga yoki pastga majburiy yaxlitlash (0042).
+- Kasrli kurs; yuqoriga yoki pastga majburiy yaxlitlash (0042). Nol yoki manfiy kurs (0049).
 
 Roʻyxatda yoʻq narsani «foydali boʻlardi» deb qoʻshmang. Kerak boʻlsa — avval qaror.
 
@@ -60,6 +60,7 @@ Roʻyxatda yoʻq narsani «foydali boʻlardi» deb qoʻshmang. Kerak boʻlsa —
 - Ikkita valyuta: soʻm va dollar. Formada standart — **soʻm** (0026, 0023).
 - Kurs faqat dollar tanlanganda soʻraladi va oʻshanda majburiy (0023).
 - Kurs = **1 dollar necha soʻm**; butun soʻmda kiritiladi va saqlanadi, kasr yoʻq (0023, 0042).
+  Kurs musbat boʻlishi shart: nol kurs taqiqlanadi, «Kurs notoʻgʻri» koʻrsatiladi (0049).
 - Valyuta aylantirilganda natija **eng yaqin** butun birlikka yaxlitlanadi — dollarda sentga,
   soʻmda soʻmga (0042).
 - «Oxirgi kurs» — eng kech **sanali** yozuv yoki toʻlovdagi kurs; bir xil sanada oxirgi
@@ -75,7 +76,10 @@ Roʻyxatda yoʻq narsani «foydali boʻlardi» deb qoʻshmang. Kerak boʻlsa —
 - Kategoriya va qarz qatorlari valyuta boʻyicha alohida, taxminsiz (0038).
 
 **Xatti-harakat**
-- Oʻchirishda tasdiq oynasi yoʻq — «qaytarish» tugmasi ishlaydi (0029).
+- Oʻchirishda tasdiq oynasi yoʻq — «qaytarish» tugmasi **7 soniya** turadi; yozuv, qarz toʻlovi
+  va kontakt uchun bir xil (0029, 0048).
+- Yozuv formasida tur («kirim» yoki «chiqim») uchun standart qiymat yoʻq — foydalanuvchi har
+  safar oʻzi tanlaydi (0050).
 - Qarz pul qoldigʻiga taʼsir qiladi, lekin hisobotda alohida qatorda turadi (0017).
 - Qarz oʻz valyutasida yuritiladi; boshqa valyutadagi toʻlov toʻlov kursida aylantiriladi (0023).
 - Kontakt qoldigʻi — netto, valyutalar alohida. Netto faqat koʻrsatish uchun: qarz yopilishi

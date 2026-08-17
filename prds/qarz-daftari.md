@@ -2,7 +2,7 @@
 
 Sana: 2026-08-16. Asos: `prds/daftar-prd.md` (16–21-bandlar, va shu featurega tegishli 6, 8, 9,
 12, 21-bandlar). Qarorlar: 0015, 0016, 0017, 0023, 0026, 0029, 0030, 0031, 0033, 0034, 0035,
-0037, 0042, 0043, 0044, 0045, 0047.
+0037, 0042, 0043, 0044, 0045, 0047, 0048, 0049.
 
 Nima uchun: Foydalanuvchi «falonchiga qancha qoldi» degan savolga aniq javob oladi. Qarz
 haqiqatda boʻlib-boʻlib toʻlanadi va esdan chiqadi; daftar kim bilan qanday hisobi borligini,
@@ -35,6 +35,8 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
    nolga yetganda qarz yopilgan hisoblanadi. (PRD 19; 0016)
 9. Toʻlovni oʻchirishda «qaytarish» tugmasi ishlaydi va qaytarilsa qoldiq tiklanadi.
    (PRD 19; 0029)
+9a. «Qaytarish» tugmasi **7 soniya** turadi — yozuvdagi bilan bir xil muddat; kontakt
+   oʻchirishda ham shu muddat (5-band). (0048)
 10. Qarz oʻz valyutasida yuritiladi: dollar qarzining qoldigʻi dollarda turadi. Toʻlov boshqa
     valyutada kelsa, toʻlov paytida kiritilgan kurs boʻyicha qarz valyutasiga aylantirilib
     qoldiqdan ayiriladi. (PRD 20; 0023)
@@ -58,6 +60,8 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
 15. Kurs maydoniga **1 dollar necha soʻm** ekani kiritiladi. (PRD 12; 0023)
 15a. Kurs — butun son, soʻmda; kurs maydoni kasr qabul qilmaydi. Bu yozuv formasidagi kurs
     bilan bir xil qoida. (PRD 12; 0042)
+15a1. Kurs musbat boʻlishi shart: `0` kiritilsa toʻlov saqlanmaydi va «Kurs notoʻgʻri»
+    koʻrsatiladi. Yozuv formasidagi tekshiruv bilan bir xil. (0049)
 15b. Toʻlovda kiritilgan kurs ham «oxirgi kurs» hisobiga kiradi — yozuvdagi kurs bilan bir xil
     qoidada: eng kech sanali gʻolib, bir xil sanada oxirgi kiritilgani. «Oxirgi kurs» alohida
     saqlanmaydi, u har safar yozuv va toʻlovlardan hisoblanadi. (0043, 0044, 0045)
@@ -77,6 +81,7 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
 - Qarz oʻzgarish tarixi va audit izi. (0014)
 - Kelajakdagi sana bilan qarz yoki toʻlov. (0034)
 - Kasrli kurs kiritish — kurs faqat butun soʻmda. (0042)
+- Nol yoki manfiy kurs bilan toʻlov. (0049)
 - Aylantirishni yuqoriga yoki pastga majburiy yaxlitlash. (0042)
 
 ## Qanday tekshiramiz
@@ -92,11 +97,15 @@ qancha toʻlanganini va qancha qolganini oʻzi hisoblab turadi.
 7. Toʻlovlar tarixi qarz ostida sana bilan koʻrinadi.
 8. Toʻlov oʻchirilsa qoldiq darhol oʻsha summaga ortadi.
 9. Toʻlov oʻchirilgach «qaytarish» tugmasi koʻrinadi; bosilsa toʻlov ham, qoldiq ham tiklanadi.
+9a. «Qaytarish» tugmasi 7 soniya turadi; 7 soniyadan keyin tugma yoʻqoladi va toʻlov qaytmaydi
+    (0048).
 10. 100 $ qarz berilib, toʻlov 625 000 soʻm va kurs 12 500 bilan kiritilsa, qoldiq 50 $ boʻladi.
 10a. Butun sentga tushmaydigan aylantirish eng yaqiniga yaxlitlanadi: 12 500 kurs bilan
     100 001 soʻm toʻlov 8,00 $ boʻlib ayiriladi (pastga), 100 100 soʻm toʻlov esa 8,01 $ boʻlib
     ayiriladi (yuqoriga) (0042).
 10b. Kurs maydoniga kasrli qiymat kiritilmaydi; saqlangan kurs butun son boʻlib turadi (0042).
+10c. Kurs `0` bilan toʻlov saqlanmaydi va «Kurs notoʻgʻri» koʻrsatiladi; qarz qoldigʻi
+    oʻzgarmaydi (0049).
 11. Shu holatda qoldiq dollarda koʻrsatiladi, soʻmda emas.
 12. Dollardagi qarzga dollarda toʻlov kiritilsa kurs soʻralmaydi.
 13. Qarz berilganda tanlangan hisob qoldigʻi shu summaga kamayadi.

@@ -1,0 +1,26 @@
+# Bogʻliqliklar va yigʻilgan fayllar
+node_modules
+dist
+dist-ssr
+*.local
+
+# vite-plugin-pwa build paytida chiqaradigan fayllar
+dev-dist
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Loglar
+logs
+*.log
+npm-debug.log*
+
+# Muharrir va OS
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.sw?

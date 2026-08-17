@@ -16,3 +16,6 @@ Nimani oʻzgartiradi: Oʻchirilgan yozuv qaytarish muddati tugagunicha vaqtincha
 0014 ga zid emas: 0014 doimiy oʻzgarish tarixini rad etadi, bu esa bir necha soniyalik
 qaytarish oynasi. Qarz toʻlovi qaytarilganda 0016 boʻyicha qarz qoldigʻi ham darhol tiklanadi.
 Tugma necha soniya turishi `prds/` dagi tegishli specda aniq raqam bilan yoziladi.
+
+ANIQLIK: Raqam `0048-qaytarish-yetti-soniya.md` da belgilandi — **7 soniya**, hamma oʻchirishda
+bir xil.

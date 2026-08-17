@@ -27,6 +27,9 @@ Nimani oʻzgartiradi:
   8,00 $ boʻlishi (8,00008 → eng yaqin sent); pastga va yuqoriga yaxlitlanadigan ikkita chegara
   holati. Bu sof hisob-kitob boʻlgani uchun Vitest qatlamiga tushadi (0040).
 
+ANIQLIK: Kursning quyi chegarasi `0049-nol-kurs-taqiqlanadi.md` da belgilandi — kurs musbat
+boʻlishi shart, nol kurs bilan saqlash bajarilmaydi.
+
 **Eslatma — hali ochiq:** Yaxlitlashdan qoladigan 1–2 sentlik «dum» qarzni «yopilgan» sanashga
 xalaqit beradimi degan savol (0016) shu qaror bilan HAL QILINMADI. U qarz daftari qurilishidan
 OLDIN alohida savol boʻlib beriladi. Bu qaror faqat yaxlitlash qoidasini belgilaydi, qarzning

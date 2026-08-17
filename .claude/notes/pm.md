@@ -2,6 +2,22 @@
 
 Eng yangisi tepada.
 
+## 2026-08-17 — 0048–0050: dizayn ishidan chiqqan uchta qaror
+
+- **0048:** «qaytarish» 7 soniya (0029 dagi «bir necha soniya» ning raqami). **0049:** nol kurs
+  taqiqlanadi, «Kurs notoʻgʻri» (0042 ga aniqlik; 0033 nol taqiqi faqat summaga tegishli edi).
+  **0050:** tur uchun standart qiymat yoʻq (kirimni chiqim deb yozish xavfi bir bosishdan
+  ogʻirroq).
+- Naqsh: **dizayn qatlami spec boʻshligʻini topadi.** Uchala savol ham ekran tavsifi
+  yozilayotganda chiqdi — «necha soniya», «nol kiritilsa nima boʻladi», «forma ochilganda nima
+  turadi» kabi savollarga PRD/spec javob bermagan edi. Yangi ekran tavsifidan keyin shu uch
+  turdagi boʻshliqni ataylab qidirish kerak.
+- `design/kirim-chiqim.md` ketma-ket oʻchirish holatini allaqachon yopgan (bir vaqtda bitta
+  panel; ikkinchi oʻchirish birinchisini yakuniy qiladi; ekrandan chiqilsa yakuniy) — bu
+  xatti-harakat qoidasi hozircha faqat `design/` da turibdi, `prds/` da yoʻq.
+- Eski qarorga aniqlik kiritilganda unga fayl oxirida `ANIQLIK: …` qatori qoʻyildi (0029 → 0048,
+  0042 → 0049) — `YOPILDI:` naqshining yumshoq varianti.
+
 ## 2026-08-16 — 0047: `yaratilgan` maydoni; kurs zanjiri yopildi
 
 - **0047:** har yozuv va qarz toʻlovida `yaratilgan` vaqt maydoni (ISO 8601, UTC) — 0044 dagi
