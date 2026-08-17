@@ -2,7 +2,8 @@ import { beforeEach, describe, expect, it } from 'vitest'
 
 import type { Kategoriya, Natija, YozuvFormasi } from '../domain/turlar.ts'
 import { boshlangichForma } from '../domain/yozuv.ts'
-import { bazaniTozala, bazaniYop } from './baza.ts'
+import { tayyorKategoriyalar } from '../domain/kategoriya.ts'
+import { KATEGORIYALAR_OMBORI, bazaniTozala, bazaniYop, omborda } from './baza.ts'
 import {
   hammaKategoriyalar,
   kategoriyaQosh,
@@ -293,5 +294,84 @@ describe('korinadiganKategoriyalar — kirim va chiqim alohida (mezon 16)', () =
 
     expect(natija.ok).toBe(true)
     expect((await hammaYozuvlar()).length).toBe(1)
+  })
+})
+
+// ─── Yarim urugʻlanish: urugʻlanish oʻrtasiga boshqa amal tushsa nima boʻladi ───
+//
+// Bu yerdagi testlar QA topgan beqarorlikning ildizini qamraydi: urugʻlanish bir necha
+// alohida amalda ketsa (yoki oʻrtaga import tozalashi tushsa) doʻkon YARIM urugʻlangan
+// qolishi mumkin edi, `count() > 0` esa uni «tayyor» deb sanab, hech qachon tuzatmasdi.
+
+/** Omborga faqat sanab oʻtilgan tayyor kategoriyalarni qoʻyadi — yarim urugʻ holati. */
+async function yarimUruglantir(idlar: readonly string[], ozgarish: Partial<Kategoriya> = {}) {
+  const tanlangan = tayyorKategoriyalar().filter((kategoriya) => idlar.includes(kategoriya.id))
+  for (const kategoriya of tanlangan) {
+    await omborda(KATEGORIYALAR_OMBORI, 'readwrite', (ombor) =>
+      ombor.put({ ...kategoriya, ...ozgarish }),
+    )
+  }
+}
+
+describe('yarim urugʻlangan doʻkon oʻzini tuzatadi (0013, 0028)', () => {
+  it('yetishmayotgan tayyor kategoriyalar keyingi oʻqishda toʻldiriladi', async () => {
+    await yarimUruglantir(['oziq-ovqat', 'transport', 'ijara'])
+
+    const kategoriyalar = await hammaKategoriyalar()
+
+    expect(kategoriyalar.length).toBe(11)
+    expect(kategoriyalar.map((k) => k.id)).toEqual(tayyorKategoriyalar().map((k) => k.id))
+  })
+
+  it('toʻldirish bazaga yoziladi — ikkinchi oʻqishda ham 11 ta turadi', async () => {
+    await yarimUruglantir(['oziq-ovqat'])
+    await hammaKategoriyalar()
+
+    bazaniYop()
+
+    expect((await hammaKategoriyalar()).length).toBe(11)
+  })
+
+  it('yashirilgan tayyor kategoriya qayta sepilmaydi — yashirilganicha qoladi', async () => {
+    // Doʻkonda bitta tayyor kategoriya bor va u yashirilgan (foydalanuvchi shunday qilgan).
+    await yarimUruglantir(['kongilochar'], { yashirilgan: true })
+
+    const kategoriyalar = await hammaKategoriyalar()
+
+    expect(kategoriyalar.length).toBe(11)
+    expect(nomBoyicha(kategoriyalar, 'koʻngilochar').yashirilgan).toBe(true)
+    // Qolganlari toʻldirildi va ular koʻrinadigan holatda.
+    expect(nomBoyicha(kategoriyalar, 'oziq-ovqat').yashirilgan).toBe(false)
+  })
+
+  it('foydalanuvchi qoʻshgan kategoriyaga tegilmaydi va u oxirida qoladi', async () => {
+    const qoshilgan = await kategoriyaQosh('kitob', 'chiqim')
+    expect(qoshilgan.ok).toBe(true)
+    if (!qoshilgan.ok) return
+    // Tayyorlardan sakkiztasini omborga qaytarmaymiz — yarim urugʻ holatini yasaymiz.
+    for (const kategoriya of tayyorKategoriyalar().slice(3)) {
+      await omborda(KATEGORIYALAR_OMBORI, 'readwrite', (ombor) => ombor.delete(kategoriya.id))
+    }
+
+    const kategoriyalar = await hammaKategoriyalar()
+
+    expect(kategoriyalar.length).toBe(12)
+    expect(kategoriyalar[kategoriyalar.length - 1]?.id).toBe(qoshilgan.qiymat.id)
+    expect(nomBoyicha(kategoriyalar, 'kitob').yaratilgan).toBe(qoshilgan.qiymat.yaratilgan)
+  })
+
+  it('urugʻlanish bitta amalda boʻladi: oʻrtaga tozalash tushsa ham yarim qolmaydi', async () => {
+    // Urugʻlanish va tozalash bir vaqtda boshlanadi. Natija ikki xil boʻlishi mumkin:
+    // yo tozalash urugʻdan oldin/keyin tushadi — lekin HECH QACHON yarim qolmaydi.
+    const [kategoriyalar] = await Promise.all([
+      hammaKategoriyalar(),
+      omborda(KATEGORIYALAR_OMBORI, 'readwrite', (ombor) => ombor.clear()),
+    ])
+
+    expect(kategoriyalar.length).toBe(11)
+    const qolgan = await omborda<number>(KATEGORIYALAR_OMBORI, 'readonly', (ombor) =>
+      ombor.count(),
+    )
+    expect([0, 11]).toContain(qolgan)
   })
 })

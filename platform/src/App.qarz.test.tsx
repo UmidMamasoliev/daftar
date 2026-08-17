@@ -23,9 +23,12 @@ import {
   tolovSaqla,
 } from './data/qarzlar.ts'
 import { bugun, kunMatni } from './domain/sana.ts'
+import { navbatBoshasin } from './test/navbat.ts'
 
 afterEach(async () => {
   cleanup()
+  // Doʻkonga boshlangan ish tugasin — tozalash uning oʻrtasiga tushmasin.
+  await navbatBoshasin()
   await bazaniTozala()
 })
 

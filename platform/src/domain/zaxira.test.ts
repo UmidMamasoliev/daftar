@@ -186,7 +186,7 @@ describe('eksport fayli — tuzilishi (mezon 1, 2, 3, 4)', () => {
     )
   })
 
-  it('mezon 14 — kalitlar va qiymatlar ASCII nomlarda (`kategoriya`, `kontakt`, `qarz`)', () => {
+  it('spec 14-band — kalitlar va qiymatlar ASCII nomlarda (`kategoriya`, `kontakt`, `qarz`)', () => {
     const fayl = zaxiraYasa(mazmun())
 
     expect(fayl.yozuvlar[0]?.kategoriya).toBe('oziq-ovqat')

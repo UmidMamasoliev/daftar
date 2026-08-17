@@ -15,6 +15,7 @@ import { App } from './App.tsx'
 import { bazaniTozala, hammaKontaktlar } from './data/qarzlar.ts'
 import { hammaYozuvlar, yozuvQosh } from './data/yozuvlar.ts'
 import { bugun } from './domain/sana.ts'
+import { navbatBoshasin } from './test/navbat.ts'
 import type { YangiYozuv } from './domain/turlar.ts'
 
 /** Yuklab olingan fayllar — `faylniYuklabOl` oʻrniga qoʻyiladi. */
@@ -32,6 +33,8 @@ beforeEach(() => {
 
 afterEach(async () => {
   cleanup()
+  // Doʻkonga boshlangan ish tugasin — tozalash uning oʻrtasiga tushmasin.
+  await navbatBoshasin()
   await bazaniTozala()
 })
 

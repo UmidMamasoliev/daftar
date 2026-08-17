@@ -16,6 +16,7 @@ import userEvent from '@testing-library/user-event'
 import { afterEach, expect, it, vi } from 'vitest'
 import { App } from './App.tsx'
 import { bazaniTozala } from './data/qarzlar.ts'
+import { navbatBoshasin } from './test/navbat.ts'
 
 vi.mock('./data/qarzlar.ts', async () => {
   const asl = await vi.importActual<typeof import('./data/qarzlar.ts')>('./data/qarzlar.ts')
@@ -37,6 +38,8 @@ vi.mock('./data/qarzlar.ts', async () => {
 
 afterEach(async () => {
   cleanup()
+  // Doʻkonga boshlangan ish tugasin — tozalash uning oʻrtasiga tushmasin.
+  await navbatBoshasin()
   await bazaniTozala()
 })
 

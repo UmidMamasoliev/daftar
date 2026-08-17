@@ -1,5 +1,40 @@
 # QA eslatmalari — Daftar (loyiha)
 
+## 2026-08-17 — Regressiya (3.9 oldi): 994 Vitest / 11 Playwright / hisobot+zaxira
+- Darvoza usuli: `npm test` 19× (5+6+8) — 2 marta AYNI test yiqildi:
+  `App.hisobot.test.tsx` «mezon 18 — yozuv tahrirlangach…». Yiqilish DOMi: tahrir
+  formasi ochiq, summa qoʻllangan, tur tanlangan, LEKIN kategoriya chiplari guruhi
+  BOʻSH («Koʻrinadigan kategoriya yoʻq…») va «Kategoriyani tanlang.» — App holatidagi
+  `kategoriyalar` roʻyxati boʻsh. Bu T8 dagi «IDB makrotask» izohidan boshqa ildiz:
+  kategoriya roʻyxati/urugʻlanish oʻqishi shubhali. Toʻliq log saqlash sharti:
+  `npm test`ni `tail` bilan kesmaslik — flake tafsiloti yoʻqoladi.
+- Uchta xato kodi (`kategoriya-bosh/topilmadi/turi`) BITTA «Kategoriyani tanlang.»
+  matniga yigʻilgan — flake diagnostikasida kodni DOMdan ajratib boʻlmaydi.
+- Zaxira oqimini probe qilish: `page.waitForEvent('download')` + `download.path()`
+  bilan eksport faylini oʻqib, `filechooser.setFiles({name,mimeType,buffer})` bilan
+  qaytarib berish — butun 4 qadamli import skriptlanadi. 17b (tanlanmadi) uchun
+  `setFiles([])` ISHLAMAYDI — komponent `cancel` hodisasiga tayanadi:
+  `locator('input[aria-label="Zaxira fayli"]').dispatchEvent('cancel')`.
+- Hisobot ekranida raqamlar navbat orqali keladi: guruh `innerText` ini oʻqishdan
+  oldin kutish shart (B15 shu tufayli soxta FAIL berdi; 600 ms yetdi).
+- Davr holatida «Davr tanlash» havolasi YOʻQ — avval «Oyga qaytish» (dizayn 2-boʻlim).
+  Probe shu tartibda yozilsin.
+- Yozuv formasida dollar summasini terishdan OLDIN «dollar» chipi bosilsin: soʻm
+  rejimida «20,50» → «2050» boʻlib kesiladi (probe tuzogʻi).
+- Import validatori qatʼiy (jonli tasdiqlangan): begona hisob (`bank`), unsafe int
+  (2⁵³+1), manfiy/nol summa, faqat-naqd `hisoblar`, `yaratilgan`/`oxirgi-eksport`
+  yoʻqligi — hammasi «toʻliq emas» bilan rad; MAX_SAFE_INTEGER esa qabul va hisobotda
+  «Taxminiy jami hisoblanmadi…» chiqadi.
+- Kurs soʻrash bloki (hisobot mezon 21) JONLI yoʻlda ochilmaydi: jami blokdagi dollar
+  qatori faqat kursli dollar yozuvidan keladi. Faqat unit bilan yopilgan — oʻlik yoʻl.
+  `kurslar` bloki ham faqat qoʻlda yasalgan fayl importi orqali toʻladi (B15: eng kech
+  sanali qoʻlda kurs yozuv kursidan gʻolib — jonli tasdiqlandi).
+- Q4/T8 topilmalari qaytmagan: `tolovSaqla` App da; `orqaga` navbatni kutadi;
+  KELISHUVdagi 0063 ishoralari tuzatilgan; 32a PRDda joyida; `xavfsizTaxminiyJami`
+  bor; qarz aylantirishi ham `…Sigadimi` yoʻlidan oʻtadi.
+- Zaxira testlarida yorliq chalkashligi: domin testdagi «mezon 14» aslida spec
+  14-BAND (ASCII kalitlar); haqiqiy mezon 14 (qoldiqlar) data testda «mezon 13, 14».
+
 ## 2026-08-17 — Q4: qarz-daftari toʻliq tekshiruvi
 - Suite: `npm test` 682/682 (2× barqaror), `tsc -b` toza, `npx playwright test` 7/7
   (qarz e2e + oflayn qarz oqimi bor). Mezon xaritasi ishlaydi: `grep "mezon N"` qarz

@@ -928,3 +928,11 @@ oʻzgarmaydi** — tekshiruv ustiga yozishdan oldin bajariladi.
 - Eski fayl versiyasini yangisiga oʻgirish (spec: hozir versiya bitta).
 - Qisman import, birlashtirish, dublikat topish, CSV/Excel (0027, 0007).
 - Import/eksport jurnali va tarixi (0014).
+
+**Kategoriyalar urugʻlanishi haqida bir qator** (10-boʻlimga aniqlik, Z2 da tuzatildi):
+`hammaKategoriyalar()` roʻyxatni **bitta amalda** oʻqiydi va yetishmayotgan **tayyor**
+kategoriyalarni oʻsha amalning ichida toʻldiradi. Ilgari urugʻlanish 11 alohida amalda
+ketardi va `count() > 0` shartiga tayanardi: oʻrtaga boshqa amal (masalan importning
+tozalashi) tushsa doʻkon yarim urugʻlangan qolib, keyingi oʻqishlar uni tuzatmasdi. Mavjud
+qator **hech qachon qayta yozilmaydi** — yashirilgan tayyor kategoriya yashirilganicha
+qoladi, foydalanuvchi qoʻshganlari va ularning tartibi tegilmaydi (0013, 0028).

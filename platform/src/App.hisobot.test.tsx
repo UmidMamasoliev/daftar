@@ -19,10 +19,12 @@ import { yozuvQosh } from './data/yozuvlar.ts'
 import { sananingOyi } from './domain/hisobot.ts'
 import { bugun } from './domain/sana.ts'
 import type { YangiYozuv } from './domain/turlar.ts'
+import { navbatBoshasin } from './test/navbat.ts'
 import { oyMatni } from './ui/format.ts'
 
 afterEach(async () => {
   cleanup()
+  await navbatBoshasin()
   await bazaniTozala()
 })
 

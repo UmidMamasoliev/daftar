@@ -14,9 +14,12 @@ import { App } from './App.tsx'
 import { hammaKategoriyalar } from './data/kategoriyalar.ts'
 import { bazaniTozala, hammaYozuvlar } from './data/yozuvlar.ts'
 import { bugun } from './domain/sana.ts'
+import { navbatBoshasin } from './test/navbat.ts'
 
 afterEach(async () => {
   cleanup()
+  // Doʻkonga boshlangan ish tugasin — tozalash uning oʻrtasiga tushmasin.
+  await navbatBoshasin()
   await bazaniTozala()
 })
 

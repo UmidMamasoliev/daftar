@@ -18,32 +18,48 @@ import {
 } from '../domain/kategoriya.ts'
 import type { Kategoriya, Natija, YozuvTuri } from '../domain/turlar.ts'
 import { hozirYaratilgan } from '../domain/vaqt.ts'
-import { KATEGORIYALAR_OMBORI, idYarat, omborda } from './baza.ts'
+import { KATEGORIYALAR_OMBORI, amalda, idYarat, omborda } from './baza.ts'
 
 /**
- * Doʻkon boʻsh boʻlsa tayyor roʻyxatni sepadi (mezon 15).
+ * Roʻyxatni oʻqiydi va **yetishmayotgan tayyor kategoriyalarni toʻldiradi** (mezon 15).
  *
- * Boʻshlik faqat birinchi ochilishda (yoki maʼlumot toʻliq tozalanganda) boʻladi:
- * kategoriya oʻchirilmaydi, yashirilgani ham qatorda qolaveradi (0013). Kalitlar
- * oʻzgarmas boʻlgani uchun sepish takrorlansa ham roʻyxat koʻpaymaydi.
+ * Hammasi **bitta amalda** (transaction): oʻqish ham, toʻldirish ham. Sababi tajribadan
+ * chiqqan — ilgari urugʻlanish 11 ta alohida amalda ketardi va `count() > 0` shartiga
+ * tayanardi. Oʻrtaga boshqa amal tushsa (masalan importning tozalashi yoki parallel
+ * oʻqish) doʻkon **yarim urugʻlangan** qolardi, keyingi oʻqishlar esa uni hech qachon
+ * tuzatmasdi: doʻkon boʻsh emas edi. Endi ikkalasi ham atomik va oʻzini tuzatadi.
+ *
+ * Nimaga tegilmaydi (0013, 0028):
+ * - **mavjud qator umuman qayta yozilmaydi** — yashirilgan tayyor kategoriya
+ *   yashirilganicha qoladi va qayta sepilmaydi;
+ * - foydalanuvchi qoʻshgan kategoriyalar (va ularning `yaratilgan` tartibi) tegilmaydi.
  */
-async function urugla(): Promise<void> {
-  const soni = await omborda<number>(KATEGORIYALAR_OMBORI, 'readonly', (ombor) => ombor.count())
-  if (soni > 0) {
-    return
-  }
-  for (const kategoriya of tayyorKategoriyalar()) {
-    await omborda(KATEGORIYALAR_OMBORI, 'readwrite', (ombor) => ombor.put(kategoriya))
-  }
+async function toldirilganRoyxat(): Promise<Kategoriya[]> {
+  let natija: Kategoriya[] = []
+
+  await amalda([KATEGORIYALAR_OMBORI], 'readwrite', (amal) => {
+    const ombor = amal.objectStore(KATEGORIYALAR_OMBORI)
+    const sorov = ombor.getAll()
+    sorov.onsuccess = () => {
+      const mavjud = sorov.result as Kategoriya[]
+      const mavjudIdlar = new Set(mavjud.map((kategoriya) => kategoriya.id))
+      const yetishmagan = tayyorKategoriyalar().filter(
+        (kategoriya) => !mavjudIdlar.has(kategoriya.id),
+      )
+      // Yozish oʻsha amalning ichida ketadi — yarim holat qolmaydi.
+      for (const kategoriya of yetishmagan) {
+        ombor.put(kategoriya)
+      }
+      natija = [...mavjud, ...yetishmagan]
+    }
+  })
+
+  return natija
 }
 
 /** Hamma kategoriya — yashirilgani ham (0013; mezon 14, 15). Tartibi: tayyorlar oldinda. */
 export async function hammaKategoriyalar(): Promise<Kategoriya[]> {
-  await urugla()
-  const kategoriyalar = await omborda<Kategoriya[]>(KATEGORIYALAR_OMBORI, 'readonly', (ombor) =>
-    ombor.getAll(),
-  )
-  return kategoriyalarniTartibla(kategoriyalar)
+  return kategoriyalarniTartibla(await toldirilganRoyxat())
 }
 
 /** Yangi yozuv tanlovi uchun roʻyxat: oʻsha turdagi, yashirilmaganlari (mezon 14, 16). */

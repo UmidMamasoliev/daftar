@@ -13,6 +13,7 @@ import userEvent from '@testing-library/user-event'
 import { afterEach, expect, it, vi } from 'vitest'
 import { App } from './App.tsx'
 import { bazaniTozala } from './data/yozuvlar.ts'
+import { navbatBoshasin } from './test/navbat.ts'
 
 vi.mock('./data/kategoriyalar.ts', async () => {
   const asl =
@@ -28,6 +29,8 @@ vi.mock('./data/kategoriyalar.ts', async () => {
 
 afterEach(async () => {
   cleanup()
+  // Doʻkonga boshlangan ish tugasin — tozalash uning oʻrtasiga tushmasin.
+  await navbatBoshasin()
   await bazaniTozala()
 })
 

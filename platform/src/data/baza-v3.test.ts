@@ -102,9 +102,11 @@ describe('baza sxemasi — 2-versiyadan 3-versiyaga (Q1; 0015, 0016)', () => {
   it('eski `kategoriyalar` ombori va yashirilgan kategoriya joyida qoladi', async () => {
     const kategoriyalar = await hammaKategoriyalar()
 
+    // Eski qator **qayta yozilmaydi**: yashirilganicha, oʻz holicha qoladi (0013).
     expect(kategoriyalar).toContainEqual(ESKI_KATEGORIYA)
-    // Doʻkon boʻsh emas edi — urugʻlanish takrorlanmaydi (0013).
-    expect(kategoriyalar.length).toBe(1)
+    // Yetishmayotgan tayyor kategoriyalar esa toʻldiriladi — yarim roʻyxat qolmaydi
+    // (0028; `src/data/kategoriyalar.test.ts` «yarim urugʻlangan doʻkon oʻzini tuzatadi»).
+    expect(kategoriyalar.length).toBe(11)
   })
 
   it('eski indekslar joyida qoladi', async () => {
