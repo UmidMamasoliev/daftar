@@ -131,7 +131,10 @@ Raqamlar `font-variant-numeric: tabular-nums` bilan — summalar ustunda tekis t
 - **Fokus:** 2 px `harakat` halqa, elementdan 2 px narida. Klaviatura bilan yurgan odam qayerda
   turganini koʻrsin.
 - **Bosilgan:** fon 8 % ga toʻqlashadi, oʻlcham oʻzgarmaydi.
-- **Oʻchiq (bosilmaydi):** matni `matn-oʻchiq`, foni `fon`, kursor oʻzgarmaydi.
+- **Oʻchiq (bosilmaydi):** matni `matn-oʻchiq`, foni `fon`, kursor oʻzgarmaydi. Bu holat
+  **saqlash tugmalarida ham** uchraydi: saqlash ketayotgan bir lahzada tugma oʻchiq turadi —
+  bitta niyat bitta yozuv boʻlsin. Koʻrinishi ataylab oʻzgartirilmagan: yangi rang, matn yoki
+  belgi qoʻshilmaydi (pastdagi «kutish holati yoʻq» qatori).
 - **Xato:** maydon chegarasi 1 px oʻrniga 2 px `chiqim`; tagida `mayda` oʻlchamda `chiqim`
   rangli xato matni. Maydon tuzatilishi bilan xato yoʻqoladi.
 - **Yordam matni (xato emas):** maydon ostida `mayda` oʻlchamda `matn-ikkinchi` rangli qator;

@@ -75,6 +75,10 @@ export function QarzDaftari({
   const [ism, setIsm] = useState('')
   const [telefon, setTelefon] = useState('')
   const [xato, setXato] = useState<Xato | null>(null)
+  // Qoʻshish ketayotgan payt «Qoʻshish» oʻchiq turadi; bayroqning oʻzi `ref` da, chunki
+  // qayta kirish **shu lahzada** toʻsilishi kerak (formalar bilan bir naqsh).
+  const [qoshilmoqda, setQoshilmoqda] = useState(false)
+  const qoshishKetdi = useRef(false)
   // Yangi kontakt alifbodagi oʻz oʻrniga tushadi — ekran oʻsha qatorga suriladi (dizayn).
   const [yangiId, setYangiId] = useState<string | null>(null)
   const ismRef = useRef<HTMLInputElement>(null)
@@ -123,7 +127,21 @@ export function QarzDaftari({
   }
 
   async function qoshishniBosdi(): Promise<void> {
-    const natija = await qosh({ ism, telefon })
+    // «Qoʻshish» tez ikki marta bosilsa ikkinchisi shu yerda toʻxtaydi: bitta ismdan
+    // ikkita kontakt chiqmasin.
+    if (qoshishKetdi.current) {
+      return
+    }
+    qoshishKetdi.current = true
+    setQoshilmoqda(true)
+    let natija: Natija<Kontakt>
+    try {
+      natija = await qosh({ ism, telefon })
+    } finally {
+      // Xato qaytsa tugma yana bosiladigan boʻlib qoladi.
+      qoshishKetdi.current = false
+      setQoshilmoqda(false)
+    }
     if (!natija.ok) {
       setXato(natija.xatolar[0] ?? null)
       return
@@ -201,6 +219,7 @@ export function QarzDaftari({
               <button
                 type="button"
                 className="asosiy-tugma qoshish-tugma"
+                disabled={qoshilmoqda}
                 onClick={() => {
                   void qoshishniBosdi()
                 }}

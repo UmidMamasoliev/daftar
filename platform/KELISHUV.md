@@ -104,6 +104,15 @@ majburiy — summa, turi, kategoriya; sana bugun yoki undan oldin; izoh ixtiyori
 maydon saqlanmaydi); soʻmda kasr yoʻq; dollarda ikki kasrgacha va **kurs majburiy**; soʻmda
 kurs saqlanmaydi (kiritilgan boʻlsa ham tashlanadi).
 
+**Takroriy saqlashdan himoya forma darajasida turadi.** Doʻkon ketma-ket kelgan ikkita bir xil
+chaqiruvni farqlay olmaydi — ikkalasi ham haqiqiy yozuv boʻlib tushadi (`id` va `yaratilgan` ni
+doʻkon oʻzi qoʻyadi, demak nusxalar ham bir-biridan farq qiladi). Shuning uchun «bitta niyat —
+bitta yozuv» qoidasini **forma** ushlaydi: saqlash ketayotganda forma ikkinchi yuborishni
+oʻtkazmaydi (bayroq `useRef` da — holat yangilanishini kutib boʻlmaydi) va saqlash tugmasi
+`disabled` boʻlib turadi. Bu `YozuvForma`, `QarzForma`, `TolovForma` va qarz daftaridagi
+«Qoʻshish» da bir xil. **Koʻrinish oʻzgarmaydi**: yangi vizual holat qoʻshilmagan — `design/uslub.md`
+dagi «kutish holati yoʻq» qoidasi kuchda, tugma faqat oʻzining «oʻchiq» koʻrinishiga oʻtadi.
+
 ## 4. Pul — `src/domain/pul.ts`
 
 | Funksiya | Qabul qiladi | Qaytaradi |
@@ -150,12 +159,27 @@ type KursManbai = { kurs: number; sana: string; yaratilgan: string }
 ```
 
 - `yozuvlardanKurslar(yozuvlar)` → `KursManbai[]` (faqat dollardagi yozuvlardan).
+- `qoldaKurslarManbalari(kurslar: QoldaKurslar)` → `KursManbai[]` — «≈ jami soʻmda» uchun qoʻlda
+  soʻralgan kursni (0043) taqqos qatoriga oʻgiradi; kursi yoʻq boʻlsa boʻsh massiv.
 - `oxirgiKurs(manbalar)` → `number | null`. Gʻolib: eng kech `sana`li; sanalar teng boʻlsa eng
   kech `yaratilgan`li (0044, 0047). `null` — birorta kurs manbai yoʻq, demak ekran kursni
   soʻrashi kerak (mezon 23g).
 
 Qarz toʻlovlari kurslari (T4) va «≈ jami soʻmda» uchun qoʻlda soʻralgan kurs xuddi shu
 `KursManbai` koʻrinishida shu roʻyxatga qoʻshiladi — alohida qoida yoʻq.
+
+**Qoʻlda kursning sintetik `yaratilgan` qiymati faqat shu faylda yasaladi** (0066): uning
+kiritilish vaqti saqlanmaydi, shuning uchun `qoldaKurslarManbalari` unga «kun boshi» qiymatini
+(`'0000-01-01T00:00:00.000Z'`) qoʻyadi — qoʻlda kurs oʻz sanasidagi qiymat boʻlib qoladi, lekin
+oʻsha kunda kiritilgan **har qanday** yozuv yoki toʻlov kursi undan yangi sanaladi. Qiymat
+`sana + 'T00:00'` emas: `sana` mahalliy kun, `yaratilgan` UTC (0047), va Toshkentda tunda
+kiritilgan yozuvning UTC vaqti mahalliy kun boshidan oldin tushardi. Doʻkon
+(`src/data/yozuvlar.ts`), sozlamalar va ekran shu bitta funksiyani chaqiradi — ikkinchi qoida
+yoʻq.
+
+`src/ui/kurslar.ts` — ekranning yoʻli: shu funksiyani domendan **re-eksport** qiladi, oʻz qoidasi
+yoʻq. Ilgari u yerda ikkinchi, domendagidan farqli sintetik vaqt turgan edi va bitta qiymat ikki
+xil solishtirilib «oxirgi kurs» notoʻgʻri chiqardi (mezon 23d; 0066).
 
 ## 8. Yozuvlar doʻkoni — `src/data/yozuvlar.ts`
 
@@ -525,6 +549,10 @@ Qoidalar bir joyda:
 | `tolovniOchir(id)` | `string` | `Tolov` — oʻchirilgan nusxa (mezon 8) |
 | `tolovniQaytar(tolov)` | `Tolov` | `Tolov` — oʻsha id bilan joyiga (mezon 9) |
 | `tolovNusxasi(tolov)` | `Tolov` | `Tolov` |
+
+`kontaktSaqla`, `qarzSaqla` va `tolovSaqla` **takroriy chaqiruvni oʻzi toʻsmaydi** — ikkinchi
+chaqiruv ikkinchi qator boʻlib tushadi. Bir niyatni bitta yozuvga bogʻlash forma ishi
+(3-boʻlim oxiri).
 
 **Ekranga tayyor koʻrinishlar**
 
@@ -898,8 +926,10 @@ ni chaqiradi; keyin `oxirgiKursniOl()` uni **oʻzi** hisobga oladi va kurs qayta
 (mezon 24a, 24b).
 
 `oxirgiKursniOl()` endi uch manbani qamraydi: yozuv kurslari + toʻlov kurslari + qoʻlda
-soʻralgan kurs (0044 qoidasi bilan solishtiriladi — eng kech sanali gʻolib). Bir xil sanada
-qoʻlda soʻralgan javob gʻolib boʻladi: u oʻsha kunning oxirgi javobi (0045).
+soʻralgan kurs (0044 qoidasi bilan solishtiriladi — eng kech sanali gʻolib). **Bir xil sanada
+yozuv yoki toʻlov kursi gʻolib boʻladi**, qoʻlda soʻralgani emas: qoʻlda kursning vaqti
+saqlanmaydi va u oʻz kunining boshida turadi (mezon 23d; 0044, 0066). Manba qatorini doʻkon
+oʻzi yasamaydi — `qoldaKurslarManbalari` ni chaqiradi (7-boʻlim).
 
 Shundan kelib chiqadi: `hisobotniOl(davr, qoshimchaKurslar)` (20-boʻlim) saqlangan kursni
 **oʻzi** oladi — u ichida `oxirgiKursniOl` ni chaqiradi. `qoshimchaKurslar` parametri

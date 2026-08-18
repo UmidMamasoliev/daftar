@@ -13,7 +13,7 @@ oflayn ishlaydigan, serversiz veb-sayt (0003).
 2. `lessons/qoidalar.md` — takrorlanmasligi kerak boʻlgan xatolar.
 3. `memory/` dagi eng yangi fayl — qayerda toʻxtaganimiz.
 4. `discovery/` — ochiq savollar (boʻsh boʻlishi mumkin).
-5. `decisions/` — 0001 dan 0065 gacha. **Hammasi majburiy va bahsga tushmaydi.**
+5. `decisions/` — 0001 dan 0066 gacha. **Hammasi majburiy va bahsga tushmaydi.**
 6. `prds/daftar-prd.md` — mahsulot chegarasi.
 7. Oʻz qismingiz speci: `prds/kirim-chiqim.md`, `prds/qarz-daftari.md`,
    `prds/oylik-hisobot.md`, `prds/dashboard.md`.
@@ -72,7 +72,8 @@ Roʻyxatda yoʻq narsani «foydali boʻlardi» deb qoʻshmang. Kerak boʻlsa —
   toʻgʻrilanadi (0045).
 - Saqlanadigan yagona kurs qiymati — «≈ jami soʻmda» uchun qoʻlda soʻralgani; u sanasi bilan
   saqlanadi, zaxira fayliga `kurslar` bloki boʻlib kiradi va hisobda teng qatnashadi
-  (0043, 0044, 0045).
+  (0043, 0044, 0045). Uning **vaqti** saqlanmaydi: qoʻlda kurs oʻz kunining boshida turadi,
+  demak oʻsha kundagi har qanday yozuv yoki toʻlov kursi undan yangi sanaladi (0066).
 - Summa: soʻmda butun son, dollarda ikki kasr. Nol saqlanmaydi, manfiy kiritilmaydi (0033).
 - Sana faqat bugun yoki undan oldin — yozuv, qarz va toʻlovda bir xil (0034).
 - Aralash valyutada qoldiqlar alohida qatorda; «≈ jami soʻmda» faqat taxminiy qator (0023).

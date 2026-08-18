@@ -111,6 +111,10 @@ export function QarzForma({
   const [forma, setForma] = useState<QarzFormasi>(() => boshlangichHolat(kontakt.id, qarz))
   const [xatolar, setXatolar] = useState<readonly Xato[]>([])
   const [summaOgohi, setSummaOgohi] = useState('')
+  // Saqlash ketayotgan payt «Saqlash» oʻchiq turadi; bayroqning oʻzi `ref` da, chunki
+  // qayta kirish **shu lahzada** toʻsilishi kerak (YozuvForma bilan bir naqsh).
+  const [saqlanmoqda, setSaqlanmoqda] = useState(false)
+  const saqlashKetdi = useRef(false)
 
   const summaRef = useRef<HTMLInputElement>(null)
   const yonalishRef = useRef<HTMLButtonElement>(null)
@@ -221,6 +225,11 @@ export function QarzForma({
 
   async function yubor(hodisa: FormEvent<HTMLFormElement>): Promise<void> {
     hodisa.preventDefault()
+    // «Saqlash» tez ikki marta bosilsa ikkinchisi shu yerda toʻxtaydi: bitta niyatdan
+    // ikkita qarz chiqmasin.
+    if (saqlashKetdi.current) {
+      return
+    }
     // Birinchi qatlam — ekrandagi maʼlumot boʻyicha: maydon xatolari bir yoʻla koʻrinsin
     // va ekran birinchi xatoli maydonga surilsin (dizayn: «Xato holatlari»).
     const tekshirilgan = qarzniTekshir(forma)
@@ -231,7 +240,16 @@ export function QarzForma({
     }
     // Ikkinchi qatlam va oxirgi soʻz — doʻkon: kontakt hali bormi (0030), valyutani
     // oʻzgartirsa boʻladimi (0059), summa toʻlovlardan past emasmi (0061e).
-    const natija = await saqla(forma)
+    saqlashKetdi.current = true
+    setSaqlanmoqda(true)
+    let natija: Natija<Qarz>
+    try {
+      natija = await saqla(forma)
+    } finally {
+      // Saqlash rad etilsa tugma yana bosiladigan boʻlib qoladi.
+      saqlashKetdi.current = false
+      setSaqlanmoqda(false)
+    }
     if (!natija.ok) {
       setXatolar(natija.xatolar)
       xatoliMaydongaOt(natija.xatolar)
@@ -441,7 +459,7 @@ export function QarzForma({
         {xatoQatori('kontaktId', `${asos}-kontakt-xato`)}
 
         <div className="panel-past">
-          <button type="submit" className="asosiy-tugma">
+          <button type="submit" className="asosiy-tugma" disabled={saqlanmoqda}>
             {QARZ_FORMA.saqlash}
           </button>
         </div>

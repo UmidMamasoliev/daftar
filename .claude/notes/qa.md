@@ -1,5 +1,88 @@
 # QA eslatmalari — Daftar (loyiha)
 
+## 2026-08-18 — Maqsadli qayta tekshiruv (kurs + ikki-bosish tuzatishlari, preview 4174)
+- Ikkala tuzatish jonli tasdiqlandi: (1) qoʻlda kurs endi «kun boshi» sintetik vaqti
+  (`domain/kurs.ts` `QOLDA_KURS_VAQTI = '0000-01-01T00:00:00.000Z'`, ataylab sana emas —
+  UTC/mahalliy farqi izohda) — oʻsha kunda keyin kiritilgan 13 500 saqlangan 15 000 ni
+  yengdi; (2) toʻrt formada `useRef` bayroq + `disabled` — sinxron 2×klik ham, dblclick
+  ham 1 ta saqlash (IDB sanovi bilan).
+- **TOPILMA (past):** «Zaxira» → «Eksport» tugmasida himoya yoʻq — sinxron 2×klik ham,
+  dblclick ham 2 ta faylni yuklab oladi (bir xil nom, brauzer «(1)» qoʻshadi). Maʼlumotga
+  zarar yoʻq (mazmun bir xil, oxirgi-eksport bir xil qiymat), lekin naqsh yoʻqligi jonli
+  koʻrindi. TUZATILMADI — qayd.
+- Shubhali, lekin jonli oqibatsiz: «Kontakt tahriri» Saqlash 2×klik = 1 kontakt, ism
+  toʻgʻri (keyed put idempotent); «Kategoriyalar» Qoʻshish 2×klik = 1 ta kategoriya
+  (doʻkonning nom-bandlik tekshiruvi ikkinchisini yutadi, ekranda xato chiqmaydi —
+  forma birinchi muvaffaqiyatda yopilgan); «Import» 2×klik = 1 ta filechooser (fayl
+  tanlanmagunicha yon taʼsir yoʻq). Uchchalasida himoya NAQSHI yoʻq — xavf nazariy.
+- Yangi probe tuzoqlari: (1) pastki navigatsiya FAQAT `NAVLI_EKRANLAR` da (`App.tsx`) —
+  «forma» va «kategoriyalar» ekranlarida panel YOʻQ, probe avval formadan chiqsin
+  (Kategoriyalardan «‹ Orqaga» YOZUV FORMASIGA qaytaradi, navsiz). (2) «Kecha» tugma
+  emas — sana `.sana-kirit` date-inputga `fill` bilan kiritiladi. (3) Yozuv formasida
+  kurs maydoni OLDINDAN TOʻLDIRILMAYDI (qoʻlda kurs 15 000 saqlangan boʻlsa ham boʻsh) —
+  bu spec buzilishi emas, «oxirgi kurs» faqat hisobot uchun.
+- 23a–23c regressiya hidi tekshirildi: kechagi 12 000 bugungi 12 500 ni yengmadi;
+  bir xil sanada keyingi 12 600 gʻolib — kurs tuzatishi eski xulqni buzmagan.
+
+## 2026-08-18 — Maqsadli poyga tekshiruvi (preview 4174, 20+8 jonli probe)
+- **TOPILMA (oʻrta, pulga tegadi, 5/5 takrorlanadi):** «Saqlash»/«Qoʻshish» tugmalarida
+  in-flight himoya yoʻq (`disabled` yoʻq, `yubor` da bayroq yoʻq) — bitta niyat ikki marta
+  saqlanadi. Toʻrt joyda ham: YozuvForma (2 yozuv), QarzForma (2 qarz), TolovForma
+  (2 toʻlov — 30 000×2!), QarzDaftari kontakt «Qoʻshish» (2 kontakt). Doʻkonning
+  tekshiruvli yoʻllari (`tolovSaqla`) ham toʻsmaydi — har ikkala toʻlov alohida-alohida
+  qonuniy. Testlarda bu holat YOʻQ (YozuvForma/QarzForma/TolovForma 113 testi oʻtadi —
+  qamrov boʻshligʻi, buzilgan test emas).
+- Probe usuli (dublikat poygasi): `locator.evaluate((el)=>{el.click();el.click()})` —
+  sinxron ikki klik deterministik uradi; `dblclick()` ham uradi. Ikki ALOHIDA playwright
+  `click()` ulgurmaydi (preview'da IDB yozuvi juda tez, forma yopilib boʻladi) — sekin
+  qurilmada oyna kengroq.
+- Navbat modeli qolgan tez ketma-ketliklarda ushladi (hammasi PASS): saqlash→darhol ×→
+  ekran almashish (1 yozuv); oʻchir→qaytar ×3 sikl; ikki yozuvni tez oʻchirish + bitta
+  QAYTARISH (12a — faqat ikkinchisi qaytadi, panel 1 ta); yashir→koʻrsat ×3 (dublikat
+  yoʻq, IDB 11); T8 orqaga-poygasi qaytmagan (yashir→DARHOL Orqaga = ogoh + tanlov bekor;
+  koʻrsat→DARHOL Orqaga = tanlov saqlanadi); qarz→toʻlov→darhol oʻchir→QAYTARISH (qoldiq
+  100 000→70 000 toʻgʻri, hisobot qarz bloki mos); Saqlash→DARHOL reload (yozuv butun
+  yetib borgan, yarim yozuv koʻrilmadi).
+- Urugʻlanish stressi: 3× toza origin = 11/11 unikal; 3× «commit» paytida 2× tez reload =
+  baribir 11/11 unikal, chiplar chiziladi — atomar urugʻlanish jonli tasdiqlandi.
+- Sinalmagan poyga yoʻllari: qarz/kontakt oʻchir→qaytar tez sikllari (naqsh yozuvniki
+  bilan bir xil, lekin jonli urilmadi); hisobot oy strelkalarini tez bosish; eksport/import
+  tez ketma-ketligi; ikki-tab (ataylab — specda yoʻq).
+
+## 2026-08-18 — Umumiy sifat tekshiruvi (3.9 yakuniy): 999×3 / tsc / build / 11 e2e / 106 jonli
+- Darvozalar: `npm test` 3× — har safar 999/999, flake YOʻQ (kategoriya urugʻlanishi
+  tuzatilgach oldingi flake qaytmadi); `tsc -b` toza; build OK; Playwright 11/11.
+- **TOPILMA (oʻrta, takrorlanuvchan 2/2):** saqlangan qoʻlda kurs bir xil sanada KEYIN
+  kiritilgan yozuv kursini yengib qoladi — spec kirim-chiqim 23d va 0044 §2 ga zid.
+  Ildiz: `data/yozuvlar.ts` `oxirgiKursniOl` saqlangan kursga sintetik
+  `yaratilgan = sana+"T23:59:59.999Z"` beradi; `ui/kurslar.ts` esa TESKARI konvensiya
+  (`T00:00:00.000Z`, izohi 23d ga mos). Bitta qiymat ikki qatlamda ikki xil sintetik
+  vaqt bilan yuradi; App saqlangan kursni ikkala yoʻldan ham beradi (qoshimcha + doʻkon),
+  23:59 nusxa gʻolib. 23d yorliqli testlar FAQAT parametr (`qoshimcha`) yoʻlini sinaydi —
+  doʻkon yoʻli sinalmagan. KELISHUV 901–902 xato holatni hujjatlashtiradi («bir xil
+  sanada qoʻlda soʻralgan javob gʻolib»). Jonli yoʻl: faqat `kurslar` blokli fayl importi.
+- Sintetik vaqt darsi (umumiy): saqlangan qiymatga qatlam oʻzi timestamp toʻqisa, XUDDI
+  shu qiymatning parametr-yoʻli testi doʻkon-yoʻlini isbotlamaydi — ikkala yoʻlni sina.
+- Mezon xaritasi boʻshliqlari (mazmunan yopilgan, yorliqsiz): KC 3a (turi-bosh testlari),
+  KC 4f (faqat UI: YozuvForma «Kurs juda katta.», domain kursniOqi chegara testi yoʻq),
+  KC 23 (hisobot mezon 21 testlari + jonli), ZX 24 (jonli tasdiqlandi). Enumeratsiya
+  tuzogʻi: «mezon 13, 14» / «mezon 17j, 17k» — `grep "mezon N"` topmaydi, bare token bilan qidir.
+- Jonli sweep: 5 skript (A kesishma 28, B chegara 24, C oʻchirish/kategoriya/import 34,
+  D davr/tahrir 14, E kategoriya-import 6) = 106 tekshiruv, 1 haqiqiy FAIL (yuqoridagi).
+- Yangi probe tuzoqlari: (1) «Oʻchirish» tugmalari HOVER da chiqadi — qarz kartasida
+  butun kartani hover qilsang TOʻLOV qatoriga tushib notoʻgʻri delete bosiladi; doim
+  `.kartochka-boshi` ga hover+scope. (2) Toʻlov qatori summasi QARZ valyutasida «−» bilan
+  (`tolovMatni`), «+» emas; «Oldim» qarzida ham «−». (3) Qarz kartasini `boshlangʻich N
+  soʻm» matni bilan filtrlash barqaror (qoldiq oʻzgaradi). (4) Oy strelkalari aria-label:
+  «Oldingi oy»/«Keyingi oy»; forma yopish: «Yopish». (5) Yashirilgan kategoriya boshqaruv
+  ekranida alohida roʻyxatda, qatorda «Yashirilgan» soʻzi YOʻQ — «Koʻrsatish» tugmasi bor.
+  (6) Nol summa xatosi matni: «Summa noldan katta boʻlsin.» (7) Davr sana inputlari
+  `aria-labelledby` bilan (`input[aria-labelledby$="-boshlanish"]`), getByLabel ishlamaydi.
+- Kelajak sana jonli sinovi: date input `max=bugun` atributi bilan tekshiriladi (yozuv,
+  qarz, toʻlov, davr — toʻrttalasida ham bor, D3/D8/D9 PASS).
+- Import validatori jonli: buzuq JSON, versiya≠1, oxirgi-eksportsiz, manfiy summa,
+  unsafe int, begona «bank» hisobi — hammasi toʻgʻri matn bilan rad (C30–34, E6).
+
 ## 2026-08-17 — Regressiya (3.9 oldi): 994 Vitest / 11 Playwright / hisobot+zaxira
 - Darvoza usuli: `npm test` 19× (5+6+8) — 2 marta AYNI test yiqildi:
   `App.hisobot.test.tsx` «mezon 18 — yozuv tahrirlangach…». Yiqilish DOMi: tahrir

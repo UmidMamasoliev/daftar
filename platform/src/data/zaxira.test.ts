@@ -4,6 +4,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 
 import { tayyorKategoriyalar } from '../domain/kategoriya.ts'
+import { bugun } from '../domain/sana.ts'
 import type { ZaxiraFayli } from '../domain/zaxira.ts'
 import { zaxiraMatni, zaxiraniOqi } from '../domain/zaxira.ts'
 import { hammaKategoriyalar, kategoriyaQosh, kategoriyaniYashir } from './kategoriyalar.ts'
@@ -488,6 +489,30 @@ describe('qoʻlda soʻralgan kurs (0043, 0045; mezon 6b, 24a–24d)', () => {
     await zaxiraniImport(zaxira.matn)
 
     expect(await oxirgiKursniOl()).toBe(12900)
+  })
+
+  it('mezon 23d (kirim-chiqim) — importdan KEYIN kiritilgan oʻsha kunlik kurs gʻolib', async () => {
+    // QA jonli ssenariysi: `kurslar` bloki bugungi sanali fayl import qilinadi,
+    // keyin oʻsha kunga dollar yozuvi kiritiladi — «≈ jami soʻmda» yozuv kursi
+    // bilan hisoblanishi kerak (0044: oʻsha kunda keyin kiritilgani gʻolib).
+    const bugungi = bugun()
+    await qoldaKursniQoy(15000, bugungi)
+    const zaxira = await zaxiraniChiqar('qolda')
+    await bazaniTozala()
+    await zaxiraniImport(zaxira.matn)
+    expect(await oxirgiKursniOl()).toBe(15000)
+
+    await yozuvQosh({
+      turi: 'chiqim',
+      summa: 10000,
+      kategoriyaId: 'boshqa',
+      sana: bugungi,
+      hisob: 'karta',
+      valyuta: 'dollar',
+      kurs: 13500,
+    })
+
+    expect(await oxirgiKursniOl()).toBe(13500)
   })
 
   it('import `kurslar` bloki boʻsh boʻlsa eski saqlangan kursni oʻchiradi (toʻliq almashtirish)', async () => {

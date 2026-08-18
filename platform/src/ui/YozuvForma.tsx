@@ -113,6 +113,13 @@ export function YozuvForma({
   const [summaOgohi, setSummaOgohi] = useState('')
   const [kursOgohi, setKursOgohi] = useState('')
   const [kategoriyaOgohi, setKategoriyaOgohi] = useState('')
+  // Saqlash ketayotgan payt «Saqlash» oʻchiq turadi — ikkinchi bosish brauzerdan
+  // ham oʻtmasin. Yangi vizual holat qoʻshilmaydi: tugmaning rangi oʻzinikidan
+  // olinadi, matni oʻzgarmaydi va bu holat bir lahza turadi.
+  const [saqlanmoqda, setSaqlanmoqda] = useState(false)
+  // Bayroqning oʻzi `ref` da: qayta kirish **shu lahzada** toʻsilishi kerak, holat
+  // yangilanishini kutib boʻlmaydi (0029 ruhida — bir niyat bitta yozuv).
+  const saqlashKetdi = useRef(false)
 
   const summaRef = useRef<HTMLInputElement>(null)
   const turiRef = useRef<HTMLButtonElement>(null)
@@ -299,6 +306,11 @@ export function YozuvForma({
 
   async function yubor(hodisa: FormEvent<HTMLFormElement>): Promise<void> {
     hodisa.preventDefault()
+    // «Saqlash» tez ikki marta bosilsa (yoki dblclick) ikkinchisi shu yerda toʻxtaydi:
+    // bitta niyatdan ikkita yozuv chiqmasin.
+    if (saqlashKetdi.current) {
+      return
+    }
     // Tekshiruv «Saqlash» bosilganda bir yoʻla bajariladi (dizayn: «Xato holatlari»).
     // Doʻkonning oʻz tekshiruvi: chipda koʻrinmaydigan yoki turi mos kelmaydigan
     // kategoriya oʻtib ketmasin (KELISHUV 10-boʻlim; mezon 16). UI baribir
@@ -310,7 +322,15 @@ export function YozuvForma({
       return
     }
     setXatolar([])
-    await saqla(natija.qiymat)
+    saqlashKetdi.current = true
+    setSaqlanmoqda(true)
+    try {
+      await saqla(natija.qiymat)
+    } finally {
+      // Saqlash rad etilsa tugma yana bosiladigan boʻlib qoladi.
+      saqlashKetdi.current = false
+      setSaqlanmoqda(false)
+    }
     if (!tahrir) {
       setForma(boshlangichForma())
       setSummaOgohi('')
@@ -543,7 +563,7 @@ export function YozuvForma({
         </div>
 
         <div className="panel-past">
-          <button type="submit" className="asosiy-tugma">
+          <button type="submit" className="asosiy-tugma" disabled={saqlanmoqda}>
             {FORMA.saqlash}
           </button>
         </div>

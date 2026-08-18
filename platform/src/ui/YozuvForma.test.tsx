@@ -4,7 +4,7 @@
 // Mezonlar: `prds/kirim-chiqim.md` → 1, 2, 3, 3a, 4, 4a, 4b, 4c, 4d, 5, 6, 6a, 7, 16.
 // Kategoriyalar doʻkonsiz keladi — roʻyxat props orqali beriladi.
 
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { bugun, kunMatni } from '../domain/sana.ts'
@@ -769,5 +769,74 @@ describe('mezon 16 himoya qatlami — doʻkon roʻyxati bilan tekshiruv', () => 
     await odam.click(tugma('Saqlash'))
     expect(screen.getByText('Kategoriyani tanlang.')).toBeDefined()
     expect(saqla).not.toHaveBeenCalled()
+  })
+})
+
+describe('«Saqlash» tez ikki marta bosilsa (QA topilmasi)', () => {
+  /**
+   * Ikki bosish orasida hech narsa kutilmaydi — barmoq dblclick shunday keladi:
+   * birinchi saqlash hali tugamagan payt ikkinchisi kiradi.
+   */
+  function ikkiMartaBosdi(nom: string): void {
+    const nishon = tugma(nom)
+    fireEvent.click(nishon)
+    fireEvent.click(nishon)
+  }
+
+  /** Boshlangan saqlash tugasin — keyin natija sanaladi. */
+  async function tugasin(): Promise<void> {
+    await act(async () => {})
+  }
+
+  async function chiqimToldirdi(odam: ReturnType<typeof chiz>['odam']): Promise<void> {
+    await odam.type(maydon('Summa'), '9000')
+    await odam.click(tugma('Chiqim'))
+    await odam.click(tugma('oziq-ovqat'))
+  }
+
+  it('bitta niyat bitta marta saqlanadi — 9000 ikki marta yozilmaydi', async () => {
+    const { saqla, odam } = chiz()
+    await chiqimToldirdi(odam)
+
+    ikkiMartaBosdi('Saqlash')
+    await tugasin()
+
+    expect(saqla).toHaveBeenCalledTimes(1)
+    expect(saqla.mock.calls[0]?.[0].summa).toBe(9000)
+  })
+
+  it('forma baribir bir marta yopiladi va tozalanadi', async () => {
+    const yop = vi.fn()
+    const { odam } = chiz({ yop })
+    await chiqimToldirdi(odam)
+
+    ikkiMartaBosdi('Saqlash')
+    await tugasin()
+
+    expect(yop).toHaveBeenCalledTimes(1)
+    expect(maydon('Summa').value).toBe('')
+  })
+
+  it('xato bilan toʻxtagan saqlashdan keyin tugma yana ishlaydi', async () => {
+    const { saqla, odam } = chiz()
+
+    // Summa boʻsh — tekshiruv toʻxtatadi, doʻkonga borilmaydi.
+    await odam.click(tugma('Saqlash'))
+    expect(saqla).not.toHaveBeenCalled()
+
+    await chiqimToldirdi(odam)
+    await odam.click(tugma('Saqlash'))
+    expect(saqla).toHaveBeenCalledTimes(1)
+  })
+
+  it('saqlash tugagach forma yana ishlaydi — keyingi yozuv saqlanadi', async () => {
+    const { saqla, odam } = chiz()
+    await chiqimToldirdi(odam)
+    await odam.click(tugma('Saqlash'))
+
+    await chiqimToldirdi(odam)
+    await odam.click(tugma('Saqlash'))
+
+    expect(saqla).toHaveBeenCalledTimes(2)
   })
 })

@@ -7,7 +7,7 @@
 // Doʻkon bu yerda yoʻq: holatlar props orqali keladi, qoʻshish va qaytarish esa
 // chaqiruv boʻlib beriladi — shu sababli soxta soat IndexedDB ga xalaqit bermaydi.
 
-import { act, cleanup, render, screen, within } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type {
@@ -332,5 +332,53 @@ describe('yangi kontakt roʻyxatda koʻrinadi', () => {
     const royxat = screen.getAllByRole('listitem')
     expect(royxat).toHaveLength(2)
     expect(within(royxat[1] as HTMLElement).getByText('Botir')).toBeDefined()
+  })
+})
+
+describe('«Qoʻshish» tez ikki marta bosilsa (QA topilmasi)', () => {
+  /** Ikki bosish orasida hech narsa kutilmaydi — barmoq dblclick shunday keladi. */
+  function ikkiMartaBosdi(nom: string): void {
+    const nishon = screen.getByRole('button', { name: nom })
+    fireEvent.click(nishon)
+    fireEvent.click(nishon)
+  }
+
+  /** Boshlangan qoʻshish tugasin — keyin natija sanaladi. */
+  async function tugasin(): Promise<void> {
+    await act(async () => {})
+  }
+
+  async function blokniOch(odam: ReturnType<typeof chiz>['odam']): Promise<void> {
+    await odam.click(screen.getByRole('button', { name: '＋ Yangi kontakt' }))
+  }
+
+  it('bitta kontakt qoʻshiladi — ikkita emas', async () => {
+    const { qosh, odam } = chiz()
+    await blokniOch(odam)
+    await odam.type(screen.getByLabelText('Ism'), 'Akmal')
+
+    ikkiMartaBosdi('Qoʻshish')
+    await tugasin()
+
+    expect(qosh).toHaveBeenCalledTimes(1)
+    expect(screen.queryByLabelText('Ism')).toBeNull()
+  })
+
+  it('xato qaytsa tugma yana bosiladi — ikkinchi urinish doʻkonga yetadi', async () => {
+    const { qosh, odam } = chiz({
+      qoshNatijasi: {
+        ok: false,
+        xatolar: [{ maydon: 'ism', kod: 'kontakt-ism-bosh', xabar: 'Ism kiriting.' }],
+      },
+    })
+    await blokniOch(odam)
+    await odam.type(screen.getByLabelText('Ism'), '   ')
+
+    await odam.click(screen.getByRole('button', { name: 'Qoʻshish' }))
+    expect(await screen.findByText('Ism kiriting.')).toBeDefined()
+    expect(qosh).toHaveBeenCalledTimes(1)
+
+    await odam.click(screen.getByRole('button', { name: 'Qoʻshish' }))
+    expect(qosh).toHaveBeenCalledTimes(2)
   })
 })

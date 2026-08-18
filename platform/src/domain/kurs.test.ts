@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 
-import { oxirgiKurs, tolovlardanKurslar, yozuvlardanKurslar } from './kurs.ts'
+import {
+  oxirgiKurs,
+  qoldaKurslarManbalari,
+  tolovlardanKurslar,
+  yozuvlardanKurslar,
+} from './kurs.ts'
 import type { KursManbai, Tolov, Yozuv } from './turlar.ts'
 
 /** Kurs manbai yasaydi: kurs, operatsiya sanasi va daftarga tushgan vaqti. */
@@ -99,6 +104,59 @@ describe('oxirgiKurs (0044, 0045; mezon 23a–23d, 23g)', () => {
 
     // oʻsha kunda kiritilgan keyingi kurs esa almashtiradi
     expect(oxirgiKurs([qolda, manba(12900, '2026-08-17', '2026-08-17T13:00:00.000Z')])).toBe(12900)
+  })
+})
+
+describe('qoldaKurslarManbalari (0043, 0044, 0045; mezon 23d)', () => {
+  it('kurs soʻralmagan boʻlsa manba ham yoʻq', () => {
+    expect(qoldaKurslarManbalari({})).toEqual([])
+  })
+
+  it('soʻralgan kurs oʻz sanasi bilan manba boʻladi', () => {
+    const manbalar = qoldaKurslarManbalari({ dollar: { kurs: 12500, sana: '2026-08-17' } })
+
+    expect(manbalar.length).toBe(1)
+    expect(manbalar[0]?.kurs).toBe(12500)
+    expect(manbalar[0]?.sana).toBe('2026-08-17')
+  })
+
+  it('mezon 23d — oʻsha kundan oldingi sanali yozuv qoʻlda kursni almashtirmaydi', () => {
+    const manbalar = [
+      ...qoldaKurslarManbalari({ dollar: { kurs: 15000, sana: '2026-08-18' } }),
+      manba(12000, '2026-08-10', '2026-08-18T09:00:00.000Z'),
+    ]
+
+    expect(oxirgiKurs(manbalar)).toBe(15000)
+  })
+
+  it('mezon 23d — oʻsha kunda kiritilgan keyingi kurs qoʻlda kursni almashtiradi', () => {
+    const manbalar = [
+      ...qoldaKurslarManbalari({ dollar: { kurs: 15000, sana: '2026-08-18' } }),
+      manba(13500, '2026-08-18', '2026-08-18T09:00:00.000Z'),
+    ]
+
+    expect(oxirgiKurs(manbalar)).toBe(13500)
+  })
+
+  it('mezon 23d — mahalliy kun boshida (UTC boʻyicha oldingi kun) kiritilgani ham gʻolib', () => {
+    // `sana` mahalliy kun, `yaratilgan` esa UTC (0047): Toshkentda (UTC+5) soat
+    // 02:10 da kiritilgan yozuvning UTC vaqti oldingi kunga tushadi. Qoʻlda kurs
+    // shunda ham yutmasligi kerak — aks holda xato kunning bir qismida qaytardi.
+    const manbalar = [
+      ...qoldaKurslarManbalari({ dollar: { kurs: 15000, sana: '2026-08-18' } }),
+      manba(13500, '2026-08-18', '2026-08-17T21:10:00.000Z'),
+    ]
+
+    expect(oxirgiKurs(manbalar)).toBe(13500)
+  })
+
+  it('eski sanali qoʻlda kurs yangi sanali yozuv kursidan yutmaydi', () => {
+    const manbalar = [
+      ...qoldaKurslarManbalari({ dollar: { kurs: 12000, sana: '2026-08-10' } }),
+      manba(12900, '2026-08-16', '2026-08-16T09:00:00.000Z'),
+    ]
+
+    expect(oxirgiKurs(manbalar)).toBe(12900)
   })
 })
 

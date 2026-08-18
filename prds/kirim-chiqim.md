@@ -181,6 +181,9 @@ poydevori: qolgan uch qism (qarz daftari, oylik hisobot, dashboard) shu yozuvlar
 23d. «≈ jami soʻmda» uchun qoʻlda kurs soʻralib javob berilgach, u kiritilgan kundagi qiymat
     sifatida qatnashadi: oʻsha kundan oldingi sanali yozuv uni almashtirmaydi, oʻsha kunda
     kiritilgan keyingi kurs esa almashtiradi (0044).
+    *Izoh (0066):* qoʻlda kursning kiritilish **vaqti** saqlanmaydi — u faqat sanasi bilan
+    turadi. Shuning uchun u oʻz kunining boshida sanaladi va oʻsha kundagi **har qanday**
+    yozuv yoki toʻlov kursi undan keyin kelgan hisoblanadi.
 23e. Eng kech sanali kursli yozuv oʻchirilsa, «≈ jami soʻmda» qatori qolgan yozuvlardan qayta
     hisoblanadi — oxirgi kurs undan oldingi eng kech sanali yozuvnikiga oʻtadi (0045).
 23f. Eng kech sanali yozuvning kursi tahrirlanib boshqa qiymatga oʻzgartirilsa, «≈ jami soʻmda»

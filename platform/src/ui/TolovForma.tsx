@@ -85,6 +85,10 @@ export function TolovForma({ kontakt, qarz, tolovlar, saqla, yop }: TolovFormaPr
   const [xatolar, setXatolar] = useState<readonly Xato[]>([])
   const [summaOgohi, setSummaOgohi] = useState('')
   const [kursOgohi, setKursOgohi] = useState('')
+  // Saqlash ketayotgan payt «Saqlash» oʻchiq turadi; bayroqning oʻzi `ref` da, chunki
+  // qayta kirish **shu lahzada** toʻsilishi kerak (YozuvForma bilan bir naqsh).
+  const [saqlanmoqda, setSaqlanmoqda] = useState(false)
+  const saqlashKetdi = useRef(false)
 
   const summaRef = useRef<HTMLInputElement>(null)
   const valyutaRef = useRef<HTMLButtonElement>(null)
@@ -210,6 +214,11 @@ export function TolovForma({ kontakt, qarz, tolovlar, saqla, yop }: TolovFormaPr
 
   async function yubor(hodisa: FormEvent<HTMLFormElement>): Promise<void> {
     hodisa.preventDefault()
+    // «Saqlash» tez ikki marta bosilsa ikkinchisi shu yerda toʻxtaydi: bitta niyatdan
+    // ikkita toʻlov chiqmasin (har toʻlov alohida qonuniy — doʻkon buni toʻsa olmaydi).
+    if (saqlashKetdi.current) {
+      return
+    }
     // Birinchi qatlam — ekrandagi maʼlumot boʻyicha: maydon xatolari darhol koʻrinsin va
     // ekran birinchi xatoli maydonga surilsin (dizayn: «Xato holatlari»).
     const tekshirilgan = tolovniTekshir(forma, qarz, tolovlar)
@@ -220,7 +229,16 @@ export function TolovForma({ kontakt, qarz, tolovlar, saqla, yop }: TolovFormaPr
     }
     // Ikkinchi qatlam va oxirgi soʻz — doʻkon: u qarzni va toʻlovlarini qayta oʻqib
     // 0061 chegarasini yangi maʼlumotga qoʻyadi (eskirgan holat chetlab oʻtilmasin).
-    const natija = await saqla(forma)
+    saqlashKetdi.current = true
+    setSaqlanmoqda(true)
+    let natija: Natija<Tolov>
+    try {
+      natija = await saqla(forma)
+    } finally {
+      // Saqlash rad etilsa tugma yana bosiladigan boʻlib qoladi.
+      saqlashKetdi.current = false
+      setSaqlanmoqda(false)
+    }
     if (!natija.ok) {
       setXatolar(natija.xatolar)
       xatoliMaydongaOt(natija.xatolar)
@@ -412,7 +430,7 @@ export function TolovForma({ kontakt, qarz, tolovlar, saqla, yop }: TolovFormaPr
         {xatoQatori('qarzId', `${asos}-qarz-xato`)}
 
         <div className="panel-past">
-          <button type="submit" className="asosiy-tugma">
+          <button type="submit" className="asosiy-tugma" disabled={saqlanmoqda}>
             {TOLOV_FORMA.saqlash}
           </button>
         </div>

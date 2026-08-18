@@ -1,8 +1,10 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 
 import { oxirgiKurs, yozuvlardanKurslar } from '../domain/kurs.ts'
+import { bugun } from '../domain/sana.ts'
 import type { KursManbai, YangiYozuv, Yozuv, YozuvFormasi } from '../domain/turlar.ts'
 import { boshlangichForma } from '../domain/yozuv.ts'
+import { qoldaKursniQoy } from './sozlamalar.ts'
 import {
   bazaniTozala,
   bazaniYop,
@@ -275,6 +277,25 @@ describe('oxirgiKursniOl (0044, 0045; mezon 23a–23g)', () => {
     // oʻsha kunda kiritilgan keyingi kurs uni almashtiradi
     await yozuvQosh(dollar(10000, 12900, '2026-08-17'))
     expect(await oxirgiKursniOl([qolda])).toBe(12900)
+  })
+
+  it('mezon 23d — SAQLANGAN qoʻlda kursni oʻsha kunda keyin kiritilgan yozuv almashtiradi', async () => {
+    // Bu — parametr emas, doʻkondan oʻqiladigan yoʻl (0043): kurs sozlamalar
+    // omborida turadi va `oxirgiKursniOl` uni oʻzi qoʻshadi.
+    const bugungi = bugun()
+    await qoldaKursniQoy(15000, bugungi)
+    expect(await oxirgiKursniOl()).toBe(15000)
+
+    await yozuvQosh(dollar(10000, 13500, bugungi))
+
+    expect(await oxirgiKursniOl()).toBe(13500)
+  })
+
+  it('mezon 23d — saqlangan qoʻlda kursni oldingi sanali yozuv almashtirmaydi', async () => {
+    await yozuvQosh(dollar(10000, 12000, '2026-08-10'))
+    await qoldaKursniQoy(15000, '2026-08-17')
+
+    expect(await oxirgiKursniOl()).toBe(15000)
   })
 
   it('bazadagi yozuvlardan oxirgi kursni domen funksiyasi ham bir xil topadi', async () => {

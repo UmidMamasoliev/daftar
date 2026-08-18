@@ -8,7 +8,12 @@
 // - forma tekshiruvi xatosi → `Natija` ichida `xatolar` (`yozuvSaqla`);
 // - bazaga tegishli xato (yozuv topilmadi, baza ochilmadi) → Promise rad etiladi (`Error`).
 
-import { oxirgiKurs, tolovlardanKurslar, yozuvlardanKurslar } from '../domain/kurs.ts'
+import {
+  oxirgiKurs,
+  qoldaKurslarManbalari,
+  tolovlardanKurslar,
+  yozuvlardanKurslar,
+} from '../domain/kurs.ts'
 import { qoldiqlar, qoldiqlarniQosh } from '../domain/qoldiq.ts'
 import type {
   Kategoriya,
@@ -152,19 +157,9 @@ export async function oxirgiKursniOl(
 ): Promise<number | null> {
   const yozuvlar = await hammaYozuvlar()
   const tolovlar = await hammaTolovlar()
-  const qoldaKurslar = await qoldaKurslarniOl()
-  const qolda: KursManbai[] =
-    qoldaKurslar.dollar === undefined
-      ? []
-      : [
-          {
-            kurs: qoldaKurslar.dollar.kurs,
-            sana: qoldaKurslar.dollar.sana,
-            // Qoʻlda soʻralgan kursning ortida yozuv yoʻq (0045): bir xil sanada u
-            // yozuvlardan keyin kiritilgan deb qaraladi — oxirgi javob gʻolib boʻlsin.
-            yaratilgan: `${qoldaKurslar.dollar.sana}T23:59:59.999Z`,
-          },
-        ]
+  // Qoʻlda kursning manba koʻrinishi domenda, bitta joyda yasaladi (0044; mezon 23d):
+  // oʻsha kunda keyin kiritilgan yozuv yoki toʻlov kursi uni almashtiradi.
+  const qolda = qoldaKurslarManbalari(await qoldaKurslarniOl())
   return oxirgiKurs([
     ...yozuvlardanKurslar(yozuvlar),
     ...tolovlardanKurslar(tolovlar),

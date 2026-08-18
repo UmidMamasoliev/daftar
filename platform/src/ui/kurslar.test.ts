@@ -1,18 +1,21 @@
-// Qoʻlda soʻralgan kurs manbasi (0043, 0044) — `prds/oylik-hisobot.md` 10a, 10b-bandlar.
+// Ekran yoʻli qoʻlda soʻralgan kursni qanday manba qilishi (0043, 0044) —
+// `prds/oylik-hisobot.md` 10a, 10b-bandlar.
+//
+// Qoidaning oʻzi domenda sinaladi (`domain/kurs.test.ts`). Bu yerda tekshiriladigan
+// narsa bitta: ekran yoʻli oʻsha yagona qoidani chaqiradi, oʻzining alohida sintetik
+// vaqt qoidasi yoʻq — ilgari aynan shundan «oxirgi kurs» ikki xil chiqqan edi.
 
 import { describe, expect, it } from 'vitest'
-import { oxirgiKurs } from '../domain/kurs.ts'
+import { oxirgiKurs, qoldaKurslarManbalari as domenQoidasi } from '../domain/kurs.ts'
 import { qoldaKurslarManbalari } from './kurslar.ts'
 
-describe('qoldaKurslarManbalari', () => {
-  it('kurs soʻralmagan boʻlsa manba ham yoʻq', () => {
-    expect(qoldaKurslarManbalari({})).toEqual([])
+describe('qoldaKurslarManbalari (ekran yoʻli)', () => {
+  it('domendagi yagona qoidaning oʻzi', () => {
+    expect(qoldaKurslarManbalari).toBe(domenQoidasi)
   })
 
-  it('soʻralgan kurs oʻz sanasi bilan manba boʻladi', () => {
-    expect(qoldaKurslarManbalari({ dollar: { kurs: 12500, sana: '2026-08-17' } })).toEqual([
-      { kurs: 12500, sana: '2026-08-17', yaratilgan: '2026-08-17T00:00:00.000Z' },
-    ])
+  it('kurs soʻralmagan boʻlsa manba ham yoʻq', () => {
+    expect(qoldaKurslarManbalari({})).toEqual([])
   })
 
   it('0044 — eng kech sanali gʻolib: soʻralgan kurs teng qatnashadi', () => {
@@ -23,9 +26,7 @@ describe('qoldaKurslarManbalari', () => {
     expect(oxirgiKurs(manbalar)).toBe(12900)
   })
 
-  it('0044 — bir xil sanada keyin kiritilgan yozuv kursi gʻolib boʻladi', () => {
-    // Qoʻlda soʻralgan kurs kunning boshida turadi: u daftarda birorta kurs
-    // boʻlmaganda soʻralgan, oʻsha kundagi yozuv esa undan keyin kiritilgan.
+  it('mezon 23d — bir xil sanada keyin kiritilgan yozuv kursi gʻolib boʻladi', () => {
     const manbalar = [
       ...qoldaKurslarManbalari({ dollar: { kurs: 12500, sana: '2026-08-17' } }),
       { kurs: 12900, sana: '2026-08-17', yaratilgan: '2026-08-17T11:00:00.000Z' },

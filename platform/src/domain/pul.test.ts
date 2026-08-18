@@ -96,6 +96,26 @@ describe('kursniOqi (0042, mezon 22)', () => {
     expect(kodlar(kursniOqi('0'))).toEqual(['kurs-musbat-emas'])
     expect(kodlar(kursniOqi('-12500'))).toEqual(['kurs-musbat-emas'])
   })
+
+  it('mezon 4f — xavfsiz butun sondan oshgan kurs qabul qilinmaydi', () => {
+    // 9 007 199 254 740 991 — `Number.MAX_SAFE_INTEGER`; undan keyingi butun sonlar
+    // aniq saqlanmaydi (0008, 0033; spec 1a1), demak kurs ham shu chegarada toʻxtaydi.
+    const natija = kursniOqi('9007199254740993')
+
+    expect(kodlar(natija)).toEqual(['kurs-notogri'])
+    expect(sabablar(natija)).toEqual(['Kurs juda katta.'])
+    expect(natija.ok === false && natija.xatolar[0]?.maydon).toBe('kurs')
+  })
+
+  it('mezon 4f — chegaraning oʻzi va undan kichigi qabul qilinaveradi', () => {
+    expect(kursniOqi('9007199254740991')).toEqual({ ok: true, qiymat: 9007199254740991 })
+    expect(kursniOqi('9007199254740990')).toEqual({ ok: true, qiymat: 9007199254740990 })
+  })
+
+  it('mezon 4f — boʻshliqli va juda uzun kurs ham chegarada toʻxtaydi', () => {
+    expect(kodlar(kursniOqi('9 007 199 254 740 993'))).toEqual(['kurs-notogri'])
+    expect(kodlar(kursniOqi('99999999999999999999'))).toEqual(['kurs-notogri'])
+  })
 })
 
 describe('dollarniSomga (0042, mezon 21)', () => {

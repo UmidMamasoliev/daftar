@@ -8,7 +8,7 @@
 // doʻkonning oʻz xatolari (valyuta muzlatilgani, summa toʻlovlardan kichikligi) shu
 // yoʻl bilan ekranga chiqadi.
 
-import { cleanup, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { bugun, kunMatni } from '../domain/sana.ts'
@@ -357,5 +357,71 @@ describe('kelajak sanasi (0034; mezon 21)', () => {
 
     expect(screen.getByText('Sana bugundan keyin boʻlmaydi.')).toBeDefined()
     expect(saqla).not.toHaveBeenCalled()
+  })
+})
+
+describe('«Saqlash» tez ikki marta bosilsa (QA topilmasi)', () => {
+  /** Ikki bosish orasida hech narsa kutilmaydi — barmoq dblclick shunday keladi. */
+  function ikkiMartaBosdi(nom: string): void {
+    const nishon = tugma(nom)
+    fireEvent.click(nishon)
+    fireEvent.click(nishon)
+  }
+
+  /** Boshlangan saqlash tugasin — keyin natija sanaladi. */
+  async function tugasin(): Promise<void> {
+    await act(async () => {})
+  }
+
+  it('bitta niyat bitta qarz boʻladi — doʻkon bir marta chaqiriladi', async () => {
+    const { saqla, yop, odam } = chiz()
+    await odam.type(summaMaydoni(), '1000000')
+    await odam.click(tugma('Berdim'))
+
+    ikkiMartaBosdi('Saqlash')
+    await tugasin()
+
+    expect(saqla).toHaveBeenCalledTimes(1)
+    expect(yop).toHaveBeenCalledTimes(1)
+  })
+
+  it('doʻkon rad etsa tugma yana bosiladi — ikkinchi urinish doʻkonga yetadi', async () => {
+    const { saqla, yop, odam } = chiz({
+      qarz: qarz(),
+      tolovlarSoni: 1,
+      tolangan: 300000,
+      natija: {
+        ok: false,
+        xatolar: [
+          {
+            maydon: 'summa',
+            kod: 'qarz-summa-tolovdan-kam',
+            xabar: 'Qarz summasi toʻlovlardan kichik — toʻlangan: 300000.',
+          },
+        ],
+      },
+    })
+    await odam.clear(summaMaydoni())
+    await odam.type(summaMaydoni(), '299899')
+
+    await odam.click(tugma('Saqlash'))
+    expect(saqla).toHaveBeenCalledTimes(1)
+    expect(yop).not.toHaveBeenCalled()
+
+    await odam.click(tugma('Saqlash'))
+    expect(saqla).toHaveBeenCalledTimes(2)
+  })
+
+  it('tekshiruv xatosidan keyin ham tugma ishlashda davom etadi', async () => {
+    const { saqla, odam } = chiz()
+
+    // Yoʻnalish tanlanmagan — tekshiruv toʻxtatadi, doʻkonga borilmaydi.
+    await odam.type(summaMaydoni(), '1000000')
+    await odam.click(tugma('Saqlash'))
+    expect(saqla).not.toHaveBeenCalled()
+
+    await odam.click(tugma('Berdim'))
+    await odam.click(tugma('Saqlash'))
+    expect(saqla).toHaveBeenCalledTimes(1)
   })
 })
