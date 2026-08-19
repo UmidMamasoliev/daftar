@@ -1,5 +1,29 @@
 # QA eslatmalari — Daftar (loyiha)
 
+## 2026-08-19 — Dashboard tekshiruvi (3.10, Spec Kit; qisqartirilgan jonli rejim)
+- Darvozalar: Vitest 3× = 1065/1065 har safar (flake yoʻq), `tsc -b` toza, build OK,
+  Playwright 12/12 (yangi `e2e/dashboard.spec.ts` + 3 oflayn).
+- Mezon xaritasi: dashboard 25 mezonining hammasi yorliqlangan, lekin 6/10/14a FAQAT
+  enumeratsiyada («mezon 5, 6, 11», «mezon 3, 8, 10», «mezon 14, 14a») — `grep "mezon 6"`
+  topmaydi, `grep -E "mezon 6([^0-9a-z]|$)"` ham emas; enumeratsiya tuzogʻi dashboardda ham.
+- **TOPILMA (past, naqsh):** `KursSorov.tsx` «Saqlash» da in-flight himoya YOʻQ (lessons
+  qoidasiga zid naqsh), LEKIN jonli 2×klik oqibatsiz: `qoldaKursniQoy` bitta kalitli put —
+  IDB da bitta `{kurs, sana}`, ≈ qator bitta, xato yoʻq. Eksport topilmasi bilan bir sinf:
+  naqsh yoʻq, zarar yoʻq. Hisobot ekranidagi nusxasi ham shu komponent.
+- Oʻz probe tuzogʻim qaytdi: «Bosh»ga oʻtgach kurs soʻrovini `isVisible()` bilan darhol
+  oʻqidim — FAIL soxta chiqdi (bosh effekt navbat orqali oʻqiydi); `waitFor` bilan PASS.
+  Qoida kuchda: async oʻqishdan keyin hech qachon darhol isVisible.
+- Dashboard probe usullari: qoldiq/oy/roʻyxat — `getByRole('region', {name})` bilan
+  (aria-labelledby ishlaydi); roʻyxat qatori bosilmasligi — `listitem` ichida/tashida
+  button/a yoʻqligini `evaluate` bilan; navigatsiya tarkibi — `nav button`
+  `allTextContents()` roʻyxatini toʻliq solishtirish.
+- Hujjat topilmalari (past): `src/index.css` 42/724–728 «Vaqtinchalik (0063)» izohlari
+  qolgan (mavjud boʻlmagan design boʻlimiga ishora); `specs/001-dashboard/spec.md` FR-013
+  band nomi «Dashboard» deydi (plan/0067/kod — «Bosh»); `plan.md:120` «ostида» — krill
+  harflar aralashgan. Krill skan: `grep -rnP '[\x{0400}-\x{04FF}]'` — arzon va foydali.
+- Q4 dagi «hisob qoldiqlari jonli UI da koʻrinmaydi» qarzi yopildi: naqd/karta/umumiy va
+  qarz taʼsiri endi bosh sahifada jonli tasdiqlandi (naqd+karta=umumiy ham).
+
 ## 2026-08-18 — Maqsadli qayta tekshiruv (kurs + ikki-bosish tuzatishlari, preview 4174)
 - Ikkala tuzatish jonli tasdiqlandi: (1) qoʻlda kurs endi «kun boshi» sintetik vaqti
   (`domain/kurs.ts` `QOLDA_KURS_VAQTI = '0000-01-01T00:00:00.000Z'`, ataylab sana emas —

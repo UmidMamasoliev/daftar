@@ -13,8 +13,8 @@
 // paneli ham hech qachon chiqmaydi (0029). Kategoriya va qarz qatorlari **bosilmaydi**
 // (0064): ular oddiy `li` boʻlib turadi, tugma ham, havola ham emas.
 
-import type { ChangeEvent, ReactNode } from 'react'
-import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
+import type { ReactNode } from 'react'
+import { useEffect, useId, useState } from 'react'
 import type {
   Davr,
   Hisobot as HisobotTuri,
@@ -25,29 +25,12 @@ import type {
   TaxminiyJami,
 } from '../domain/hisobot.ts'
 import { QARZ_QATORLARI, QARZ_QATOR_ISHORASI, davrTogrimi } from '../domain/hisobot.ts'
-import { kursniOqi } from '../domain/pul.ts'
 import { bugun, sananiTekshir } from '../domain/sana.ts'
-import type { Valyuta, Xato } from '../domain/turlar.ts'
-import {
-  belgilarSoni,
-  davrMatni,
-  kursMatni,
-  kursniShakllantir,
-  kursorOrni,
-  nettoMatni,
-  nettoSinfi,
-  oyMatni,
-  sanaMatni,
-} from './format.ts'
+import type { Valyuta } from '../domain/turlar.ts'
+import { davrMatni, kursMatni, nettoMatni, nettoSinfi, oyMatni, sanaMatni } from './format.ts'
+import { KursSorov } from './KursSorov.tsx'
 import type { KategoriyaNomi } from './Yozuvlar.tsx'
-import {
-  FORMA,
-  HISOBOT,
-  OGOHLANTIRISH,
-  taxminiyIzohi,
-  taxminiyMatni,
-  xatoMatni,
-} from './matnlar.ts'
+import { HISOBOT, taxminiyIzohi, taxminiyMatni, xatoMatni } from './matnlar.ts'
 
 /** Jami blokining boʻlaklari — dizayn 3-boʻlimidagi tartibda. */
 type BolakTuri = 'kirim' | 'chiqim' | 'farq'
@@ -244,58 +227,6 @@ function QarzBloki({
   )
 }
 
-/**
- * Kurs soʻrash bloki — daftarda birorta kurs boʻlmasa (0043; mezon 21).
- *
- * Blok bir marta va **birinchi muhtoj boʻlakda** chiziladi (dizayn 3-boʻlim);
- * yopish tugmasi yoʻq — javob berilmasa ham qolgan raqamlar joyida turadi.
- */
-function KursBloki({
-  kursId,
-  qiymat,
-  xato,
-  ogoh,
-  maydonRef,
-  ozgardi,
-  saqla,
-}: {
-  kursId: string
-  qiymat: string
-  xato: Xato | null
-  ogoh: string
-  maydonRef: React.RefObject<HTMLInputElement | null>
-  ozgardi: (hodisa: ChangeEvent<HTMLInputElement>) => void
-  saqla: () => void
-}) {
-  return (
-    <div className="kurs-sorov">
-      <p className="yordam">{HISOBOT.kursKerak}</p>
-      <label className="yorliq" htmlFor={kursId}>
-        {FORMA.kurs}
-      </label>
-      <div className="kurs-sorov-qatori">
-        <input
-          ref={maydonRef}
-          id={kursId}
-          className={xato === null ? 'maydon' : 'maydon xatoli'}
-          type="text"
-          inputMode="numeric"
-          autoComplete="off"
-          aria-invalid={xato !== null}
-          placeholder={FORMA.kursNamunasi}
-          value={qiymat}
-          onChange={ozgardi}
-        />
-        <button type="button" className="asosiy-tugma qoshish-tugma" onClick={saqla}>
-          {HISOBOT.kursSaqlash}
-        </button>
-      </div>
-      {xato === null ? null : <p className="xato-matni">{xatoMatni(xato.kod, xato.xabar)}</p>}
-      {ogoh === '' ? null : <p className="yordam">{ogoh}</p>}
-    </div>
-  )
-}
-
 export type HisobotProps = {
   /** `hisobotniOl(davr)` natijasi; `null` — hali oʻqilmagan (birinchi chizish). */
   hisobot: HisobotTuri | null
@@ -332,19 +263,6 @@ export function Hisobot({
   const [boshlanish, setBoshlanish] = useState('')
   const [tugash, setTugash] = useState('')
   const [davrXatosi, setDavrXatosi] = useState('')
-  const [kursMatniHolati, setKursMatniHolati] = useState('')
-  const [kursOgohi, setKursOgohi] = useState('')
-  const [kursXatosi, setKursXatosi] = useState<Xato | null>(null)
-  const kursRef = useRef<HTMLInputElement>(null)
-  const kursorRef = useRef<number | null>(null)
-
-  useLayoutEffect(() => {
-    const orin = kursorRef.current
-    kursorRef.current = null
-    if (orin !== null) {
-      kursRef.current?.setSelectionRange(orin, orin)
-    }
-  })
 
   // Davr bloki ochilganda maydonlar joriy davr bilan toʻldiriladi (dizayn 2-boʻlim).
   useEffect(() => {
@@ -391,41 +309,9 @@ export function Hisobot({
     davrniQoy(davr)
   }
 
-  function kursniOzgartir(hodisa: ChangeEvent<HTMLInputElement>): void {
-    const xom = hodisa.target.value
-    const chapda = belgilarSoni(xom.slice(0, hodisa.target.selectionStart ?? xom.length))
-    const { qiymat, kasrOlindi } = kursniShakllantir(xom)
-    kursorRef.current = kursorOrni(qiymat, chapda)
-    setKursMatniHolati(qiymat)
-    setKursOgohi(kasrOlindi ? OGOHLANTIRISH.kursKasrOlindi : '')
-    setKursXatosi(null)
-  }
-
-  async function kursniYubordi(): Promise<void> {
-    const oqilgan = kursniOqi(kursMatniHolati)
-    if (!oqilgan.ok) {
-      setKursXatosi(oqilgan.xatolar[0] ?? null)
-      return
-    }
-    setKursXatosi(null)
-    await kursniSaqla(oqilgan.qiymat)
-    setKursMatniHolati('')
-    setKursOgohi('')
-  }
-
-  const kursBloki = (
-    <KursBloki
-      kursId={`${asos}-kurs`}
-      qiymat={kursMatniHolati}
-      xato={kursXatosi}
-      ogoh={kursOgohi}
-      maydonRef={kursRef}
-      ozgardi={kursniOzgartir}
-      saqla={() => {
-        void kursniYubordi()
-      }}
-    />
-  )
+  // Kurs soʻrash bloki endi umumiy komponent (`KursSorov.tsx`): bosh sahifa bilan
+  // bitta qoida, bitta kod (0043; spec 001-dashboard FR-007).
+  const kursBloki = <KursSorov saqla={kursniSaqla} />
 
   // Kurs bloki bir marta chiziladi — birinchi muhtoj boʻlakda (dizayn 3-boʻlim).
   const kursKerakBolagi: BolakTuri | null =

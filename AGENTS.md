@@ -13,7 +13,7 @@ oflayn ishlaydigan, serversiz veb-sayt (0003).
 2. `lessons/qoidalar.md` — takrorlanmasligi kerak boʻlgan xatolar.
 3. `memory/` dagi eng yangi fayl — qayerda toʻxtaganimiz.
 4. `discovery/` — ochiq savollar (boʻsh boʻlishi mumkin).
-5. `decisions/` — 0001 dan 0066 gacha. **Hammasi majburiy va bahsga tushmaydi.**
+5. `decisions/` — 0001 dan 0067 gacha. **Hammasi majburiy va bahsga tushmaydi.**
 6. `prds/daftar-prd.md` — mahsulot chegarasi.
 7. Oʻz qismingiz speci: `prds/kirim-chiqim.md`, `prds/qarz-daftari.md`,
    `prds/oylik-hisobot.md`, `prds/dashboard.md`.
@@ -122,9 +122,10 @@ Roʻyxatda yoʻq narsani «foydali boʻlardi» deb qoʻshmang. Kerak boʻlsa —
 - Import tugagach sanoq qatori koʻrsatiladi: «N yozuv · N kontakt · N qarz · N toʻlov». Tasdiq
   qadamida qayta urinish shu ekranda boʻladi va ikkinchi avtomatik zaxira chiqarilmaydi;
   ekrandan chiqilsa oqim bekor boʻlib, keyingi import boshidan boshlanadi (0065).
-- **VAQTINCHALIK (0063):** dashboard 3.10 gacha qurilmaydi; ungacha ilovada oddiy pastki
-  navigatsiya paneli turadi (Yozuv, Yozuvlar, Qarz daftari; keyin Hisobot va Zaxira). Dashboard
-  qurilganda u bosh sahifa boʻladi (0020) va navigatsiyani dizayn qayta koʻradi.
+- Dashboard — bosh sahifa (0020, 0067): ilova «Bosh» bilan ochiladi; navigatsiya bandlari
+  Bosh, Yozuvlar, Qarz daftari, Hisobot, Zaxira. Alohida «Yozuv» bandi yoʻq — yozuv qoʻshish
+  bosh sahifadagi doim koʻrinadigan «＋ Yozuv» tugmasidan. Dashboard 3.10 da GitHub Spec Kit
+  oqimi bilan qurilgan — artefaktlari `specs/001-dashboard/` da.
 
 **Tayyorlik**
 - Daftar tayyor sanaladi, qachonki toʻrt qism ishlasa va testlari oʻtsa (0022).

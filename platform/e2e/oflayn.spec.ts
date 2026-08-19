@@ -15,8 +15,8 @@ test('mezon 17 — internet oʻchiq holda yozuv saqlanadi va joyida qoladi', asy
   context,
 }) => {
   await page.goto('/')
-  // Ilova «Yozuvlar» bilan ochiladi (0063).
-  await expect(page.getByRole('heading', { name: 'Yozuvlar', level: 1 })).toBeVisible()
+  // Ilova bosh sahifa bilan ochiladi (0020; spec 001-dashboard).
+  await expect(page.getByRole('heading', { name: 'Daftar', level: 1 })).toBeVisible()
 
   // Service worker roʻyxatdan oʻtib, sahifani boshqarishga tayyor boʻlsin.
   await page.evaluate(async () => {
@@ -27,21 +27,28 @@ test('mezon 17 — internet oʻchiq holda yozuv saqlanadi va joyida qoladi', asy
   await page.reload()
 
   // Tarmoqsiz ham ilova ochiladi — hammasi keshdan (0003).
-  await expect(page.getByRole('heading', { name: 'Yozuvlar', level: 1 })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Daftar', level: 1 })).toBeVisible()
   // Kategoriyalar IndexedDB dan keladi, serverdan emas (0004).
-  await page.getByRole('button', { name: 'Yozuv', exact: true }).click()
+  await page.getByRole('button', { name: '＋ Yozuv' }).click()
   await page.getByRole('button', { name: 'Chiqim' }).click()
   await page.getByRole('button', { name: 'oziq-ovqat' }).click()
   await page.getByLabel('Summa').fill('45000')
   await page.getByRole('button', { name: 'Saqlash' }).click()
 
-  await expect(page.getByRole('heading', { name: 'Yozuvlar', level: 1 })).toBeVisible()
+  // Forma bosh sahifaga qaytadi va qoldiq darhol yangilanadi (mezon 3, 21).
+  await expect(page.getByRole('heading', { name: 'Daftar', level: 1 })).toBeVisible()
+  await expect(
+    page.getByRole('region', { name: 'Qoldiq' }).getByText('−45 000 soʻm').first(),
+  ).toBeVisible()
+  await page.getByRole('button', { name: 'Yozuvlar' }).click()
   await expect(page.getByText('−45 000 soʻm')).toBeVisible()
 
-  // Ilova yopilib qayta ochilsa ham yozuv joyida turadi — hali ham oflayn.
+  // Ilova yopilib qayta ochilsa ham yozuv joyida turadi — hali ham oflayn (mezon 21).
   await page.reload()
-  await expect(page.getByRole('heading', { name: 'Yozuvlar', level: 1 })).toBeVisible()
-  await expect(page.getByText('−45 000 soʻm')).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Daftar', level: 1 })).toBeVisible()
+  await expect(
+    page.getByRole('region', { name: 'Qoldiq' }).getByText('−45 000 soʻm').first(),
+  ).toBeVisible()
 
   await context.setOffline(false)
 })
@@ -54,7 +61,7 @@ test('mezon 22 — internet oʻchiq holda qarz va toʻlov saqlanadi va joyida qo
   context,
 }) => {
   await page.goto('/')
-  await expect(page.getByRole('heading', { name: 'Yozuvlar', level: 1 })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Daftar', level: 1 })).toBeVisible()
 
   await page.evaluate(async () => {
     await navigator.serviceWorker.ready
@@ -99,7 +106,7 @@ test('mezon 25 — internet oʻchiq holda eksport va import ishlaydi', async ({
   context,
 }) => {
   await page.goto('/')
-  await expect(page.getByRole('heading', { name: 'Yozuvlar', level: 1 })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Daftar', level: 1 })).toBeVisible()
 
   await page.evaluate(async () => {
     await navigator.serviceWorker.ready
@@ -108,12 +115,12 @@ test('mezon 25 — internet oʻchiq holda eksport va import ishlaydi', async ({
   await context.setOffline(true)
   await page.reload()
 
-  await page.getByRole('button', { name: 'Yozuv', exact: true }).click()
+  await page.getByRole('button', { name: '＋ Yozuv' }).click()
   await page.getByRole('button', { name: 'Chiqim' }).click()
   await page.getByLabel('Summa').fill('45000')
   await page.getByRole('button', { name: 'oziq-ovqat' }).click()
   await page.getByRole('button', { name: 'Saqlash' }).click()
-  await expect(page.getByText('−45 000 soʻm')).toBeVisible()
+  await expect(page.getByText('−45 000 soʻm').first()).toBeVisible()
 
   // Eksport — tarmoqsiz ham fayl chiqadi.
   await page.getByRole('button', { name: 'Zaxira', exact: true }).click()
@@ -124,12 +131,13 @@ test('mezon 25 — internet oʻchiq holda eksport va import ishlaydi', async ({
   await expect(page.getByText('Oxirgi zaxira: Bugun')).toBeVisible()
 
   // Daftar oʻzgaradi, keyin oʻsha fayldan tiklanadi — hali ham oflayn.
-  await page.getByRole('button', { name: 'Yozuv', exact: true }).click()
+  await page.getByRole('button', { name: 'Bosh' }).click()
+  await page.getByRole('button', { name: '＋ Yozuv' }).click()
   await page.getByRole('button', { name: 'Chiqim' }).click()
   await page.getByLabel('Summa').fill('90000')
   await page.getByRole('button', { name: 'transport' }).click()
   await page.getByRole('button', { name: 'Saqlash' }).click()
-  await expect(page.getByText('−90 000 soʻm')).toBeVisible()
+  await expect(page.getByText('−90 000 soʻm').first()).toBeVisible()
 
   await page.getByRole('button', { name: 'Zaxira', exact: true }).click()
   const zaxiraYuklandi = page.waitForEvent('download')

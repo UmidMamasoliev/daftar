@@ -1,11 +1,11 @@
 // Ilovaning kirish nuqtasi va ekranlar orasidagi oʻtish.
 //
-// **Vaqtinchalik (0063):** dashboard 3.10 gacha qurilmaydi, shuning uchun ilovada pastki
-// navigatsiya paneli turadi (Yozuv / Yozuvlar / Qarz daftari) va ilova «Yozuvlar» bilan
-// ochiladi. Dashboard qurilganda u bosh sahifa boʻladi va navigatsiya qayta koʻriladi.
-// Tavsifi: `design/uslub.md` → «Navigatsiya paneli — VAQTINCHALIK (0063)».
+// Ilova **bosh sahifa** (dashboard) bilan ochiladi — parol/PIN yoʻq (0006, 0020;
+// spec `specs/001-dashboard/spec.md`). Pastki navigatsiya: Bosh / Yozuvlar / Qarz daftari /
+// Hisobot / Zaxira (0063 → 0067). Yozuv qoʻshish bosh sahifadagi «＋ Yozuv» tugmasidan.
 //
-// Yettita ekran bor:
+// Ekranlar:
+// - bosh sahifa (qoldiq, joriy oy, oxirgi yozuvlar, zaxira eslatmasi, kurs soʻrovi);
 // - «Yangi yozuv» / «Yozuvni tahrirlash» formasi va «Kategoriyalar» boshqaruvi;
 // - «Yozuvlar» roʻyxati;
 // - «Qarz daftari» (kontaktlar), «Kontakt» sahifasi, «Yangi qarz»/«Qarzni tahrirlash»
@@ -41,6 +41,8 @@ import {
 } from './data/qarzlar.ts'
 import {
   hammaYozuvlar,
+  oxirgiKursniOl,
+  qoldiqlarniOl,
   yozuvQosh,
   yozuvniOchir,
   yozuvniQaytar,
@@ -55,9 +57,17 @@ import {
   zaxiraniImport,
 } from './data/zaxira.ts'
 import { zaxiraniOqi } from './domain/zaxira.ts'
-import type { Davr, Hisobot as HisobotTuri, Oy } from './domain/hisobot.ts'
-import { joriyOyDavri, oyDavri, oySur, sananingOyi } from './domain/hisobot.ts'
+import type { Davr, Hisobot as HisobotTuri, Oy, TaxminiyJami } from './domain/hisobot.ts'
+import {
+  joriyOyDavri,
+  oyDavri,
+  oySur,
+  sananingOyi,
+  xavfsizTaxminiyJami,
+} from './domain/hisobot.ts'
+import { oyYigindilari, zaxiraEslatmasiKerakmi } from './domain/dashboard.ts'
 import { korinadiganlar } from './domain/kategoriya.ts'
+import { jamiQoldiq } from './domain/qoldiq.ts'
 import type {
   Kategoriya,
   KontaktHolati,
@@ -65,12 +75,14 @@ import type {
   OchirilganKontakt,
   Qarz,
   QarzFormasi,
+  Qoldiqlar,
   TolovFormasi,
   YangiYozuv,
   Yozuv,
   YozuvTuri,
 } from './domain/turlar.ts'
 import { bugun } from './domain/sana.ts'
+import { Dashboard } from './ui/Dashboard.tsx'
 import { Hisobot } from './ui/Hisobot.tsx'
 import { qoldaKurslarManbalari } from './ui/kurslar.ts'
 import { faylniYuklabOl } from './ui/yuklash.ts'
@@ -87,6 +99,7 @@ import { YozuvForma } from './ui/YozuvForma.tsx'
 import { Yozuvlar } from './ui/Yozuvlar.tsx'
 
 type Ekran =
+  | 'bosh'
   | 'forma'
   | 'yozuvlar'
   | 'kategoriyalar'
@@ -97,8 +110,9 @@ type Ekran =
   | 'hisobot'
   | 'zaxira'
 
-/** Navigatsiya paneli faqat shu ekranlarda koʻrinadi (dizayn, 0063). */
+/** Navigatsiya paneli faqat shu ekranlarda koʻrinadi (dizayn, 0067). */
 const NAVLI_EKRANLAR: readonly Ekran[] = [
+  'bosh',
   'yozuvlar',
   'qarz-daftari',
   'kontakt',
@@ -123,9 +137,12 @@ async function oqi(): Promise<Holat> {
 }
 
 export function App() {
-  // Ilova «Yozuvlar» bilan ochiladi (0063; dizayn: «Ilova ochilganda va forma yopilganda»).
-  const [ekran, setEkran] = useState<Ekran>('yozuvlar')
+  // Ilova bosh sahifa bilan ochiladi (0020; spec FR-001) — parol/PIN soʻralmaydi (0006).
+  const [ekran, setEkran] = useState<Ekran>('bosh')
   const [tahrirlanayotgan, setTahrirlanayotgan] = useState<Yozuv | null>(null)
+  // Forma qayerdan ochilgan boʻlsa oʻsha ekranga qaytadi (uslub: «Ilova ochilganda va
+  // forma yopilganda»): bosh sahifadagi «＋ Yozuv» — boshga, Yozuvlardagi tahrir — Yozuvlarga.
+  const [formaManbai, setFormaManbai] = useState<'bosh' | 'yozuvlar'>('bosh')
   const [kategoriyaTuri, setKategoriyaTuri] = useState<YozuvTuri>('chiqim')
   // «Boshqarish» dan har qaytishda ortadi — forma shu belgidan tanlangan
   // kategoriya hali koʻrinadimi degan tekshiruvni bir marta bajaradi.
@@ -145,9 +162,14 @@ export function App() {
   const [hisobot, setHisobot] = useState<HisobotTuri | null>(null)
   // «Oyga qaytish» davr tanlashdan **oldin** ochiq turgan oyni qaytaradi (dizayn 2-boʻlim).
   const [oldingiOy, setOldingiOy] = useState<Oy | null>(null)
-  // Zaxira ekrani: holat qatori va 0055 istisnosi shu ikki qiymatga tayanadi.
-  const [oxirgiEksport, setOxirgiEksport] = useState<string | null>(null)
+  // Zaxira ekrani holat qatori, 0055 istisnosi va bosh sahifadagi eslatma (0024) shu
+  // qiymatlarga tayanadi. `undefined` — hali oʻqilmagan: eslatma birinchi oʻqishgacha
+  // chiqmaydi, «hech qachon eksport boʻlmagan» esa `null` (mezon 15).
+  const [oxirgiEksport, setOxirgiEksport] = useState<string | null | undefined>(undefined)
   const [daftarBosh, setDaftarBosh] = useState(false)
+  // Bosh sahifa koʻrsatkichlari — saqlanmaydi, har oʻzgarishdan keyin qayta oʻqiladi (0045).
+  const [qoldiqlar, setQoldiqlar] = useState<Qoldiqlar | null>(null)
+  const [oxirgiKurs, setOxirgiKurs] = useState<number | null>(null)
 
   /**
    * Birinchi oʻqish ham **navbatdan** oʻtadi.
@@ -210,6 +232,37 @@ export function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ekran, hisobotDavri, yozuvlar, kontaktlar, kategoriyalar])
 
+  /**
+   * Bosh sahifa koʻrsatkichlari ekran ochilganda va daftar oʻzgarganda qayta oʻqiladi.
+   *
+   * Hech narsa saqlanmaydi (0045; mezon 10, 11): qoldiq va «oxirgi kurs» doʻkondan,
+   * oy yigʻindilari esa `yozuvlar` holatidan sof funksiya bilan chiqadi. Oʻqish navbatdan
+   * oʻtadi — boshqa ekrandagi saqlash tugamasdan eskirgan surat kelib qolmasin.
+   */
+  useEffect(() => {
+    if (ekran !== 'bosh') {
+      return
+    }
+    let tirik = true
+    void navbatga(async () => {
+      const [yangiQoldiqlar, kurslar, eksport] = await Promise.all([
+        qoldiqlarniOl(),
+        qoldaKurslarniOl(),
+        oxirgiEksportniOl(),
+      ])
+      const kurs = await oxirgiKursniOl(qoldaKurslarManbalari(kurslar))
+      if (tirik) {
+        setQoldiqlar(yangiQoldiqlar)
+        setOxirgiKurs(kurs)
+        setOxirgiEksport(eksport)
+      }
+    })
+    return () => {
+      tirik = false
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ekran, yozuvlar, kontaktlar])
+
   /** Zaxira ekranidagi ikki qiymat — har ochilganda va har amaldan keyin qayta oʻqiladi. */
   async function zaxiraHolatiniOqi(): Promise<void> {
     const [sana, bosh] = await Promise.all([oxirgiEksportniOl(), daftarBoshmi()])
@@ -271,13 +324,24 @@ export function App() {
   const navKorinadi = NAVLI_EKRANLAR.includes(ekran)
   // «Kontakt» sahifasida faol boʻlim — «Qarz daftari» (dizayn).
   const faolBolim: Bolim =
-    ekran === 'yozuvlar'
-      ? 'yozuvlar'
-      : ekran === 'hisobot'
-        ? 'hisobot'
-        : ekran === 'zaxira'
-          ? 'zaxira'
-          : 'qarz-daftari'
+    ekran === 'bosh'
+      ? 'bosh'
+      : ekran === 'yozuvlar'
+        ? 'yozuvlar'
+        : ekran === 'hisobot'
+          ? 'hisobot'
+          : ekran === 'zaxira'
+            ? 'zaxira'
+            : 'qarz-daftari'
+
+  // «≈ jami soʻmda» faqat dollar qatnashganda (0023): netto nol boʻlsa ham hisoblarda
+  // dollar boʻlishi mumkin. Kurs yoʻq boʻlsa `kurs-kerak` — ekran kursni soʻraydi (0043).
+  const dollarBor =
+    qoldiqlar !== null && (qoldiqlar.naqd.dollar !== 0 || qoldiqlar.karta.dollar !== 0)
+  const taxminiy: TaxminiyJami =
+    qoldiqlar === null || !dollarBor
+      ? { holat: 'yoq' }
+      : xavfsizTaxminiyJami(jamiQoldiq(qoldiqlar), oxirgiKurs)
 
   /** Panel yoʻqolganda oʻchirish yakuniy boʻladi — nusxa tashlanadi (0029). */
   function kontaktPanelniUnut(): void {
@@ -287,9 +351,8 @@ export function App() {
   function navigatsiyaOtishi(bolim: Bolim): void {
     // Ekrandan chiqib ketilsa panel yoʻqoladi va oʻchirish yakuniy boʻladi (dizayn).
     kontaktPanelniUnut()
-    if (bolim === 'yozuv') {
-      setTahrirlanayotgan(null)
-      setEkran('forma')
+    if (bolim === 'bosh') {
+      setEkran('bosh')
       return
     }
     if (bolim === 'yozuvlar') {
@@ -320,6 +383,35 @@ export function App() {
 
   return (
     <div className={navKorinadi ? 'ilova nav-bor' : 'ilova'}>
+      {ekran === 'bosh' ? (
+        <Dashboard
+          qoldiqlar={qoldiqlar}
+          taxminiy={taxminiy}
+          oy={oyYigindilari(yozuvlar, joriyOyDavri())}
+          yozuvlar={yozuvlar}
+          kategoriyalar={kategoriyalar}
+          eslatmaKerak={
+            oxirgiEksport !== undefined && zaxiraEslatmasiKerakmi(oxirgiEksport, bugun())
+          }
+          oxirgiEksport={oxirgiEksport ?? null}
+          yangiYozuv={() => {
+            setTahrirlanayotgan(null)
+            setFormaManbai('bosh')
+            setEkran('forma')
+          }}
+          hammasi={() => {
+            setEkran('yozuvlar')
+          }}
+          kursniSaqla={async (kurs) => {
+            await navbatga(async () => {
+              // 0043: kurs oʻsha kunning sanasi bilan saqlanadi va qayta soʻralmaydi.
+              const kurslar = await qoldaKursniQoy(kurs, bugun())
+              setOxirgiKurs(await oxirgiKursniOl(qoldaKurslarManbalari(kurslar)))
+            })
+          }}
+        />
+      ) : null}
+
       {formaKerak ? (
         <div className="ekran-orash" hidden={ekran !== 'forma'}>
           <YozuvForma
@@ -338,9 +430,10 @@ export function App() {
               })
             }}
             yop={() => {
-              // `×` bosilsa ham, «Saqlash» bosilsa ham «Yozuvlar» ochiladi (0063).
+              // `×` bosilsa ham, «Saqlash» bosilsa ham forma oʻzi ochilgan ekranga
+              // qaytadi (uslub): «＋ Yozuv» dan — boshga, Yozuvlardagi tahrirdan — Yozuvlarga.
               setTahrirlanayotgan(null)
-              setEkran('yozuvlar')
+              setEkran(formaManbai)
             }}
             boshqarish={(turi) => {
               setKategoriyaTuri(turi === '' ? 'chiqim' : turi)
@@ -391,6 +484,7 @@ export function App() {
           kategoriyalar={kategoriyalar}
           tahrirla={(yozuv) => {
             setTahrirlanayotgan(yozuv)
+            setFormaManbai('yozuvlar')
             setEkran('forma')
           }}
           ochir={async (yozuv) => {
@@ -598,7 +692,7 @@ export function App() {
 
       {ekran === 'zaxira' ? (
         <Zaxira
-          oxirgiEksport={oxirgiEksport}
+          oxirgiEksport={oxirgiEksport ?? null}
           daftarBosh={daftarBosh}
           eksport={async () =>
             navbatga(async () => {

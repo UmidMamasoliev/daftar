@@ -44,7 +44,7 @@ function kun(qadam: number): string {
   return kunMatni(vaqt)
 }
 
-/** Pastdagi vaqtinchalik navigatsiya panelidan «Qarz daftari» boʻlimiga oʻtadi (0063). */
+/** Pastdagi navigatsiya panelidan «Qarz daftari» boʻlimiga oʻtadi (0067). */
 async function daftarniOchdi(odam: Odam): Promise<void> {
   await odam.click(await screen.findByRole('button', { name: 'Qarz daftari' }))
   await screen.findByRole('heading', { name: 'Qarz daftari', level: 1 })

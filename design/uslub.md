@@ -160,11 +160,11 @@ Qadam — 4 px. Ishlatiladigan qiymatlar: 4, 8, 12, 16, 24, 32.
 - Pastda turgan panel balandligi 72 px; roʻyxat oxiriga shuncha boʻsh joy qoʻshiladi, oxirgi
   qator panel tagida qolmasin.
 
-## Navigatsiya paneli — VAQTINCHALIK (0063)
+## Navigatsiya paneli (0067)
 
-**Bu boʻlim vaqtinchalik.** Dashboard 3.10 da qurilganda bosh sahifa oʻsha boʻladi va panel
-qayta koʻriladi (0063). Shu belgi olib tashlanmaguncha frontend uni vaqtinchalik deb biladi:
-ekran tavsiflarida «bosh sahifa» deyilgan joylar hozircha shu panel bilan almashtiriladi.
+Dashboard qurildi va **bosh sahifa** boʻldi (0020, 0063 → 0067): ilova «Bosh» bilan
+ochiladi, alohida «Yozuv» bandi yoʻq — yozuv qoʻshish bosh sahifadagi doim koʻrinadigan
+«＋ Yozuv» tugmasidan.
 
 ### Nima koʻrinadi
 
@@ -173,8 +173,8 @@ yoʻq (ikonka kutubxonasi yoʻq):
 
 | Boʻlak | Qayerga olib boradi |
 |---|---|
-| **«Yozuv»** | «Yangi yozuv» formasi (`design/kirim-chiqim.md` 1-boʻlim) |
-| **«Yozuvlar»** | «Yozuvlar» ekrani (oʻsha fayl, 2-boʻlim) |
+| **«Bosh»** | Bosh sahifa — qoldiq, joriy oy, oxirgi yozuvlar (`prds/dashboard.md`; sarlavhasi «Daftar») |
+| **«Yozuvlar»** | «Yozuvlar» ekrani (`design/kirim-chiqim.md`, 2-boʻlim) |
 | **«Qarz daftari»** | «Qarz daftari» — kontaktlar roʻyxati (`design/qarz-daftari.md` 1-boʻlim) |
 | **«Hisobot»** | «Hisobot» ekrani (`design/oylik-hisobot.md`) — har ochilganda joriy oy bilan |
 | **«Zaxira»** | «Zaxira» ekrani (`design/zaxira.md`) — eksport va import |
@@ -202,9 +202,9 @@ ham qaysi boʻlimda turganini bilsin (uslubning umumiy qoidasi).
 
 ### Qayerda koʻrinadi, qayerda yoʻq
 
-- **Koʻrinadi:** «Yozuvlar», «Qarz daftari», «Kontakt» sahifasi, «Hisobot», «Zaxira».
-  «Kontakt» da faol boʻlim — **«Qarz daftari»**. «Zaxira» ekranida import oqimi yarim
-  qolgan boʻlsa ham panel joyida turadi va boshqa boʻlimga oʻtish oqimni bekor qiladi
+- **Koʻrinadi:** «Bosh», «Yozuvlar», «Qarz daftari», «Kontakt» sahifasi, «Hisobot»,
+  «Zaxira». «Kontakt» da faol boʻlim — **«Qarz daftari»**. «Zaxira» ekranida import oqimi
+  yarim qolgan boʻlsa ham panel joyida turadi va boshqa boʻlimga oʻtish oqimni bekor qiladi
   (`design/zaxira.md` 6-boʻlim).
 - **Koʻrinmaydi:** `×` bilan ochiladigan forma ekranlarida («Yangi yozuv», «Yozuvni
   tahrirlash», «Yangi qarz», «Qarzni tahrirlash», «Toʻlov») va forma ichidan ochiladigan
@@ -228,12 +228,11 @@ qachon panel ostida qolmaydi.
 
 ### Ilova ochilganda va forma yopilganda
 
-- Ilova ochilganda **«Yozuvlar»** ekrani koʻrinadi (dashboard qurilgach bosh sahifa uni
-  almashtiradi).
-- **«Yozuv»** boʻlagi bosilganda «Yangi yozuv» formasi ochiladi; `×` bosilsa ham, «Saqlash»
-  bosilsa ham **«Yozuvlar»** ekrani ochiladi — odam saqlagan yozuvini darhol koʻradi.
-  Boshqa joydan ochilgan forma esa oʻzi kelgan ekranga qaytadi (`design/kirim-chiqim.md`
-  qoidasi oʻzgarmaydi).
+- Ilova ochilganda **bosh sahifa** koʻrinadi (0020; parol/PIN yoʻq — 0006).
+- Bosh sahifadagi **«＋ Yozuv»** tugmasi «Yangi yozuv» formasini ochadi; `×` bosilsa ham,
+  «Saqlash» bosilsa ham forma **oʻzi ochilgan ekranga** qaytadi: «＋ Yozuv» dan — bosh
+  sahifaga (odam saqlagan yozuvini «Oxirgi yozuvlar»da darhol koʻradi), «Yozuvlar»dagi
+  tahrirdan — «Yozuvlar»ga (`design/kirim-chiqim.md` qoidasi oʻzgarmaydi).
 - Boʻlaklar orasida oʻtishda animatsiya yoʻq (uslubning umumiy qoidasi) — ekran darhol
   almashadi.
 

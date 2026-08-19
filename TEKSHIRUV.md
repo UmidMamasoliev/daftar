@@ -13,7 +13,7 @@ Toʻrt qism va hujjatlar:
 | Qarz daftari | `prds/qarz-daftari.md` | `design/qarz-daftari.md` | qurilgan |
 | Oylik hisobot | `prds/oylik-hisobot.md` | `design/oylik-hisobot.md` | qurilgan |
 | Zaxira (eksport/import) | `prds/zaxira.md` | `design/zaxira.md` | qurilgan |
-| Dashboard | `prds/dashboard.md` | — | **ataylab qurilmagan** (0063, 3.10 darsi) |
+| Dashboard (bosh sahifa) | `prds/dashboard.md` + `specs/001-dashboard/` | `design/uslub.md` («Navigatsiya paneli») | qurilgan (3.10, Spec Kit bilan; 0067) |
 
 Hujjat tomoni: `platform/KELISHUV.md` koddagi haqiqatga mos turishi, spec ↔ qaror ↔ kod
 orasida ziddiyat yoʻqligi.
@@ -23,7 +23,7 @@ orasida ziddiyat yoʻqligi.
 1. `AGENTS.md` — qoidalar va «nima qilinmaydi» roʻyxati (specda yoʻq narsa — kamchilik emas).
 2. `lessons/qoidalar.md` — qaytmasligi kerak boʻlgan xatolar.
 3. `memory/` dagi eng yangi fayl — qayerda toʻxtaganimiz.
-4. `decisions/` — 0001–0065, hammasi majburiy.
+4. `decisions/` — 0001–0067, hammasi majburiy.
 5. Har specdagi **«Qanday tekshiramiz»** boʻlimi — tekshiruv roʻyxatining asosi.
 6. `.claude/notes/qa.md` — oldingi tekshiruvlarning saboqlari va probe usullari.
 
@@ -31,13 +31,13 @@ orasida ziddiyat yoʻqligi.
 
 Tartib bilan, har birining **haqiqiy chiqishi** koʻrsatiladi — «oʻtdi» deb aytish yetarli emas (0022):
 
-1. `npm test` — Vitest (kutilgan: 999 test). Barqarorlik uchun kamida 3 marta toʻliq
+1. `npm test` — Vitest (kutilgan: 1065 test). Barqarorlik uchun kamida 3 marta toʻliq
    ishga tushiriladi. Chiqishni `tail` bilan kesmaslik — flake tafsiloti yoʻqoladi.
    **Flake chiqsa test oʻchirilmaydi yoki qayta yozilmaydi — ildizi izlanadi**: oxirgi
    regressiyada flake ortidan haqiqiy mahsulot xatosi chiqqan.
 2. `npx tsc -b` — toza chiqishi (hech qanday xato yoʻq).
 3. `npm run build` — xatosiz yakunlanishi.
-4. `npx playwright test` — E2E (kutilgan: 11 test, uchtasi oflayn oqim). Oflayn testlar
+4. `npx playwright test` — E2E (kutilgan: 12 test, uchtasi oflayn oqim). Oflayn testlar
    faqat preview buildda ishlaydi — dev rejimda service worker oʻchiq.
 
 ## 4. Jonli tekshiruv (preview build)
@@ -89,13 +89,14 @@ Har mezon boʻyicha natija uch xil yoziladi: **bajarildi** / **bajarilmadi** /
 
 ## 7. Maʼlum chegaralar — kamchilik EMAS, lekin qayd etiladi
 
-3.10 (dashboard darsi)gacha ataylab qoldirilgan:
+3.10 da yopilganlar: dashboard qurildi (0067), naqd/karta qoldiqlari jonli UI da,
+kurs soʻrash bloki bosh sahifada jonli yoʻlda ochiladi, 30 kunlik eslatma (0024) bor.
 
-- Dashboard yoʻq — vaqtinchalik pastki navigatsiya paneli turadi (0063).
-- Naqd/karta qoldiqlarining jonli UI koʻrinishi yoʻq — mezonlar faqat data-testlarda.
-- Hisobotdagi kurs soʻrash bloki jonli yoʻlda ochilmaydi (faqat import orqali).
-- 30 kunlik zaxira eslatmasi (0024) hali qurilmagan.
-- `taxminiyJamiSomda` eski imzosi turibdi — yangi yoʻl `xavfsizTaxminiyJami`.
+Qolganlari:
+
+- `taxminiyJamiSomda` eski imzosi turibdi — yangi yoʻl `xavfsizTaxminiyJami`
+  (imzo ataylab buzilmagan, KELISHUV 11-boʻlim).
+- Bosh sahifadagi oxirgi yozuvlar qatorlari bosilmaydi — tahrir «Yozuvlar»da (0067).
 
 ## 8. Natija qanday topshiriladi
 

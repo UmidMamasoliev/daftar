@@ -12,28 +12,28 @@ test('yozuvlar va qarz kiritilgach hisobot raqamlari toʻgʻri chiqadi', async (
   await page.goto('/')
 
   // 8 000 000 soʻm kirim.
-  await page.getByRole('button', { name: 'Yozuv', exact: true }).click()
+  await page.getByRole('button', { name: '＋ Yozuv' }).click()
   await page.getByRole('button', { name: 'Kirim' }).click()
   await page.getByLabel('Summa').fill('8000000')
   await page.getByRole('button', { name: 'oylik' }).click()
   await page.getByRole('button', { name: 'Saqlash' }).click()
-  await expect(page.getByRole('heading', { name: 'Yozuvlar', level: 1 })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Daftar', level: 1 })).toBeVisible()
 
   // 800 000 soʻm chiqim — oziq-ovqat.
-  await page.getByRole('button', { name: 'Yozuv', exact: true }).click()
+  await page.getByRole('button', { name: '＋ Yozuv' }).click()
   await page.getByRole('button', { name: 'Chiqim' }).click()
   await page.getByLabel('Summa').fill('800000')
   await page.getByRole('button', { name: 'oziq-ovqat' }).click()
   await page.getByRole('button', { name: 'Saqlash' }).click()
-  await expect(page.getByRole('heading', { name: 'Yozuvlar', level: 1 })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Daftar', level: 1 })).toBeVisible()
 
   // 150 000 soʻm chiqim — transport.
-  await page.getByRole('button', { name: 'Yozuv', exact: true }).click()
+  await page.getByRole('button', { name: '＋ Yozuv' }).click()
   await page.getByRole('button', { name: 'Chiqim' }).click()
   await page.getByLabel('Summa').fill('150000')
   await page.getByRole('button', { name: 'transport' }).click()
   await page.getByRole('button', { name: 'Saqlash' }).click()
-  await expect(page.getByRole('heading', { name: 'Yozuvlar', level: 1 })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Daftar', level: 1 })).toBeVisible()
 
   // Kontaktga 1 000 000 soʻm qarz berilib, 300 000 soʻm qaytariladi.
   await page.getByRole('button', { name: 'Qarz daftari', exact: true }).click()

@@ -8,9 +8,9 @@
 // va qaytarish esa chaqiruv boʻlib beriladi. Ekranning oʻz ishi — «qaytarish» panelini
 // 7 soniya ushlab turish (0029, 0048).
 //
-// **Vaqtinchalik (0063):** bu ekran pastki navigatsiyaning oʻz boʻlimi, shuning uchun
-// yuqorida «‹ Orqaga» havolasi yoʻq — qaytadigan ekran yoʻq. Dashboard (3.10) qurilib,
-// yozuvlarga oʻsha yerdan kirilsa «‹ Orqaga» qaytadi.
+// Bu ekran pastki navigatsiyaning oʻz boʻlimi (0067), shuning uchun yuqorida «‹ Orqaga»
+// havolasi yoʻq — unga navigatsiyadan ham, bosh sahifadagi «Hammasi ›» havolasidan ham
+// kiriladi.
 
 import { useEffect, useRef, useState } from 'react'
 import { bugun } from '../domain/sana.ts'

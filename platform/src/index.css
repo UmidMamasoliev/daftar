@@ -39,7 +39,7 @@
   --panel-balandligi: 72px;
   --ustun-eni: 560px;
 
-  /* Vaqtinchalik navigatsiya paneli (0063): 56 px + qurilmaning pastki xavfsiz zonasi. */
+  /* Navigatsiya paneli (0067): 56 px + qurilmaning pastki xavfsiz zonasi. */
   --nav-balandligi: 56px;
   --nav-toliq: calc(56px + env(safe-area-inset-bottom, 0px));
 
@@ -721,11 +721,11 @@ button:active {
   filter: brightness(0.92);
 }
 
-/* ── Vaqtinchalik navigatsiya paneli (0063) ──────────────────────────────── */
+/* ── Navigatsiya paneli (0067) ───────────────────────────────────────────── */
 
 /*
- * `design/uslub.md` → «Navigatsiya paneli — VAQTINCHALIK (0063)». Dashboard 3.10 da
- * qurilganda bosh sahifa oʻsha boʻladi va bu boʻlim qayta koʻriladi.
+ * `design/uslub.md` → «Navigatsiya paneli (0067)». Bandlar: Bosh, Yozuvlar, Qarz daftari,
+ * Hisobot, Zaxira — dashboard bosh sahifa (0020).
  */
 .navigatsiya {
   position: fixed;
@@ -1514,4 +1514,83 @@ button:active {
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+/* ── Bosh sahifa (dashboard) — spec 001-dashboard; 0020, 0024, 0036, 0067 ── */
+
+.dashboard-tanasi {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosh-4);
+  padding: var(--bosh-4) var(--bosh-4) var(--panel-balandligi);
+}
+
+.nav-bor .dashboard-tanasi {
+  padding-bottom: calc(var(--panel-balandligi) + var(--nav-toliq));
+}
+
+/*
+ * Zaxira eslatmasi — bir qatorlik, bosilmaydi (0024; spec Assumptions). Ohang neytral:
+ * rang yolgʻiz maʼno tashimaydi (uslub) — yoʻlni matnning oʻzi aytadi.
+ */
+.zaxira-eslatma {
+  margin: 0;
+  padding: var(--bosh-3) var(--bosh-4);
+  background: var(--yuza);
+  border: 1px solid var(--chegara);
+  border-radius: var(--radius);
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--matn-ikkinchi);
+}
+
+/* Umumiy qoldiq: soʻm `raqam-katta` (28/700), dollar `summa` (17/600) — uslub jadvali. */
+.qoldiq-jami {
+  margin-bottom: var(--bosh-2);
+}
+
+.qoldiq-som {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.qoldiq-dollar {
+  margin: var(--bosh-1) 0 0;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Qator oʻng tomoni: valyuta qiymatlari ustma-ust, oʻngga tekis (hisobot naqshi). */
+.hisob-summalar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--bosh-1);
+}
+
+.hisob-summa {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Kartochka sarlavhasi va «Hammasi ›» bitta qatorda turadi. */
+.royxat-boshi {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bosh-3);
+}
+
+.royxat-boshi .kartochka-sarlavha {
+  margin-bottom: 0;
+}
+
+/* Yozuv qatorining chap tomoni siqilganda ham summa oʻqiladigan boʻlib qoladi. */
+.dashboard-yozuv .qator-chap {
+  min-width: 0;
 }

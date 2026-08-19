@@ -7,18 +7,16 @@ import { expect, test } from '@playwright/test'
 // faqat hammasi birga ishlashi koʻriladi: yozuv qoʻshiladi, roʻyxatda koʻrinadi,
 // oʻchiriladi va «QAYTARISH» bilan qaytadi.
 //
-// **Vaqtinchalik (0063):** ilova «Yozuvlar» bilan ochiladi, formaga esa pastdagi
-// navigatsiya panelining «Yozuv» boʻlagidan kiriladi. `exact: true` shart —
-// Playwright nomni standart holda qism sifatida qidiradi va «Yozuv» «Yozuvlar» ga
-// ham tushib ketardi.
+// Ilova bosh sahifa bilan ochiladi (0020; spec 001-dashboard), formaga bosh sahifadagi
+// «＋ Yozuv» tugmasidan kiriladi — navigatsiyada alohida «Yozuv» bandi yoʻq (FR-013, 0067).
 
 test('yozuv qoʻshiladi, roʻyxatda koʻrinadi, oʻchiriladi va qaytariladi', async ({ page }) => {
   await page.goto('/')
 
   await expect(page).toHaveTitle('Daftar')
-  await expect(page.getByRole('heading', { name: 'Yozuvlar', level: 1 })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Daftar', level: 1 })).toBeVisible()
 
-  await page.getByRole('button', { name: 'Yozuv', exact: true }).click()
+  await page.getByRole('button', { name: '＋ Yozuv' }).click()
   await expect(page.getByRole('heading', { name: 'Yangi yozuv' })).toBeVisible()
 
   // Tayyor kategoriyalar bazadan kelib chip boʻlib chiqadi (0028; mezon 15).
@@ -29,7 +27,9 @@ test('yozuv qoʻshiladi, roʻyxatda koʻrinadi, oʻchiriladi va qaytariladi', as
   await expect(page.getByLabel('Summa')).toHaveValue('45 000')
   await page.getByRole('button', { name: 'Saqlash' }).click()
 
-  // Saqlangach roʻyxat ochiladi va yangi yozuv darhol koʻrinadi.
+  // Saqlangach forma bosh sahifaga qaytadi; roʻyxat «Yozuvlar» boʻlimida.
+  await expect(page.getByRole('heading', { name: 'Daftar', level: 1 })).toBeVisible()
+  await page.getByRole('button', { name: 'Yozuvlar' }).click()
   await expect(page.getByRole('heading', { name: 'Yozuvlar', level: 1 })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Bugun', level: 2 })).toBeVisible()
   await expect(page.getByText('−45 000 soʻm')).toBeVisible()
@@ -55,7 +55,7 @@ test('kategoriya qoʻshiladi, yashiriladi va formadagi chiplar darhol oʻzgaradi
 }) => {
   await page.goto('/')
 
-  await page.getByRole('button', { name: 'Yozuv', exact: true }).click()
+  await page.getByRole('button', { name: '＋ Yozuv' }).click()
   await page.getByRole('button', { name: 'Chiqim' }).click()
   await expect(page.getByRole('button', { name: 'kiyim' })).toBeVisible()
 
@@ -102,12 +102,15 @@ test('kategoriya qoʻshiladi, yashiriladi va formadagi chiplar darhol oʻzgaradi
 test('«QAYTARISH» paneli 7 soniyadan keyin yoʻqoladi (0048; mezon 12)', async ({ page }) => {
   await page.goto('/')
 
-  await page.getByRole('button', { name: 'Yozuv', exact: true }).click()
+  await page.getByRole('button', { name: '＋ Yozuv' }).click()
   await page.getByRole('button', { name: 'Chiqim' }).click()
   await page.getByRole('button', { name: 'transport' }).click()
   await page.getByLabel('Summa').fill('12000')
   await page.getByRole('button', { name: 'Saqlash' }).click()
 
+  // Forma bosh sahifaga qaytadi — roʻyxat qatori «Yozuvlar» boʻlimida.
+  await expect(page.getByRole('heading', { name: 'Daftar', level: 1 })).toBeVisible()
+  await page.getByRole('button', { name: 'Yozuvlar' }).click()
   await page.getByRole('button', { name: /transport/ }).hover()
   await page.getByRole('button', { name: 'Oʻchirish' }).click()
   await expect(page.getByText('Yozuv oʻchirildi')).toBeVisible()

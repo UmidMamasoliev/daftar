@@ -52,15 +52,16 @@ function qatorTugmasi(nom: string, tugmaNomi: string): HTMLElement {
 /**
  * «Yangi yozuv» formasini ochadi.
  *
- * Ilova «Yozuvlar» bilan ochiladi (0063), formaga esa pastdagi **vaqtinchalik**
- * navigatsiya panelining «Yozuv» boʻlagidan kiriladi.
+ * Ilova bosh sahifa bilan ochiladi (0020; spec 001-dashboard), formaga bosh sahifadagi
+ * «＋ Yozuv» tugmasidan kiriladi — navigatsiyada alohida «Yozuv» bandi yoʻq (FR-013).
  */
 async function formaniOchdi(odam: ReturnType<typeof userEvent.setup>): Promise<void> {
-  await odam.click(await screen.findByRole('button', { name: 'Yozuv' }))
+  await odam.click(await screen.findByRole('button', { name: 'Bosh' }))
+  await odam.click(await screen.findByRole('button', { name: '＋ Yozuv' }))
   await screen.findByRole('heading', { name: 'Yangi yozuv', level: 1 })
 }
 
-/** Formani toʻldirib saqlaydi — koʻp testga kerak boʻlgan tayyorgarlik. */
+/** Formani toʻldirib saqlaydi va «Yozuvlar» roʻyxatiga oʻtadi — koʻp testga tayyorgarlik. */
 async function yozuvQoshdi(
   odam: ReturnType<typeof userEvent.setup>,
   summa: string,
@@ -71,8 +72,11 @@ async function yozuvQoshdi(
   await odam.type(screen.getByLabelText('Summa'), summa)
   await odam.click(await screen.findByRole('button', { name: kategoriya }))
   await odam.click(tugma('Saqlash'))
-  // Doʻkonga yozildi va forma yopildi — shundan keyingina roʻyxat qatorlari bilan
-  // ishlash mumkin (aks holda `/oziq-ovqat/` formadagi chipga ham tushib ketadi).
+  // Forma bosh sahifaga qaytadi (oʻzi ochilgan ekranga); roʻyxat qatorlari bilan ishlash
+  // uchun «Yozuvlar» boʻlimiga oʻtiladi (aks holda `/oziq-ovqat/` dashboard qatoriga emas,
+  // chipga ham tushib ketardi).
+  await screen.findByRole('heading', { name: 'Daftar', level: 1 })
+  await odam.click(tugma('Yozuvlar'))
   await screen.findByRole('heading', { name: 'Yozuvlar', level: 1 })
 }
 
@@ -115,18 +119,18 @@ it('yangi yozuv roʻyxatda darhol koʻrinadi', async () => {
   expect(screen.getByRole('heading', { name: 'Bugun', level: 2 })).toBeDefined()
 })
 
-it('ilova «Yozuvlar» bilan ochiladi; «Yozuv» boʻlagi formani ochadi, `×` qaytaradi (0063)', async () => {
+it('ilova bosh sahifa bilan ochiladi; «＋ Yozuv» formani ochadi, `×` boshga qaytaradi', async () => {
   const odam = userEvent.setup()
   render(<App />)
 
-  expect(await screen.findByRole('heading', { name: 'Yozuvlar', level: 1 })).toBeDefined()
+  expect(await screen.findByRole('heading', { name: 'Daftar', level: 1 })).toBeDefined()
 
   await formaniOchdi(odam)
   // Forma ekranida navigatsiya paneli koʻrinmaydi (dizayn: «Qayerda koʻrinadi»).
   expect(screen.queryByRole('navigation')).toBeNull()
 
   await odam.click(tugma('Yopish'))
-  expect(screen.getByRole('heading', { name: 'Yozuvlar', level: 1 })).toBeDefined()
+  expect(screen.getByRole('heading', { name: 'Daftar', level: 1 })).toBeDefined()
   expect(screen.getByRole('navigation')).toBeDefined()
 })
 
@@ -175,6 +179,9 @@ it('mezon 14c, 14d — yashirilgan kategoriyali yozuv tahrirlanganda chip tanlan
   await odam.click(tugma('‹ Orqaga'))
   await odam.click(tugma('Yopish'))
 
+  // Forma boshga qaytadi; yozuv qatori «Yozuvlar» ekranida turadi.
+  await screen.findByRole('heading', { name: 'Daftar', level: 1 })
+  await odam.click(tugma('Yozuvlar'))
   await odam.click(await screen.findByRole('button', { name: /oziq-ovqat/ }))
   expect(screen.getByRole('heading', { name: 'Yozuvni tahrirlash', level: 1 })).toBeDefined()
 

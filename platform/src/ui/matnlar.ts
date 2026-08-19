@@ -74,31 +74,47 @@ export const UMUMIY = {
   yopish: 'Yopish',
 } as const
 
-/**
- * «Yozuvlar» ekranidagi matnlar (dizayn: `design/kirim-chiqim.md` 2-boʻlim).
- *
- * **Vaqtinchalik (0063):** dashboard qurilgunicha boʻsh holatning ikkinchi qatori
- * navigatsiya panelidagi «Yozuv» boʻlimini koʻrsatadi; bosh sahifa paydo boʻlganda
- * «Birinchi yozuvni bosh sahifadagi «＋ Yozuv» tugmasi bilan qoʻshasiz.» qaytadi.
- */
+/** «Yozuvlar» ekranidagi matnlar (dizayn: `design/kirim-chiqim.md` 2-boʻlim). */
 export const YOZUVLAR = {
   sarlavha: 'Yozuvlar',
   ochirish: UMUMIY.ochirish,
   ochirildi: 'Yozuv oʻchirildi',
   qaytarish: UMUMIY.qaytarish,
   boshBirinchi: 'Hali bitta ham yozuv yoʻq.',
-  boshIkkinchi: 'Birinchi yozuvni pastdagi «Yozuv» boʻlimi bilan qoʻshasiz.',
+  boshIkkinchi: 'Birinchi yozuvni bosh sahifadagi «＋ Yozuv» tugmasi bilan qoʻshasiz.',
 } as const
 
 /**
- * Pastki navigatsiya paneli — **VAQTINCHALIK** (0063; `design/uslub.md`).
+ * Bosh sahifa (dashboard) matnlari — spec `specs/001-dashboard/spec.md`, 0067.
  *
- * Dashboard 3.10 da qurilganda bosh sahifa oʻsha boʻladi va panel qayta koʻriladi.
- * «Hisobot» va «Zaxira» boʻlaklari oʻz qismlari tayyor boʻlganda shu naqshda qoʻshiladi.
+ * Sarlavha «Daftar»: bosh sahifa ilovaning oʻzi; navigatsiya bandi esa qisqa «Bosh».
+ * Eslatma matni bir qatorlik va bosilmaydi (0024; spec Assumptions) — «Zaxira» boʻlimiga
+ * yoʻlni soʻz bilan koʻrsatadi.
+ */
+export const DASHBOARD = {
+  sarlavha: 'Daftar',
+  qoldiq: 'Qoldiq',
+  joriyOy: 'Joriy oy',
+  kirim: 'Kirim',
+  chiqim: 'Chiqim',
+  oxirgiYozuvlar: 'Oxirgi yozuvlar',
+  hammasi: 'Hammasi ›',
+  yangiYozuv: '＋ Yozuv',
+  boshBirinchi: YOZUVLAR.boshBirinchi,
+  boshIkkinchi: 'Birinchi yozuvni pastdagi «＋ Yozuv» tugmasi bilan qoʻshasiz.',
+  eslatmaHech: 'Daftar hali zaxira qilinmagan — «Zaxira» boʻlimidan eksport qiling.',
+  eslatmaEski: 'Oxirgi zaxiradan 30 kun oʻtdi — «Zaxira» boʻlimidan yangisini oling.',
+} as const
+
+/**
+ * Pastki navigatsiya paneli (`design/uslub.md`).
+ *
+ * Dashboard bosh sahifa (0063 → spec 001-dashboard FR-013, 0067): «Yozuv» bandi yoʻq,
+ * yozuv qoʻshish bosh sahifadagi «＋ Yozuv» tugmasidan.
  */
 export const NAVIGATSIYA = {
   yorliq: 'Boʻlimlar',
-  yozuv: 'Yozuv',
+  bosh: 'Bosh',
   yozuvlar: 'Yozuvlar',
   qarzDaftari: 'Qarz daftari',
   hisobot: 'Hisobot',

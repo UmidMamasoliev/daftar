@@ -1,8 +1,13 @@
 # Dashboard
 
-Sana: 2026-08-16. Asos: `prds/daftar-prd.md` (26–28-bandlar, va shu featurega tegishli 3, 6, 7,
-15a, 26a, 30-bandlar). Qarorlar: 0006, 0011, 0017, 0018, 0020, 0023, 0024, 0026, 0032, 0035,
-0036, 0042, 0043, 0044, 0045, 0053, 0054.
+Sana: 2026-08-16 (yangilangan: 2026-08-19 — qurildi). Asos: `prds/daftar-prd.md`
+(26–28-bandlar, va shu featurega tegishli 3, 6, 7, 15a, 26a, 30-bandlar). Qarorlar: 0006,
+0011, 0017, 0018, 0020, 0023, 0024, 0026, 0032, 0035, 0036, 0042, 0043, 0044, 0045, 0053,
+0054, **0067**.
+
+Qurilish 3.10 da GitHub Spec Kit oqimi bilan oʻtdi: shu specdan yasalgan Spec Kit
+artefaktlari (spec.md, plan.md, tasks.md) — `specs/001-dashboard/` da. Ekran sarlavhasi
+«Daftar», navigatsiya bandi «Bosh» (0067).
 
 Nima uchun: Bu — ilova ochilganda koʻrinadigan birinchi va eng koʻp koʻriladigan ekran.
 Foydalanuvchi bir qarashda pul qanchaligini va oy qanday ketayotganini koʻradi, keyin bitta
@@ -20,12 +25,14 @@ tugma bilan yangi yozuv qoʻshadi.
    biri valyuta boʻyicha ajratilgan holda (naqd: 1 200 000 soʻm va 100 $).
    (PRD 26a; 0036, 0023)
 3. Joriy oy kirimi va chiqimini koʻrsatadi. (PRD 26; 0020)
-4. Oxirgi yozuvlar roʻyxatini koʻrsatadi. (PRD 26; 0020)
-5. Yozuv qoʻshish tugmasi shu ekranda doim koʻrinib turadi. (PRD 27; 0020)
+4. Oxirgi yozuvlar roʻyxatini koʻrsatadi — eng koʻpi 5 ta, eng yangisi yuqorida; qatorlar
+   bosilmaydi, tahrir «Yozuvlar» ekranida. (PRD 26; 0020, 0067)
+5. Yozuv qoʻshish tugmasi («＋ Yozuv») shu ekranda doim koʻrinib turadi. (PRD 27; 0020, 0067)
 6. Qarz qoldigʻi dashboardda alohida raqam sifatida koʻrsatilmaydi — u oʻz boʻlimida.
    (PRD 28; 0020)
 7. Oxirgi eksportdan 30 kun oʻtsa yoki daftar hech qachon eksport qilinmagan boʻlsa, bir
-   qatorlik zaxira eslatmasi koʻrinadi. Shart bajarilmasa eslatma turmaydi. (PRD 30; 0024)
+   qatorlik zaxira eslatmasi koʻrinadi. Shart bajarilmasa eslatma turmaydi. Eslatma oddiy
+   matn qatori — bosilmaydi (0067). (PRD 30; 0024)
 7a. Eslatma faqat oxirgi eksport sanasini oʻqiydi; oʻsha sanani qoʻlda olingan eksport ham,
    import oldidagi avtomatik zaxira ham yangilaydi (0054), import esa uni fayldagi qiymat bilan
    almashtiradi (0053). Yaʼni eski zaxira tiklangandan keyin eslatma darhol chiqishi mumkin —

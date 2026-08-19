@@ -14,12 +14,12 @@ test('eksport → maʼlumotni oʻzgartirish → import: eski holat tiklanadi', a
   await page.goto('/')
 
   // 45 000 soʻmlik chiqim — tiklanadigan holat shu.
-  await page.getByRole('button', { name: 'Yozuv', exact: true }).click()
+  await page.getByRole('button', { name: '＋ Yozuv' }).click()
   await page.getByRole('button', { name: 'Chiqim' }).click()
   await page.getByLabel('Summa').fill('45000')
   await page.getByRole('button', { name: 'oziq-ovqat' }).click()
   await page.getByRole('button', { name: 'Saqlash' }).click()
-  await expect(page.getByText('−45 000 soʻm')).toBeVisible()
+  await expect(page.getByText('−45 000 soʻm').first()).toBeVisible()
 
   await page.getByRole('button', { name: 'Zaxira', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'Zaxira', level: 1 })).toBeVisible()
@@ -45,12 +45,13 @@ test('eksport → maʼlumotni oʻzgartirish → import: eski holat tiklanadi', a
   expect(mazmun.yozuvlar).toHaveLength(1)
 
   // Eksportdan keyin daftar oʻzgaradi — import uni qaytarishi kerak (mezon 18).
-  await page.getByRole('button', { name: 'Yozuv', exact: true }).click()
+  await page.getByRole('button', { name: 'Bosh' }).click()
+  await page.getByRole('button', { name: '＋ Yozuv' }).click()
   await page.getByRole('button', { name: 'Chiqim' }).click()
   await page.getByLabel('Summa').fill('90000')
   await page.getByRole('button', { name: 'transport' }).click()
   await page.getByRole('button', { name: 'Saqlash' }).click()
-  await expect(page.getByText('−90 000 soʻm')).toBeVisible()
+  await expect(page.getByText('−90 000 soʻm').first()).toBeVisible()
 
   await page.getByRole('button', { name: 'Zaxira', exact: true }).click()
 
@@ -83,21 +84,21 @@ test('eksport → maʼlumotni oʻzgartirish → import: eski holat tiklanadi', a
   await expect(page.getByText('−45 000 soʻm')).toBeVisible()
   await expect(page.getByText('−90 000 soʻm')).toBeHidden()
 
-  // Mezon 26: ilova qayta ochilganda tiklangan maʼlumot joyida turadi.
+  // Mezon 26: ilova qayta ochilganda tiklangan maʼlumot joyida turadi (bosh sahifada).
   await page.reload()
-  await expect(page.getByText('−45 000 soʻm')).toBeVisible()
+  await expect(page.getByText('−45 000 soʻm').first()).toBeVisible()
   await expect(page.getByText('−90 000 soʻm')).toBeHidden()
 })
 
 test('buzilgan fayl import qilinmaydi va daftar oʻzgarmaydi (mezon 20)', async ({ page }) => {
   await page.goto('/')
 
-  await page.getByRole('button', { name: 'Yozuv', exact: true }).click()
+  await page.getByRole('button', { name: '＋ Yozuv' }).click()
   await page.getByRole('button', { name: 'Chiqim' }).click()
   await page.getByLabel('Summa').fill('45000')
   await page.getByRole('button', { name: 'oziq-ovqat' }).click()
   await page.getByRole('button', { name: 'Saqlash' }).click()
-  await expect(page.getByText('−45 000 soʻm')).toBeVisible()
+  await expect(page.getByText('−45 000 soʻm').first()).toBeVisible()
 
   await page.getByRole('button', { name: 'Zaxira', exact: true }).click()
   await page.getByRole('button', { name: 'Import' }).click()

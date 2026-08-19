@@ -167,7 +167,7 @@ describe('boʻsh holat', () => {
     chiz({ yozuvlar: [] })
     expect(screen.getByText('Hali bitta ham yozuv yoʻq.')).toBeDefined()
     expect(
-      screen.getByText('Birinchi yozuvni pastdagi «Yozuv» boʻlimi bilan qoʻshasiz.'),
+      screen.getByText('Birinchi yozuvni bosh sahifadagi «＋ Yozuv» tugmasi bilan qoʻshasiz.'),
     ).toBeDefined()
   })
 })

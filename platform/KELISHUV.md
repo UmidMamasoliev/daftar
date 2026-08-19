@@ -4,11 +4,11 @@ Bu fayl qisqa xarita: qaysi funksiya qanday nom bilan, nima qabul qiladi, nima q
 xato qanday bildiriladi. **Manba — TypeScript tiplarining oʻzi** (`src/domain/turlar.ts`);
 bu yerda faqat yoʻl koʻrsatiladi.
 
-Holat (2026-08-17): maʼlumot qatlamining **toʻrt qismi ham tayyor** — kirim-chiqim va
-kategoriyalar (1–11-boʻlimlar), qarz daftari (12–17), oylik hisobot (18–21), zaxira
-eksport/import (22–26). Dashboard ataylab qurilmagan (3.10 darsi). Baza sxemasi:
+Holat (2026-08-19): **hamma qism tayyor** — kirim-chiqim va kategoriyalar (1–11-boʻlimlar),
+qarz daftari (12–17), oylik hisobot (18–21), zaxira eksport/import (22–26), dashboard
+(27-boʻlim; 3.10 da GitHub Spec Kit bilan qurildi — `specs/001-dashboard/`). Baza sxemasi:
 **4-versiya** (`yozuvlar`, `kategoriyalar`, `kontaktlar`, `qarzlar`, `tolovlar`,
-`sozlamalar`).
+`sozlamalar`) — dashboard yangi ombor qoʻshmadi.
 
 Fayllar:
 
@@ -966,3 +966,48 @@ ketardi va `count() > 0` shartiga tayanardi: oʻrtaga boshqa amal (masalan impor
 tozalashi) tushsa doʻkon yarim urugʻlangan qolib, keyingi oʻqishlar uni tuzatmasdi. Mavjud
 qator **hech qachon qayta yozilmaydi** — yashirilgan tayyor kategoriya yashirilganicha
 qoladi, foydalanuvchi qoʻshganlari va ularning tartibi tegilmaydi (0013, 0028).
+
+---
+
+# DASHBOARD (3.10) — 27-boʻlim
+
+Yuqoridagi 1–26-boʻlimlar **oʻzgarmadi** (7-boʻlimdagi kurs bloki endi umumiy komponentda —
+pastga qarang). Dashboard GitHub Spec Kit oqimi bilan qurildi: spec, reja va vazifalar
+`specs/001-dashboard/` da turadi. Qarorlar: 0006, 0020, 0023, 0024, 0036, 0042–0045,
+0066, **0067** (navigatsiya va ekran tafsilotlari).
+
+## 27. Dashboard — `src/domain/dashboard.ts`, `src/ui/Dashboard.tsx`
+
+Yangi fayllar:
+
+```
+src/domain/dashboard.ts   — oy yigʻindilari va zaxira eslatmasi sharti (sof hisob)
+src/ui/Dashboard.tsx      — bosh sahifa ekrani (sarlavha «Daftar»)
+src/ui/KursSorov.tsx      — kurs soʻrash bloki: Hisobot.tsx dan ajratib olindi,
+                            endi ikkala ekran shu bitta komponentni ishlatadi (0043)
+```
+
+| Funksiya | Qabul qiladi | Qaytaradi |
+|---|---|---|
+| `oyYigindilari(yozuvlar, davr)` | `Yozuv[]`, `Davr` | `{ kirim, chiqim }` — har biri `ValyutaQatori[]` (soʻm avval, dollar keyin; qator faqat shu valyutada yozuv bor boʻlakda; boʻsh boʻlak `{som, 0}` qatori bilan) |
+| `zaxiraEslatmasiKerakmi(oxirgiEksport, bugungi)` | `string \| null`, `string` | `boolean` — `null` yoki kun farqi `>= ESLATMA_KUNLARI` (30) boʻlsa `true` (0024) |
+| `ESLATMA_KUNLARI` | — | `30` |
+| `OXIRGI_YOZUVLAR_SONI` (`Dashboard.tsx`) | — | `5` (0067) |
+
+Qoidalar bir joyda:
+
+- **Oy yigʻindilariga qarz harakati kirmaydi** (0017): oy koʻrsatkichi faqat yozuvlardan,
+  hisobotdagi qoida bilan bir xil. Davrni faqat `sana` aniqlaydi (0047).
+- **Qoldiq, «oxirgi kurs» va taxminiy jami bu qatlamda EMAS**: dashboard mavjud yoʻllarni
+  ishlatadi — `qoldiqlarniOl()` (16-boʻlim), `oxirgiKursniOl(qoldaKurslarManbalari(...))`
+  (7, 24-boʻlimlar), `xavfsizTaxminiyJami` (19-boʻlim). «Dollar qatnashadimi» ni App hal
+  qiladi: naqd yoki kartada dollar nolmas boʻlsa ≈ qatori (yoki kurs soʻrovi) chiqadi.
+- **Hech narsa saqlanmaydi** (0045): App `ekran === 'bosh'` boʻlganda navbat orqali qayta
+  oʻqiydi; oy yigʻindilari `yozuvlar` holatidan har chizishda hisoblanadi.
+- **Eslatma faqat sanani oʻqiydi** (0053, 0054; 26-boʻlim): `oxirgiEksportniOl()` —
+  eslatmaning oʻzi bosilmaydi (0067).
+- **Navigatsiya** (0067): `Bolim` tipida `'yozuv'` oʻrnida `'bosh'`; ilova `'bosh'` bilan
+  ochiladi; YozuvForma oʻzi ochilgan ekranga qaytadi (`formaManbai`).
+
+Ekranga tegishli boʻlib bu qatlamda YOʻQ narsalar: roʻyxat qatorining bosilmasligi, eslatma
+matnining ikki varianti, «Hammasi ›» havolasi — hammasi `Dashboard.tsx` da (0067).

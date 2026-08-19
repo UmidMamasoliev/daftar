@@ -38,8 +38,8 @@ it('sekin doʻkonda ham «Koʻrsatish» dan keyingi «‹ Orqaga» tanlovni beko
   const odam = userEvent.setup()
   render(<App />)
 
-  // Ilova «Yozuvlar» bilan ochiladi — formaga navigatsiya panelidan kiriladi (0063).
-  await odam.click(await screen.findByRole('button', { name: 'Yozuv' }))
+  // Ilova bosh sahifa bilan ochiladi — formaga «＋ Yozuv» tugmasidan kiriladi (FR-013).
+  await odam.click(await screen.findByRole('button', { name: '＋ Yozuv' }))
   await odam.click(await screen.findByRole('button', { name: 'Chiqim' }))
   await odam.click(await screen.findByRole('button', { name: 'oziq-ovqat' }))
 
