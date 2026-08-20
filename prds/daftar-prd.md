@@ -1,8 +1,10 @@
 # Daftar — mahsulot tavsifi (v1)
 
-Sana: 2026-08-16. Asos: `decisions/0001`–`0038` (hammasi majburiy).
-Bu hujjat butun mahsulotni tavsiflaydi. Har qism uchun alohida spec keyin yoziladi:
-`prds/kirim-chiqim.md`, `prds/qarz-daftari.md`, `prds/oylik-hisobot.md`, `prds/dashboard.md`.
+Sana: 2026-08-16 (oxirgi yangilanish: 2026-08-20). Asos: `decisions/0001`–`0068`
+(hammasi majburiy).
+Bu hujjat butun mahsulotni tavsiflaydi. Har qismning oʻz speci bor:
+`prds/kirim-chiqim.md`, `prds/qarz-daftari.md`, `prds/oylik-hisobot.md`, `prds/dashboard.md`,
+`prds/zaxira.md`.
 
 ## Kim ishlatadi va nima uchun
 
@@ -29,11 +31,10 @@ bir xil.
    oʻrnatsa boʻladi (0003).
 2. Hamma maʼlumot foydalanuvchi qurilmasida saqlanadi; hech narsa serverga yuborilmaydi (0004).
 3. Ochilganda hech qanday parol yoki PIN soʻralmaydi — darhol dashboard koʻrinadi (0006, 0020).
-3a. **Vaqtinchalik holat (0063):** dashboard 3.10 gacha qurilmaydi, shuning uchun ungacha ilovada
-   bosh sahifa oʻrniga oddiy **pastki navigatsiya paneli** turadi: Yozuv (forma), Yozuvlar, Qarz
-   daftari; qismlar qurilgan sari Hisobot va Zaxira qoʻshiladi. Ilova ochilganda birinchi boʻlim
-   koʻrinadi. Bu vaqtinchalik yechim: dashboard qurilganda **u bosh sahifa boʻladi** (3-band va
-   0020 oʻz kuchida) va navigatsiyani dizayn qayta koʻradi (0063, 0020).
+3a. **Navigatsiya — bajarildi (0067):** ilova bosh sahifa (dashboard) bilan ochiladi (3-band,
+   0020). Pastki panelning bandlari: **Bosh, Yozuvlar, Qarz daftari, Hisobot, Zaxira**. Alohida
+   «Yozuv» bandi yoʻq — yozuv qoʻshish bosh sahifadagi doim koʻrinadigan **«＋ Yozuv»**
+   tugmasidan (27-band). Bu 0063 dagi vaqtinchalik panelning oʻrnini bosdi.
 4. Interfeys faqat oʻzbekcha, lotin yozuvida (0009).
 5. Ikkita tayyor hisob bor: **naqd** va **karta**. Yangi hisob qoʻshib boʻlmaydi (0011).
 6. Ikkita valyutani biladi: **soʻm** va **dollar** (0026). Har hisob qoldigʻi valyuta boʻyicha
@@ -254,12 +255,17 @@ Mahsulot darajasidagi mezonlar — hammasi sanab boʻladigan:
 | 0055 | Boʻsh daftarga importda avtomatik zaxira yoʻq |
 | 0056 | Netto faqat ochiq qarzlardan yigʻiladi |
 | 0057 | Tahrirlashda chiplar: koʻrinadiganlar + yozuvning oʻz kategoriyasi |
-| 0058 | 3.9 tayyorgarligi davrida boʻshliqni bosh agent hal qiladi (vaqtinchalik) |
+| 0058 | 3.9 tayyorgarligi davrida boʻshliqni bosh agent hal qiladi (muddati tugagan) |
 | 0059 | Qarzning oʻzi ham tahrirlanadi va oʻchiriladi; valyuta faqat toʻlovsiz qarzda |
 | 0060 | Kontakt tahrirlanadi: ism va telefon |
 | 0061 | Toʻlov qoidalari: chegaradan oshgan, nolga aylanadigan, yopilgan qarzga toʻlov |
 | 0062 | Qarz yoʻnalishi uchun standart qiymat yoʻq |
-| 0063 | Vaqtinchalik navigatsiya: dashboard qurilgunicha pastki panel |
+| 0063 | Vaqtinchalik navigatsiya: dashboard qurilgunicha pastki panel (0067 bilan almashtirildi) |
+| 0064 | Hisobotda qarz bloki: toʻrt yoʻnalish; toʻlov oʻz valyutasida sanaladi |
+| 0065 | Import oqimi: yakunda sanoq qatori, yarim qolgan importda qayta urinish |
+| 0066 | Qoʻlda kursning vaqti saqlanmaydi — u oʻz kunining boshida turadi |
+| 0067 | Dashboard — bosh sahifa; navigatsiya besh band, «Yozuv» bandi yoʻq |
+| 0068 | Butun ilova HEAD_WEB dizayn tizimiga oʻtkaziladi (xulq oʻzgarmaydi) |
 
 ## Ochiq savollar
 

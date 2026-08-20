@@ -2,6 +2,38 @@
 
 Yangi yozuv yuqoriga qoʻshiladi. Qisqa yozing.
 
+## 2026-08-20 — 0068: HEAD_WEB redesign (uslub v2, dashboard, layout)
+
+- Fayllar: `design/uslub.md` (v2, toʻliq qayta yozildi), `design/dashboard.md` (yangi),
+  `design/redesign/layout.md` (ekran-ma-ekran), `design/redesign/head-tokenlar.css` (manba).
+- **Sinf nomlari va CSS oʻzgaruvchi nomlari saqlandi**, faqat qiymatlar oʻzgardi. Yangi
+  sinf atigi toʻrtta: `.faqat-oquvchiga`, `.ic`, `.ekran-keng`, `.ekran-forma`. Sabab —
+  0068/3: 1066 test xulqqa bogʻlangan, DOM koʻchirish eng katta xavf.
+- **Imzo:** pul summalari Space Mono (oʻngga tekis mono ustun); yagona katta raqam
+  (`raqam-katta`) esa Space Grotesk — briefning oʻzi shunday taqsimlagan.
+- **Koʻk moment:** toʻldirilgan `#0029FF` — ekranda bitta, u asosiy tugma. Nav faol bandi
+  koʻk EMAS (siyoh + `#F3F5F9` pill — HEAD ning oʻz navigatsiyasi shunday), tanlangan chip
+  esa tint (`#EBEEFF`) — tint punch sanalmaydi.
+- **Semantik rang:** HEAD ning `#19E07A`/`#FF2D2D` oq fonda AA dan oʻtmaydi → matn uchun
+  `#00803F` va `#D92020` (5.0:1), yorqinlari faqat ink-navy fon uchun tokenlarda qoladi.
+  Yangi `kirim` eski `#15803D` ga deyarli teng — eski tanlov toʻgʻri boʻlgan.
+- **`--matn-ochiq` (#868D99) endi matn tashimaydi** (3.3:1): faqat namuna matn va oʻchiq
+  boshqaruv. Yashirilgan kategoriya nomi `--matn-ikkinchi` ga koʻchdi.
+- **Yorliqlar katta harfga oʻgirilmaydi:** `text-transform: uppercase` oʻzbekcha `oʻ`/`gʻ`
+  ni buzadi («SOʻM»). Mono oila + `+0.06em` tracking yetadi.
+- **Ikonka:** faqat toʻrtta Lucide shakli (plus, x, chevron-left, chevron-right).
+  Tugma nomidagi `＋`/`‹`/`›` DOM da qoladi (`.faqat-oquvchiga`, clip retsepti) — aks holda
+  `getByRole('button', { name: '＋ Yozuv' })` yiqiladi. `＋` = U+FF0B, shriftlarda yoʻq —
+  aynan shuning uchun almashtiriladi.
+- **Fon oq boʻldi** (`--fon: #F4F5F7` → `#FFFFFF`), demak manifestdagi `background_color`
+  ham oq; `theme_color` tegilmaydi.
+- **Responsive:** 320–599 / ≥600 / ≥960. ≥960 da nav yuqoriga pill boʻlib chiqadi va
+  pastdagi tugma paneli sarlavha qatoriga koʻchadi — DOM emas, `.ekran` gridi bilan.
+  Ustun eni mazmunga qarab: roʻyxat/forma 640/560, kartochka gridi 1040.
+- **Topilgan eskilik:** `design/oylik-hisobot.md` 8b dagi boʻsh holat matni hali ham
+  0063 dagi «pastdagi «Yozuv» boʻlimi» ga ishora qiladi (kod va test ham shunday).
+  0068 matnni muzlatgani uchun tegilmadi — faylga TAKLIF boʻlib yozildi.
+
 ## 2026-08-17 — Z1: zaxira ekrani
 
 - `design/zaxira.md`: bitta ekran, ikkita kartochka («Zaxira olish», «Fayldan tiklash»).

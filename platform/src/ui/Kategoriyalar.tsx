@@ -12,6 +12,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import type { Kategoriya, Natija, Xato, YozuvTuri } from '../domain/turlar.ts'
+import { Ikonka, TugmaMatni } from './Ikonka.tsx'
 import { FORMA, KATEGORIYALAR, xatoMatni } from './matnlar.ts'
 
 export type KategoriyalarProps = {
@@ -87,7 +88,7 @@ export function Kategoriyalar({
     >
       <header className="panel-tepa">
         <button type="button" className="matn-havola" onClick={orqaga}>
-          {KATEGORIYALAR.orqaga}
+          <TugmaMatni matn={KATEGORIYALAR.orqaga} />
         </button>
         <h1 className="sarlavha">{KATEGORIYALAR.sarlavha}</h1>
       </header>
@@ -130,7 +131,7 @@ export function Kategoriyalar({
                 aria-label={KATEGORIYALAR.yopish}
                 onClick={qoshishniYop}
               >
-                ×
+                <Ikonka nom="x" olcham={20} />
               </button>
               <input
                 ref={nomRef}
@@ -219,7 +220,7 @@ export function Kategoriyalar({
             setXato(null)
           }}
         >
-          {KATEGORIYALAR.yangi}
+          <TugmaMatni matn={KATEGORIYALAR.yangi} />
         </button>
       </div>
     </div>

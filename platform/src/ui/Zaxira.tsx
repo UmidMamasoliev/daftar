@@ -191,7 +191,8 @@ export function Zaxira({
       : oxirgiZaxiraQatori(sanaYorligi(oxirgiEksport, bugungi))
 
   return (
-    <div className="ekran">
+    // `ekran-keng` — ikkita kartochka `≥960` da 1040 px ustunda (layout 0.2).
+    <div className="ekran ekran-keng">
       <header className="panel-tepa">
         <h1 className="sarlavha">{ZAXIRA.sarlavha}</h1>
       </header>

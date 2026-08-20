@@ -5,7 +5,8 @@ Sana: 2026-08-17. Asos: `prds/qarz-daftari.md`. Rang, oʻlcham va boʻshliq — 
 `design/kirim-chiqim.md`: forma, xatolar jadvali va «qaytarish» paneli oʻsha qoidalar boʻyicha
 ishlaydi, bu yerda ular takrorlanmaydi, faqat farqi yoziladi.
 Qarorlar: 0009, 0011, 0015, 0016, 0017, 0023, 0026, 0029, 0030, 0031, 0033, 0034, 0035, 0037,
-0038, 0042, 0044, 0045, 0047, 0048, 0049, 0052, 0056, 0059, 0060, 0061, 0062, 0063.
+0038, 0042, 0044, 0045, 0047, 0048, 0049, 0052, 0056, 0059, 0060, 0061, 0062,
+0063 → 0067.
 
 Toʻrtta ekran: **Qarz daftari** (kontaktlar roʻyxati), **Kontakt** (qarzlari va toʻlovlari
 bilan), **Yangi qarz**, **Toʻlov**. Qarzni tahrirlash alohida ekran emas — «Yangi qarz»
@@ -15,14 +16,13 @@ kontaktni tahrirlash ham alohida ekran emas — ochiladigan blok (1- va 2-boʻli
 
 Ekrandagi matnlar shu faylda aynan yozilgan — frontend oʻshani koʻchiradi, oʻzgartirmaydi.
 
-**Navigatsiya:** «Qarz daftari» ekraniga pastdagi navigatsiya panelining **«Qarz daftari»**
-boʻlimidan kiriladi — panel vaqtinchalik, tavsifi `design/uslub.md` da (0063). «Kontakt»
-sahifasiga roʻyxatdan; «Yangi qarz» ga kontakt sahifasidan; «Toʻlov» ga aynan qarz
-kartochkasidagi tugmadan; «Qarzni tahrirlash» ga qarz kartochkasining boshiga bosib. Boshqa
-kirish yoʻli yoʻq.
+**Navigatsiya (0067):** «Qarz daftari» ekraniga navigatsiya panelining **«Qarz daftari»**
+boʻlimidan kiriladi (panel tavsifi — `design/uslub.md`). «Kontakt» sahifasiga roʻyxatdan;
+«Yangi qarz» ga kontakt sahifasidan; «Toʻlov» ga aynan qarz kartochkasidagi tugmadan;
+«Qarzni tahrirlash» ga qarz kartochkasining boshiga bosib. Boshqa kirish yoʻli yoʻq.
 
-Dashboard (3.10) qurilganda bosh sahifa oʻsha boʻladi va navigatsiya qayta koʻriladi; qarz
-daftariga oʻtish nomi oʻshanda ham **«Qarz daftari»** boʻlib qoladi (0063).
+Bosh sahifada qarz qoldigʻi alohida raqam sifatida koʻrsatilmaydi (PRD 28; 0020), demak
+qarz daftariga bosh sahifadan alohida yoʻl ham yoʻq — u faqat oʻz navigatsiya bandi.
 
 ---
 
@@ -89,9 +89,8 @@ saqlaydi.
 
 ### Nima koʻrinadi
 
-Yuqorida panel: oʻrtada sarlavha **«Qarz daftari»**. **Vaqtinchalik (0063):** bu ekran pastki
-navigatsiyaning oʻz boʻlimi, shuning uchun chapda **«‹ Orqaga»** havolasi yoʻq — qaytadigan
-ekran yoʻq. Dashboard (3.10) qurilib, qarz daftariga oʻsha yerdan kirilsa, «‹ Orqaga» qaytadi.
+Yuqorida sarlavha **«Qarz daftari»**. Bu ekran navigatsiyaning oʻz boʻlimi (0067), shuning
+uchun chapda **«‹ Orqaga»** havolasi yoʻq — qaytadigan ekran yoʻq.
 
 Ostida — kontaktlar roʻyxati, pastga aylantiriladi. Qidiruv, filtr va saralash tugmasi
 yoʻq (0002).
@@ -193,8 +192,8 @@ Ostida, yuqoridan pastga:
    qator: **«Hali toʻlov yoʻq.»** (`mayda`, `matn-ikkinchi`).
 5. Roʻyxat oxirida — xavfli tugma **«Kontaktni oʻchirish»**.
 6. Undan keyin boʻsh joy: oxirgi element pastdagi panellar ostida qolmasin. Oʻlchami
-   `design/uslub.md` dagi navigatsiya boʻlimida — asosiy tugma paneli (72 px) va vaqtinchalik
-   navigatsiya paneli birga hisoblanadi (0063).
+   `design/uslub.md` dagi «Pastdagi panellar tartibi» boʻlimida — asosiy tugma paneli
+   (72 px) va navigatsiya paneli birga hisoblanadi (0067).
 
 Pastda yopishib turgan panelda asosiy tugma: **«＋ Yangi qarz»**.
 
@@ -375,8 +374,8 @@ Kundalik holat: soʻmda qarz berdim, kartadan, bugun.
 tegilmaydi. Dollardagi qarz uchun bitta harakat qoʻshiladi — **«dollar»** chipi; kurs
 soʻralmagani uchun terish qoʻshilmaydi. Jami 4 ta harakat.
 
-Kontakt sahifasigacha boʻlgan yoʻl: pastdagi navigatsiya panelidan **«Qarz daftari»** → kontakt
-qatori = 2 bosish (0063).
+Kontakt sahifasigacha boʻlgan yoʻl: navigatsiya panelidan **«Qarz daftari»** → kontakt
+qatori = 2 bosish (0067).
 
 ### Xato holatlari
 
@@ -616,7 +615,7 @@ oʻchirildi» bilan bitta oila (`design/kirim-chiqim.md`). Nechta toʻlov birga 
 sanalmaydi: panel qisqa boʻlishi kerak, «QAYTARISH» esa hammasini birdan qaytaradi.
 
 Panel pastdagi navigatsiya panelining ustida turadi — oʻlchamlar `design/uslub.md` dagi
-navigatsiya boʻlimida (0063).
+«Pastdagi panellar tartibi» boʻlimida (0067).
 
 ---
 
@@ -678,7 +677,7 @@ Bu tavsif yozilganda toʻqqizta savol ochilgan edi. Hammasi **0058 vakolati** bi
 | 5 | Yopilgan qarzga toʻlov qoʻshiladimi? | Yoʻq — «＋ Toʻlov» havolasi boʻlmaydi | 0061 | 0-boʻlim va 4-boʻlim oxiri |
 | 6 | Qarz formasida kurs maydoni boʻladimi? | Yoʻq — qarz kurs manbai emas | 0023, 0044 (spec 10, 15b) | 3-boʻlim, «Bu formada kurs maydoni yoʻq» |
 | 7 | «Berdim»/«Oldim» uchun standart qiymat? | Yoʻq — har safar tanlanadi | 0062 | 3-boʻlim, 3-band va xatolar jadvali |
-| 8 | Qarz daftariga qayerdan kiriladi? | Vaqtinchalik pastki navigatsiya panelidan | 0063 | Fayl boshidagi «Navigatsiya», `design/uslub.md` |
+| 8 | Qarz daftariga qayerdan kiriladi? | Navigatsiya panelining «Qarz daftari» boʻlimidan | 0063 → 0067 | Fayl boshidagi «Navigatsiya», `design/uslub.md` |
 | 9 | Toʻlov formasidagi ikkita yordam qatori? | Ikkalasi ham qoladi | 0061 | 4-boʻlim |
 
 Uchta izoh, keyingi agent uchun:

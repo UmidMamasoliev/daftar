@@ -226,7 +226,9 @@ export const HISOBOT = {
   qarzHarakatiYoq: 'Bu davrda qarz harakati yoʻq.',
   boshqaDavr: 'Boshqa davrni yuqoridan tanlang.',
   boshBirinchi: 'Hali bitta ham yozuv yoʻq.',
-  boshIkkinchi: 'Birinchi yozuvni pastdagi «Yozuv» boʻlimi bilan qoʻshasiz.',
+  // Navigatsiyada alohida «Yozuv» bandi yoʻq (0067) — yoʻl bosh sahifadagi tugmadan
+  // koʻrsatiladi, «Yozuvlar» va bosh sahifadagi boʻsh holat bilan bir xil matnda.
+  boshIkkinchi: 'Birinchi yozuvni bosh sahifadagi «＋ Yozuv» tugmasi bilan qoʻshasiz.',
 } as const
 
 /** «≈ +10 500 000 soʻm» — taxminiy jami qatori (0023). */

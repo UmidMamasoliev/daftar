@@ -1,0 +1,198 @@
+/* ============================================================
+   HEAD_WEB — Core Color & Type Foundations
+   A light, navy-accented digital agency system.
+   Inspired by the structural language of the Opus template,
+   recolored to: white background · black type · navy accent.
+   ============================================================ */
+
+/* ---- Webfonts (Google Fonts CDN) -------------------------------
+   NOTE: served from CDN, not bundled locally. See README caveats.
+   Display  : Space Grotesk  (bold grotesque headlines)
+   Body/UI  : Hanken Grotesk (readable humanist grotesque)
+   Labels   : Space Mono     (eyebrows, indices, metadata)
+----------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  /* ---------- CORE NEUTRALS ---------- */
+  --white:        #FFFFFF;   /* page background */
+  --paper:        #FAFAFB;   /* raised / alt surface */
+  --bg-tint:      #F3F5F9;   /* cool navy-tinted section bg */
+  --ink:          #0A0B0D;   /* near-black — primary text */
+  --ink-soft:     #16181C;   /* slightly lifted black */
+  --fg1:          #0A0B0D;   /* alias: primary foreground */
+  --fg2:          #4A4F59;   /* secondary text */
+  --fg3:          #868D99;   /* muted text / captions */
+  --fg-onnavy:    #FFFFFF;   /* text on navy */
+  --fg-onnavy-2:  #B9C2DC;   /* secondary text on navy */
+
+  /* ---------- BLUE (BRAND ACCENT) ----------
+     The accent is electric blue rgb(0,41,255). Var names keep the
+     `--navy-*` prefix so all components stay wired; the deep dark
+     surface color is --ink-navy below. */
+  --navy:         #0029FF;   /* primary accent — electric blue */
+  --navy-600:     #2A4AFF;   /* lighter variant */
+  --navy-700:     #0020CC;   /* hover / press (darker) */
+  --navy-bright:  #3D5BFF;   /* links / brighter interactive */
+  --navy-tint:    #EBEEFF;   /* blue @ ~6% — soft fills, focus ring */
+  --navy-tint-2:  #D4DCFF;   /* blue @ ~12% — borders on tint */
+  --ink-navy:     #0B1330;   /* near-black navy — large dark surfaces */
+  --ink-navy-2:   #11214A;   /* slightly lifted dark surface */
+
+  /* ---------- LINES & BORDERS ---------- */
+  --line:         #E6E8EC;   /* hairline divider */
+  --line-2:       #D7DAE1;   /* stronger divider */
+  --line-ink:     #0A0B0D;   /* full-contrast rule */
+
+  /* ---------- SEMANTIC ---------- */
+  --positive:     #19E07A;   /* bright lime-green */
+  --warning:      #FFD60A;   /* bright yellow */
+  --danger:       #FF2D2D;   /* bright red */
+
+  /* ---------- FONT FAMILIES ---------- */
+  --font-display: 'Space Grotesk', 'Hanken Grotesk', system-ui, sans-serif;
+  --font-body:    'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+  --font-mono:    'Space Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* ---------- TYPE SCALE (fluid) ---------- */
+  --t-hero:   clamp(64px, 13vw, 200px);  /* the big STUDIO / HEAD word */
+  --t-d1:     clamp(44px, 6.5vw, 92px);  /* page display */
+  --t-h1:     clamp(34px, 4.6vw, 64px);  /* section headline */
+  --t-h2:     clamp(27px, 3.2vw, 44px);  /* sub-headline */
+  --t-h3:     clamp(21px, 1.7vw, 26px);  /* card title */
+  --t-lead:   clamp(19px, 1.5vw, 23px);  /* intro / lede paragraph */
+  --t-body:   17px;                      /* default body */
+  --t-small:  15px;                      /* secondary */
+  --t-label:  13px;                      /* mono eyebrow / index */
+
+  /* ---------- RADII ---------- */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-xl: 32px;
+  --r-pill: 999px;
+
+  /* ---------- SHADOWS (soft, low, cool) ---------- */
+  --sh-xs: 0 1px 2px rgba(10,11,13,.05);
+  --sh-sm: 0 2px 8px rgba(15,26,60,.06);
+  --sh-md: 0 10px 30px rgba(15,26,60,.08);
+  --sh-lg: 0 24px 60px rgba(15,26,60,.12);
+  --sh-navy: 0 16px 40px rgba(0,41,255,.24);
+
+  /* ---------- SPACING (8pt base) ---------- */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
+  --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px;
+  --s-9: 96px; --s-10: 128px; --s-11: 160px;
+
+  /* ---------- MOTION ---------- */
+  --ease: cubic-bezier(.22,.61,.36,1);      /* standard ease-out */
+  --ease-soft: cubic-bezier(.4,0,.2,1);
+  --dur-fast: .18s;
+  --dur: .32s;
+  --dur-slow: .6s;
+}
+
+/* ============================================================
+   SEMANTIC ELEMENT STYLES
+   Apply via classes (.hw-h1 etc) so the kit stays portable.
+   ============================================================ */
+
+.hw-eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  font-weight: 400;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--navy);
+}
+
+.hw-hero {
+  font-family: var(--font-display);
+  font-size: var(--t-hero);
+  font-weight: 500;
+  line-height: .92;
+  letter-spacing: -.04em;
+  color: var(--ink);
+}
+
+.hw-d1 {
+  font-family: var(--font-display);
+  font-size: var(--t-d1);
+  font-weight: 600;
+  line-height: 1.0;
+  letter-spacing: -.035em;
+  color: var(--ink);
+}
+
+.hw-h1 {
+  font-family: var(--font-display);
+  font-size: var(--t-h1);
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -.03em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.hw-h2 {
+  font-family: var(--font-display);
+  font-size: var(--t-h2);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -.025em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.hw-h3 {
+  font-family: var(--font-display);
+  font-size: var(--t-h3);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -.015em;
+  color: var(--ink);
+}
+
+.hw-lead {
+  font-family: var(--font-body);
+  font-size: var(--t-lead);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -.01em;
+  color: var(--fg2);
+  text-wrap: pretty;
+}
+
+.hw-body {
+  font-family: var(--font-body);
+  font-size: var(--t-body);
+  font-weight: 400;
+  line-height: 1.62;
+  color: var(--fg2);
+  text-wrap: pretty;
+}
+
+.hw-small {
+  font-family: var(--font-body);
+  font-size: var(--t-small);
+  line-height: 1.5;
+  color: var(--fg3);
+}
+
+.hw-index {
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  font-weight: 700;
+  color: var(--navy);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Base reset niceties for kit pages */
+.hw-root {
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--white);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}

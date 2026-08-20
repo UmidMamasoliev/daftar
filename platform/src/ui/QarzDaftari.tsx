@@ -22,6 +22,7 @@ import type {
   Xato,
 } from '../domain/turlar.ts'
 import { nettoMatni, nettoSinfi, nettoSozi } from './format.ts'
+import { Ikonka, TugmaMatni } from './Ikonka.tsx'
 import { QARZ_DAFTARI, xatoMatni } from './matnlar.ts'
 import { QAYTARISH_MUDDATI, QaytarishPaneli } from './QaytarishPaneli.tsx'
 
@@ -187,7 +188,7 @@ export function QarzDaftari({
                 aria-label={QARZ_DAFTARI.yopish}
                 onClick={qoshishniYop}
               >
-                ×
+                <Ikonka nom="x" olcham={20} />
               </button>
               <div className="kontakt-maydonlar">
                 <input
@@ -273,7 +274,7 @@ export function QarzDaftari({
             setXato(null)
           }}
         >
-          {QARZ_DAFTARI.yangiKontakt}
+          <TugmaMatni matn={QARZ_DAFTARI.yangiKontakt} />
         </button>
       </div>
 

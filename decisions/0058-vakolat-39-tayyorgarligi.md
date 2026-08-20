@@ -1,5 +1,8 @@
 # 0058 — Vakolat: 3.9 tayyorgarligi davrida ochiq savollarni bosh agent hal qiladi
 
+> **Holat: muddati tugagan (3.9 syomkasi 2026-08-19 da yakunlandi).** Odatdagi tartib qaytdi:
+> boʻshliq → odamga savol. Matn tarix uchun qoladi — 0063–0066 shu davrda yozilgan.
+
 Sana: 2026-08-17
 
 Nima hal qilindi: Qolgan uch qism (**qarz-daftari**, **oylik-hisobot**, **zaxira**) qurilishi va

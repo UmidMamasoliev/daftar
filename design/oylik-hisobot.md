@@ -6,19 +6,18 @@ Sana: 2026-08-17. Asos: `prds/oylik-hisobot.md`. Rang, oʻlcham va boʻshliq —
 oʻsha qoidalar boʻyicha ishlaydi, bu yerda takrorlanmaydi — faqat farqi va yangi matnlar
 yoziladi.
 Qarorlar: 0002, 0009, 0013, 0017, 0018, 0019, 0021, 0023, 0026, 0028, 0033, 0034, 0035, 0038,
-0042, 0043, 0044, 0045, 0047, 0049, 0063, 0064.
+0042, 0043, 0044, 0045, 0047, 0049, 0063 → 0067, 0064.
 
 Bitta ekran: **Hisobot**. Ichida forma yoʻq, oʻchirish yoʻq, tahrirlash yoʻq — hisobot faqat
 koʻriladi (0021). Yagona kiritiladigan narsa — «≈ jami soʻmda» uchun kurs (0023, 0043).
 
 Ekrandagi matnlar shu faylda aynan yozilgan — frontend oʻshani koʻchiradi, oʻzgartirmaydi.
 
-**Navigatsiya:** ekranga pastdagi vaqtinchalik navigatsiya panelining **«Hisobot»** boʻlimidan
-kiriladi (0063; panel tavsifi `design/uslub.md`). Boshqa kirish yoʻli yoʻq. Bu ekran
-navigatsiyaning oʻz boʻlimi, shuning uchun yuqori panelda **«‹ Orqaga» havolasi yoʻq**.
-Hisobotga yetib borish — **bitta bosish**; joriy oyni koʻrish uchun boshqa hech narsa
-bosilmaydi. Dashboard 3.10 da qurilganda bosh sahifa oʻsha boʻladi va navigatsiya qayta
-koʻriladi.
+**Navigatsiya (0067):** ekranga navigatsiya panelining **«Hisobot»** boʻlimidan kiriladi
+(panel tavsifi `design/uslub.md`). Boshqa kirish yoʻli yoʻq — bosh sahifada hisobotga
+alohida havola qoʻyilmaydi. Bu ekran navigatsiyaning oʻz boʻlimi, shuning uchun yuqorida
+**«‹ Orqaga» havolasi yoʻq**. Hisobotga yetib borish — **bitta bosish**; joriy oyni
+koʻrish uchun boshqa hech narsa bosilmaydi.
 
 **Hisobot hech narsa saqlamaydi.** Har raqam ekran ochilganda joriy maʼlumotdan qayta
 hisoblanadi: yozuv tahrirlansa yoki oʻchirilsa hisobot darhol yangi raqamni koʻrsatadi
@@ -363,10 +362,11 @@ Yuqoridagi holatning oʻzi, faqat oxirgi qator oʻrnida ikkita qator turadi:
 - `kichik`, `matn-ikkinchi`: **«Birinchi yozuvni bosh sahifadagi «＋ Yozuv» tugmasi bilan
   qoʻshasiz.»**
 
-**Vaqtinchalik (0063):** dashboard qurilgunicha ikkinchi qator boshqacha yoziladi —
-**«Birinchi yozuvni pastdagi «Yozuv» boʻlimi bilan qoʻshasiz.»** Bosh sahifa paydo boʻlganda
-yuqoridagi asosiy matn qaytadi. (Matn `design/kirim-chiqim.md` dagi boʻsh holat bilan aynan
-bir xil — bitta holat bitta matn bilan aytiladi.)
+**Matn 0068 ning 2-bosqichida tuzatildi.** Oldin bu yerda 0063 dan qolgan «…pastdagi
+«Yozuv» boʻlimi bilan…» turardi, lekin «Yozuv» degan navigatsiya boʻlimi 0067 bilan olib
+tashlangan — qator mavjud boʻlmagan joyni koʻrsatardi. Endi u «Yozuvlar» va bosh
+sahifadagi qator bilan bir xil: bitta holat — bitta matn. 0068 ning matn muzlatish
+qoidasidan yagona istisno, bosh agent ruxsati bilan.
 
 **c) Yarim boʻsh davr.** Bloklar bir-biridan mustaqil: chiqim boʻlsa-yu kirim boʻlmasa, chiqim
 ajratmasi odatdagidek chiziladi, kirim ajratmasi oʻrnida esa **«Bu davrda kirim yozuvi
@@ -421,7 +421,11 @@ xil** — bitta holat bitta matn bilan aytiladi, maydon qaysi ekranda boʻlishid
 ## 11. Savollar — hammasi yopilgan
 
 Bu tavsif yozilganda uchta savol ochilgan edi. Uchalasi ham **0064** bilan hal qilindi
-(0058 vakolati). **Ochiq savol qolmadi; TAKLIF belgisi bu faylda yoʻq.**
+(0058 vakolati).
+
+Toʻrtinchi savol 0068 redesignida chiqdi va oʻsha yerda yopildi: boʻsh daftar holatining
+ikkinchi qatori 0063 dan qolgan matnda turib, olib tashlangan «Yozuv» boʻlimiga ishora
+qilardi — matn tuzatildi, tafsiloti 8-boʻlim «b» bandida.
 
 | # | Savol | Javob | Qayerda yozilgan |
 |---|---|---|---|

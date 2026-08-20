@@ -3,9 +3,10 @@
 Daftar — brauzerda ochiladigan, oflayn ishlaydigan, serversiz veb-ilova (0003, 0004).
 Bu papkada uning kodi yashaydi.
 
-**Hozirgi holat: toʻrt qism ishlaydi** — kirim-chiqim, qarz daftari, oylik hisobot va zaxira
-(eksport/import); jami ~994 test oʻtadi. Dashboard ataylab qurilmagan: u 3.10 darsida
-qoʻshiladi va oʻshanda bosh sahifa boʻladi (0020, 0063).
+**Hozirgi holat: besh qism ishlaydi** — kirim-chiqim, qarz daftari, oylik hisobot, zaxira
+(eksport/import) va dashboard; jami 1066 Vitest va 12 Playwright testi oʻtadi. Dashboard —
+**bosh sahifa**: ilova oʻshandan ochiladi (0020, 0067). Koʻrinish HEAD_WEB dizayn tizimiga
+oʻtkazilmoqda (0068) — xulq, matn va testlar oʻzgarmaydi.
 
 Kod TDD bilan yoziladi: test avval, keyin kod; testi oʻtmagan qism tayyor emas (0022).
 
@@ -68,18 +69,25 @@ platform/
 ├── tsconfig.json           # → tsconfig.app.json (src/) va tsconfig.node.json (sozlamalar, e2e/)
 ├── public/                 # oʻzgarishsiz koʻchiriladigan fayllar
 │   ├── favicon.svg
-│   └── icon-192.png, icon-512.png   # PWA belgilari — vaqtinchalik, dizayner almashtiradi
+│   ├── icon-192.png, icon-512.png   # PWA belgilari — vaqtinchalik, dizayner almashtiradi
+│   └── fonts/              # oʻzimizda joylashtirilgan shriftlar, woff2 (0068)
 ├── src/
 │   ├── main.tsx            # React ni #root ga ulaydi
-│   ├── App.tsx             # hozircha faqat «Daftar» sarlavhasi
-│   ├── index.css
+│   ├── App.tsx             # ekranlarni almashtiradi (navigatsiya holati shu yerda)
+│   ├── index.css           # uslub tokenlari va komponent uslublari (`design/uslub.md`)
 │   ├── vite-env.d.ts       # Vite va PWA tiplari
+│   ├── domain/             # sof hisob: pul, kurs, qoldiq, qarz, hisobot, dashboard
+│   ├── data/               # IndexedDB qatlami: baza, yozuvlar, qarzlar, kategoriyalar, zaxira
+│   ├── ui/                 # ekranlar va komponentlar (`Dashboard.tsx`, `Yozuvlar.tsx` va h.k.)
 │   └── test/
 │       ├── setup.ts        # har testdan oldin: fake-indexeddb ni ulaydi
-│       └── indexeddb.test.ts   # skelet testi: baza ishlayaptimi
+│       └── indexeddb.test.ts   # baza ishlayaptimi
 └── e2e/
-    └── daftar.spec.ts      # skelet E2E testi: sahifa ochiladimi
+    └── *.spec.ts           # daftar, qarz, hisobot, zaxira, dashboard, oflayn oqimlari
 ```
+
+Test fayllari kod yonida turadi (`src/domain/pul.test.ts` kabi); ekran testlari
+`src/App.*.test.tsx` va `src/ui/*.test.tsx` da.
 
 ---
 
@@ -155,7 +163,7 @@ narsa hisoblamaydi va saqlamaydi (0003, 0004). Bepul tarif; pullik hech narsa yo
 `vercel.json` **Root Directory ichida** turadi — shuning uchun u `platform/vercel.json`,
 repo ildizida emas. Rewrite (yoʻnaltirish) qoidasi **ataylab yozilmagan**: ilova bitta
 sahifadan iborat, ekranlar orasida oʻtish URL bilan emas, ilova ichidagi holat bilan boʻladi
-(0063). Yaʼni chuqur havola yoʻq, demak «hamma yoʻlni `index.html` ga» qoidasi kerak emas —
+(0067). Yaʼni chuqur havola yoʻq, demak «hamma yoʻlni `index.html` ga» qoidasi kerak emas —
 u faqat haqiqiy 404 ni yashirib qoʻyardi. Hozir mavjud boʻlmagan yoʻl 404 qaytaradi, `dist/`
 dagi hamma fayl esa oʻz yoʻlidan xizmat qiladi (`/manifest.webmanifest`, `/sw.js`, belgilar).
 
@@ -200,19 +208,16 @@ Havola hech kimdan login soʻramasin desangiz: dashboard → Project `daftar` �
 Deployment Protection → Vercel Authentication → **Disabled**, yoki
 `vercel project protection disable --sso daftar`. Bu xavfsizlik sozlamasi — odam oʻzi hal qiladi.
 
-### GitHub push bilan avtomatik deploy — HALI ULANMAGAN
+### GitHub push bilan avtomatik deploy — ULANGAN (2026-08-19)
 
-0046 «GitHub ga push qilinganda avtomatik deploy» deydi. Hozir Vercel loyihasi CLI bilan
-ulangan, lekin **git repozitoriysi bogʻlanmagan** (`vercel project inspect daftar` da Git
-boʻlimi yoʻq). Buni **odam** bir marta qiladi:
+0046 «GitHub ga push qilinganda avtomatik deploy» deydi va zanjir jonli tasdiqlangan:
+`UmidMamasoliev/daftar` reposi Vercel loyihasiga ulangan (Vercel GitHub App, «Only select
+repositories» — faqat `daftar`). Yaʼni **`master` ga har push = production deploy**
+(https://daftarim.vercel.app), boshqa branch yoki pull request → preview deploy.
 
-- Dashboard → Project `daftar` → Settings → **Git** → *Connect Git Repository* →
-  `UmidMamasoliev/daftar` (Vercel GitHub ilovasiga ruxsat soʻralsa — beriladi), yoki
-- terminaldan: `vercel git connect https://github.com/UmidMamasoliev/daftar.git`.
-
-Ulangandan keyin: `master` ga push → **production** deploy, boshqa branch yoki pull request →
-preview deploy. Shuning uchun ulash paytini odam tanlaydi: ulangan zahoti keyingi push saytni
-production ga chiqaradi.
+Bogʻlanish uzilib qolsa: dashboard → Project `daftar` → Settings → **Git**, yoki terminaldan
+`vercel git connect https://github.com/UmidMamasoliev/daftar.git` (GitHub App oʻrnatilmagan
+boʻlsa CLI ishlamaydi — oʻrnatish faqat brauzer oqimi orqali).
 
 ### Xato chiqsa qayerdan qaraladi
 
@@ -233,14 +238,11 @@ yuborilsa boʻladi.
 
 ## Nima yoqilmagan
 
-- **Production deploy qilinmagan.** Preview sinovdan oʻtdi; production ni odam ataylab
-  chiqaradi (`vercel deploy --prod` yoki GitHub ulangach `master` ga push).
-- **GitHub avtomatik deploy ulanmagan** — yuqoridagi boʻlimga qarang.
 - **Pullik hech narsa yoqilmagan.** Vercel bepul tarifda; Web Analytics, Speed Insights va
   boshqa qoʻshimchalar oʻchiq.
 - **Maxfiy maʼlumot yoʻq.** Loyihada parol, kalit, token yoʻq va boʻlmasligi ham kerak:
   ilovaning serveri yoʻq, hamma maʼlumot foydalanuvchi qurilmasida qoladi (0004). Vercel da
   hech qanday muhit oʻzgaruvchisi (environment variable) sozlanmagan.
 - **Linter sozlanmagan.** Tip tekshiruvi `tsc -b` orqali ishlaydi (strict rejim yoqilgan).
-- **Komponent testi kutubxonasi qoʻshilmagan.** React komponentlarini test qilish kerak boʻlganda
-  uni frontend agenti oʻz ehtiyojiga qarab qoʻshadi.
+Komponent testi kutubxonasi esa **qoʻshilgan**: `@testing-library/react` + `user-event`
+(ekran testlari `src/**/*.test.tsx` da).

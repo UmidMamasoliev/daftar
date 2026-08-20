@@ -1,24 +1,221 @@
 /*
- * Daftarning umumiy uslubi — `design/uslub.md` ning kodga tushgani.
+ * Daftarning umumiy uslubi — `design/uslub.md` (v2, HEAD_WEB) ning kodga tushgani.
  *
  * Rang, oʻlcham va boʻshliq shu yerda bir marta belgilanadi; ekranlar faqat sinf nomini
- * ishlatadi. Mobil-birinchi: bitta ustun, eng tor qurilma 320 px, keng ekranda eni 560 px.
- * Tashqi shrift va ikonka kutubxonasi yoʻq — ilova oflayn ishlaydi (0003).
+ * ishlatadi. Mobil-birinchi: bitta ustun, eng tor qurilma 320 px.
+ * Ikonka kutubxonasi yoʻq; shriftlar oʻzimizniki — CDN dan hech narsa yuklanmaydi
+ * (0003 → 0068/4-band).
  */
 
+/* ── Shriftlar (0068) ─────────────────────────────────────────────────────── */
+
+/*
+ * Uchta oila, oʻzimizda joylashtirilgan: `platform/public/fonts/`. Fayllar Google
+ * Fonts dan olingan `woff2` subsetlar (`latin` va `latin-ext`) — `unicode-range`
+ * qiymatlari ham oʻshandan koʻchirilgan. Fayllar PWA precache'iga kiradi
+ * (`vite.config.ts` → `globPatterns`), shuning uchun oflayn birinchi ochilishda ham
+ * shrift joyida boʻladi.
+ *
+ * `font-display: swap` — shrift kelmaguncha zaxira stek koʻrsatiladi, matn yoʻqolmaydi.
+ *
+ * Space Grotesk va Hanken Grotesk **variable** fayllar (`wght` oʻqi bilan): bitta fayl
+ * hamma qalinlikka xizmat qiladi, shuning uchun `font-weight` oraliq bilan beriladi va
+ * brauzer sunʼiy qalinlashtirmaydi. Space Mono statik — har qalinlik oʻz faylida.
+ */
+
+/* Space Grotesk — sarlavha va katta raqam (wght 300–700). */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+    U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/*
+ * Hanken Grotesk — oʻqiladigan matn (wght 100–900).
+ * `latin` oraligʻidan `U+02BB-02BC` ataylab olib tashlangan — sababi pastda.
+ */
+@font-face {
+  font-family: 'Hanken Grotesk';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/hanken-grotesk-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
+    U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Hanken Grotesk';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/hanken-grotesk-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* Space Mono — yorliq va pul summalari. Statik: 400 va 700 alohida fayllarda. */
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/space-mono-400-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
+    U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/space-mono-400-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/space-mono-700-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
+    U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/space-mono-700-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/*
+ * Oʻzbek lotinining `ʻ` (U+02BB) va `ʼ` (U+02BC) belgilari **Hanken Grotesk va Space
+ * Mono toʻplamida yoʻq** — subsetda ham, asl fayllarida ham (tekshirilgan). Ular
+ * boʻlmasa «soʻm», «Oʻchirish», «toʻlov» soʻzlaridagi belgi tizim shriftiga tushib
+ * qolardi: aynan `＋` bilan boʻlgan xato (`design/uslub.md` → «Ikonka siyosati»), lekin
+ * bu safar deyarli har qatorda.
+ *
+ * Shuning uchun shu ikki belgi Space Grotesk dan olinadi va ikkala oilaga
+ * `unicode-range` bilan ulanadi — matn oʻzgarmaydi, belgi esa har joyda bir xil chiqadi.
+ * Oʻlcham: belgi eni 0.234em; u summaning ichida emas, «soʻm» soʻzida turadi va hamma
+ * qatorga bir xil taʼsir qiladi — mono ustunning qatorlar aro tekisligi buzilmaydi.
+ *
+ * `≈` (U+2248) ham xuddi shu holatda: Google subsetlarida yoʻq, lekin Space Grotesk ning
+ * asl faylida bor. «≈ jami soʻmda» qatori mono boʻlgani uchun belgi Space Mono da
+ * soʻralardi va tizim shriftiga tushib qolardi — endi u ham shu fayldan keladi
+ * (`design/uslub.md` → «Shrift joylashtirish»).
+ *
+ * **Weight deskriptori oila bilan AYNAN mos boʻlishi shart.** Chromium belgilar
+ * face'ini oilaning oʻz face'lari bilan solishtiradi: deskriptor keng boʻlsa
+ * (`100 900`) va oilaning asosiy face'lari tor boʻlsa, belgilar face'i tanlovda
+ * chetda qolib **hech qachon yuklanmaydi** (`unloaded`) — belgi tizim shriftiga
+ * tushadi, xato esa hech qayerda koʻrinmaydi. Shuning uchun har oila oʻz deskriptorini
+ * oladi: Space Grotesk `300 700`, Hanken Grotesk `100 900`, Space Mono esa ikkita
+ * alohida face — `400` va `700` (asosiy fayllari ham aynan shunday statik).
+ * Fayl bitta va oʻzgaruvchan (wght 300–700), shuning uchun soʻralgan ogʻirlik oʻzi
+ * chiqadi — sunʼiy qalinlashtirish yoʻq.
+ */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-belgilar.woff2') format('woff2');
+  unicode-range: U+02BB-02BC, U+2248;
+}
+
+@font-face {
+  font-family: 'Hanken Grotesk';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-belgilar.woff2') format('woff2');
+  unicode-range: U+02BB-02BC, U+2248;
+}
+
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-belgilar.woff2') format('woff2');
+  unicode-range: U+02BB-02BC, U+2248;
+}
+
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-belgilar.woff2') format('woff2');
+  unicode-range: U+02BB-02BC, U+2248;
+}
+
 :root {
-  /* Ranglar */
-  --fon: #f4f5f7;
+  /* Shrift oilalari — uchta rol (uslub: «Shrift»). Zaxira stek shrift kelmasa ishlaydi. */
+  --shrift-sarlavha: 'Space Grotesk', 'Hanken Grotesk', system-ui, sans-serif;
+  --shrift-matn: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+  --shrift-mono: 'Space Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /*
+   * Ranglar — uslub «Tokenlar → Rang» jadvali. Nomlar oʻzgarmadi, qiymatlar HEAD_WEB
+   * dan olindi. Semantik ranglar (`kirim`, `chiqim`) oq fonda WCAG AA (4.5:1) chiqishi
+   * uchun toʻqlashtirilgan: ikkalasi ham 5.0:1. Yorqin variantlari faqat toʻq fon uchun.
+   */
+  --fon: #ffffff;
   --yuza: #ffffff;
-  --chegara: #e3e5e8;
-  --matn: #1a1d21;
-  --matn-ikkinchi: #6b7280;
-  --matn-ochiq: #9ca3af;
-  --kirim: #15803d;
-  --chiqim: #b42318;
-  --harakat: #1d4ed8;
-  --harakat-fon: #eff4ff;
-  --qora-panel: #1a1d21;
+  --yuza-past: #f3f5f9;
+  --chegara: #e6e8ec;
+  --chegara-kuchli: #d7dae1;
+  --matn: #0a0b0d;
+  --matn-ikkinchi: #4a4f59;
+  --matn-ochiq: #868d99;
+  --harakat: #0029ff;
+  --harakat-toq: #0020cc;
+  --harakat-fon: #ebeeff;
+  --kirim: #00803f;
+  --kirim-yorqin: #19e07a;
+  --chiqim: #d92020;
+  --chiqim-yorqin: #ff2d2d;
+  --qora-panel: #0b1330;
+  --panel-matn-ikkinchi: #b9c2dc;
+
+  /* Matn shkalasi — uslub «Tokenlar → Oʻlcham». 13 px dan kichik matn yoʻq. */
+  --t-raqam-katta: clamp(30px, 7.5vw, 40px);
+  --t-sarlavha: clamp(22px, 5vw, 32px);
+  --t-forma-sarlavha: 18px;
+  --t-kartochka: 17px;
+  --t-matn: 16px;
+  --t-summa: 15px;
+  --t-kichik: 14px;
+  --t-mayda: 13px;
+  --t-yorliq: 13px;
 
   /* Boʻshliqlar — qadam 4 px */
   --bosh-1: 4px;
@@ -27,28 +224,64 @@
   --bosh-4: 16px;
   --bosh-6: 24px;
   --bosh-8: 32px;
+  --bosh-9: 48px;
 
-  /* Shakl */
+  /* Ekranning yon chekkasi: qatlamlarga qarab kengayadi (uslub «Responsive»). */
+  --yon: 16px;
+
+  /* Shakl. Pill — tizimning aniqlovchi shakli: bosiladigan hamma narsa toʻliq yumaloq. */
+  --r-kartochka: 24px;
+  --r-panel: 16px;
   --radius: 10px;
-  --radius-ich: 8px;
   --radius-chip: 999px;
+  --r-pill: 999px;
+
+  /* Soya past, yumshoq va sovuq. Kartochkada soya yoʻq — soch chizigʻi yetadi. */
+  --soya-yengil: 0 2px 8px rgba(15, 26, 60, 0.06);
+  --soya-orta: 0 10px 30px rgba(15, 26, 60, 0.08);
+
+  /* Oʻtishlar: faqat rang va soʻnish; sakrash va spring yoʻq. */
+  --tez: 180ms;
+  --normal: 320ms;
+  --egri: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* Element oʻlchamlari */
   --maydon-balandligi: 48px;
-  --summa-balandligi: 56px;
-  --chip-balandligi: 40px;
+  --summa-balandligi: 64px;
+  --chip-balandligi: 44px;
+  --segment-balandligi: 52px;
   --barmoq: 44px;
   --panel-balandligi: 72px;
-  --ustun-eni: 560px;
+
+  /* Ustun eni mazmuniga qarab (uslub «Responsive»). */
+  --ustun-eni: 640px;
+  --ustun-tor: 560px;
+  --ustun-keng: 1040px;
 
   /* Navigatsiya paneli (0067): 56 px + qurilmaning pastki xavfsiz zonasi. */
   --nav-balandligi: 56px;
   --nav-toliq: calc(56px + env(safe-area-inset-bottom, 0px));
 
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-    sans-serif;
-  font-size: 16px;
-  line-height: 1.4;
+  font-family: var(--shrift-matn);
+  font-size: var(--t-matn);
+  line-height: 1.5;
   color: var(--matn);
   background-color: var(--fon);
+}
+
+/* Yon chekka uch qatlamda oʻsadi: 16 → 24 → 40 px (uslub «Responsive»). */
+@media (min-width: 600px) {
+  :root {
+    --yon: 24px;
+  }
+}
+
+@media (min-width: 960px) {
+  :root {
+    --yon: 40px;
+    /* Navigatsiya yuqoriga koʻchadi — pastda uning joyi qolmaydi («Navigatsiya paneli»). */
+    --nav-toliq: 0px;
+  }
 }
 
 * {
@@ -92,17 +325,93 @@ body {
   flex-direction: column;
 }
 
+/*
+ * Forma kartochkasi (`≥600`): forma toʻliq enli varaqdan 560 px li kartochkaga oʻtadi —
+ * «bu bitta ish» degan maʼno saqlanadi (layout 6.2). DOM tegilmaydi: `.ekran` ning
+ * bolalari kartochkaning ichki chekkasiga tekislanadi.
+ */
+@media (min-width: 600px) {
+  .ekran-forma {
+    max-width: var(--ustun-tor);
+    min-height: 0;
+    margin: 40px auto;
+    padding: var(--bosh-6);
+    background: var(--yuza);
+    border: 1px solid var(--chegara);
+    border-radius: var(--r-kartochka);
+  }
+
+  /* Kartochkaning oʻz chekkasi yetadi — ichkaridagi yon chekkalar olib tashlanadi. */
+  .ekran-forma > .panel-tepa,
+  .ekran-forma > .forma {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .ekran-forma > .panel-tepa {
+    padding-top: 0;
+  }
+
+  /*
+   * «Saqlash» kartochkaning oxirgi qatori boʻlib qoladi: yopishmaydi, lekin eni toʻliq —
+   * forma bitta ish uchun ochiladi va tugma uning yagona chiqish yoʻli (layout 6.2).
+   */
+  .ekran-forma .panel-past {
+    position: static;
+    padding: 0;
+    background: none;
+    border-top: 0;
+    box-shadow: none;
+  }
+}
+
+/* `≥960` da kartochka yuqori nav pill joyini (88 px) ham hisobga oladi (layout 6.2). */
+@media (min-width: 960px) {
+  .ekran-forma {
+    margin-top: calc(88px + 40px);
+  }
+
+  /*
+   * Kartochka gridi keng ustunda: bosh sahifa, «Hisobot», «Zaxira» (layout 0.2).
+   * Roʻyxat ekranlari 640 px da qoladi — qatorning chap va oʻng chekkasi orasida
+   * oʻqib boʻlmas masofa qolmasin.
+   */
+  .ekran-keng {
+    max-width: var(--ustun-keng);
+  }
+}
+
 /* ── Yuqori panel ─────────────────────────────────────────────────────────── */
 
-/* Chapda tugma, oʻrtada sarlavha: yon ustunlar teng boʻlgani uchun sarlavha markazda. */
+/*
+ * Sarlavha ikki xil (layout 0.3):
+ *
+ * — **Ichkari sarlavha** (forma, «Kategoriyalar», «Kontakt»): panel bar boʻlib qoladi,
+ *   sarlavha markazda va `×` yoki «‹ Orqaga» bilan muvozanatda turadi. Bu — pastdagi
+ *   asosiy qoida.
+ * — **Sahifa sarlavhasi** (Bosh, Yozuvlar, Qarz daftari, Hisobot, Zaxira): bar yoʻq,
+ *   sarlavha chapga tekis va katta. Pastdagi `:not(:has(button))` istisnosi.
+ *
+ * Ajratish belgisi — panelda tugma bormi: navigatsiya boʻlimining oʻz ekranida «‹ Orqaga»
+ * ham, `×` ham boʻlmaydi (uslub: «Navigatsiya paneli»), ichkari ekranda esa har doim
+ * boʻladi. Shu sababli yangi sinf nomi kerak emas.
+ */
 .panel-tepa {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: var(--bosh-2);
-  padding: var(--bosh-2) var(--bosh-4);
+  padding: var(--bosh-2) var(--yon);
   background: var(--yuza);
   border-bottom: 1px solid var(--chegara);
+}
+
+/* Sahifa sarlavhasi: foni va ostidagi chizigʻi yoʻq — sarlavha oq varaqda turadi. */
+.panel-tepa:not(:has(button)) {
+  grid-template-columns: 1fr auto;
+  padding: var(--bosh-4) var(--yon) var(--bosh-2);
+  background: none;
+  border-bottom: 0;
 }
 
 .panel-tepa > button {
@@ -124,26 +433,51 @@ body {
   text-overflow: ellipsis;
 }
 
+/* Ichkari sarlavha — `forma-sarlavha` roli: Space Grotesk 500, 18 px, markazda. */
 .sarlavha {
   grid-column: 2;
   margin: 0;
   text-align: center;
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 1.3;
+  font-family: var(--shrift-sarlavha);
+  font-size: var(--t-forma-sarlavha);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
 }
 
+/* Sahifa sarlavhasi — `sarlavha` roli: Space Grotesk 600, 22–32 px, chapga tekis. */
+.panel-tepa:not(:has(button)) > .sarlavha {
+  grid-column: 1;
+  text-align: left;
+  font-size: var(--t-sarlavha);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+
+/* Belgi tugmasi — 44 × 44 doira, foni shaffof, ichida inline SVG (uslub: «Tugmalar»). */
 .belgi-tugma {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: var(--barmoq);
   height: var(--barmoq);
   padding: 0;
   border: 0;
-  border-radius: var(--radius);
+  border-radius: var(--r-pill);
   background: transparent;
   color: var(--matn);
   font: inherit;
   font-size: 20px;
+  line-height: 1;
   cursor: pointer;
+  transition: background-color var(--tez) var(--egri);
+}
+
+@media (hover: hover) {
+  .belgi-tugma:hover:not(:disabled) {
+    background: var(--yuza-past);
+  }
 }
 
 /* ── Forma ────────────────────────────────────────────────────────────────── */
@@ -158,7 +492,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--bosh-6);
-  padding: var(--bosh-4) var(--bosh-4) 0;
+  padding: var(--bosh-6) var(--yon) 0;
 }
 
 .blok-boshi {
@@ -168,11 +502,19 @@ body {
   gap: var(--bosh-2);
 }
 
-/* Yorliq bilan maydon orasi 8 px. */
+/*
+ * Yorliq bilan maydon orasi 8 px. Yorliq — Space Mono 13 px, tracking `+0.06em`.
+ * BOSH HARFGA oʻgirilmaydi (uslub): oʻzbek lotinidagi `oʻ` va `gʻ` katta harfga
+ * toʻgʻri oʻtmaydi, matnlar esa 0068 bilan muzlatilgan.
+ */
 .yorliq {
   display: block;
   margin-bottom: var(--bosh-2);
-  font-size: 13px;
+  font-family: var(--shrift-mono);
+  font-size: var(--t-yorliq);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0.06em;
   color: var(--matn-ikkinchi);
 }
 
@@ -184,31 +526,42 @@ body {
   margin-top: var(--bosh-2);
 }
 
+/*
+ * Yordam matni xato emas: maydonning chegarasi va rangi oʻzgarmaydi. Chegara bitta
+ * savol bilan ajratiladi — saqlash toʻxtaydimi? (uslub: «Holatlar»).
+ */
 .yordam {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--t-mayda);
+  line-height: 1.45;
   color: var(--matn-ikkinchi);
 }
 
 /* Maydon bilan xato matni orasi 4 px. */
 .xato-matni {
   margin: var(--bosh-1) 0 0;
-  font-size: 13px;
+  font-size: var(--t-mayda);
+  line-height: 1.45;
   color: var(--chiqim);
 }
 
 /* ── Maydonlar ────────────────────────────────────────────────────────────── */
 
+/*
+ * Maydon — 48 px, radius 10 px. Teriladigan joy tugmadan shakl bilan ajraladi: tugma
+ * pill, maydon esa yumshoq burchakli (uslub: «Radius»).
+ */
 .maydon {
   width: 100%;
   height: var(--maydon-balandligi);
-  padding: 0 var(--bosh-3);
+  padding: 0 14px;
   border: 1px solid var(--chegara);
   border-radius: var(--radius);
   background: var(--yuza);
   color: var(--matn);
   font: inherit;
   font-variant-numeric: tabular-nums;
+  transition: border-color var(--tez) var(--egri), box-shadow var(--tez) var(--egri);
 }
 
 .maydon::placeholder {
@@ -216,39 +569,39 @@ body {
 }
 
 /*
- * Kurs bloki «dollar» tanlanganda 150 ms soʻnish bilan ochiladi (dizayn: «Dollar
- * tanlanganda»). Uslubda ruxsat etilgan yagona animatsiya — 150 ms rang/soʻnish.
+ * Kurs bloki «dollar» tanlanganda ochiladi: 320 ms soʻnish + 4 px koʻtarilish
+ * (layout 6.1). `prefers-reduced-motion: reduce` da animatsiya butunlay oʻchadi.
  */
 .kurs-blok {
-  animation: sonish 150ms ease-out;
+  animation: sonish var(--normal) var(--egri);
 }
 
 @keyframes sonish {
   from {
     opacity: 0;
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
-/* Harakatni kamaytirishni soʻraganlar uchun animatsiya oʻchadi. */
-@media (prefers-reduced-motion: reduce) {
-  .kurs-blok {
-    animation: none;
-  }
-}
-
-/* Summa maydoni — 56 px, matni `raqam-katta`, oʻngida valyuta soʻzi. */
+/*
+ * Summa maydoni — 64 px, oʻngida valyuta soʻzi. Matn **Space Mono 700**: terilayotgan
+ * summa ekrandagi eng muhim raqam va mono uni teraverganda bir xil kenglikda ushlab
+ * turadi — raqam qoʻshilganda oldingilari sakramaydi (uslub: «Maydon»).
+ */
 .summa-maydon {
   display: flex;
   align-items: center;
   gap: var(--bosh-2);
   height: var(--summa-balandligi);
-  padding: 0 var(--bosh-3);
+  padding: 0 14px;
   border: 1px solid var(--chegara);
   border-radius: var(--radius);
   background: var(--yuza);
+  transition: border-color var(--tez) var(--egri), box-shadow var(--tez) var(--egri);
 }
 
 .summa-kirit {
@@ -259,15 +612,22 @@ body {
   padding: 0;
   background: transparent;
   color: var(--matn);
-  font-family: inherit;
-  font-size: 28px;
+  font-family: var(--shrift-mono);
+  font-size: clamp(28px, 7vw, 34px);
   font-weight: 700;
   line-height: 1.2;
   font-variant-numeric: tabular-nums;
 }
 
-.summa-kirit:focus {
+/*
+ * Fokus halqasi maydonning **oʻramiga** beriladi (`.summa-maydon:focus-within`), ichkaridagi
+ * `input` ga emas — aks holda ikkita halqa ustma-ust tushib, ichkarisi tashqarisini bosib
+ * qolardi.
+ */
+.summa-kirit:focus,
+.summa-kirit:focus-visible {
   outline: none;
+  box-shadow: none;
 }
 
 .summa-kirit::placeholder {
@@ -275,37 +635,44 @@ body {
 }
 
 .valyuta-sozi {
-  font-size: 16px;
+  font-size: var(--t-kichik);
   color: var(--matn-ikkinchi);
 }
 
-/* Xato: chegara 2 px `chiqim` (uslub: «Holatlar»). */
+/*
+ * Xato: chegara 2 px `chiqim` (uslub: «Holatlar»). Qalinlik soya bilan beriladi —
+ * chegara qalinlashsa maydon ichidagi matn 1 px sakrardi. Qizil fon qoʻyilmaydi.
+ */
 .summa-maydon.xatoli,
 .maydon.xatoli {
-  border-width: 2px;
   border-color: var(--chiqim);
+  box-shadow: 0 0 0 1px var(--chiqim);
 }
 
 /* ── Segment (kirim / chiqim) ─────────────────────────────────────────────── */
 
+/*
+ * Segment — pill yoʻlak: tashqarisi `yuza-past`, ichida ikkita teng pill boʻlak
+ * (uslub: «Segment»). Oq matn `kirim` va `chiqim` ustida ham 5.0:1 — WCAG AA.
+ */
 .segment {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  height: var(--maydon-balandligi);
-  border: 1px solid var(--chegara);
-  border-radius: var(--radius);
-  background: var(--yuza);
-  overflow: hidden;
+  height: var(--segment-balandligi);
+  padding: var(--bosh-1);
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--yuza-past);
 }
 
 .segment-bolak {
   border: 0;
-  border-radius: var(--radius-ich);
+  border-radius: var(--r-pill);
   background: transparent;
-  color: var(--matn);
+  color: var(--matn-ikkinchi);
   font: inherit;
   cursor: pointer;
-  transition: background-color 150ms, color 150ms;
+  transition: background-color var(--tez) var(--egri), color var(--tez) var(--egri);
 }
 
 .segment-bolak.tanlangan-chiqim {
@@ -328,16 +695,22 @@ body {
   gap: var(--bosh-2);
 }
 
+/*
+ * Chip — 44 px (barmoq oʻlchami qoidasi chipga ham tegishli), 1.5 px chegara, pill.
+ * Tanlangan chip koʻk tint bilan boʻyaladi: bu «bitta koʻk moment» qoidasini buzmaydi,
+ * chunki tint toʻldirilgan koʻk emas (uslub: «Chip»). Matn tint ustida 6.6:1.
+ */
 .chip {
   height: var(--chip-balandligi);
-  padding: 0 14px;
-  border: 1px solid var(--chegara);
+  padding: 0 18px;
+  border: 1.5px solid var(--chegara-kuchli);
   border-radius: var(--radius-chip);
   background: var(--yuza);
   color: var(--matn);
   font: inherit;
   cursor: pointer;
-  transition: background-color 150ms, border-color 150ms, color 150ms;
+  transition: background-color var(--tez) var(--egri), border-color var(--tez) var(--egri),
+    color var(--tez) var(--egri);
 }
 
 .chip-tanlangan {
@@ -370,15 +743,11 @@ body {
   justify-content: flex-end;
   min-width: 128px;
   height: var(--maydon-balandligi);
-  padding: 0 var(--bosh-3);
+  padding: 0 14px;
   border: 1px solid var(--chegara);
   border-radius: var(--radius);
   background: var(--yuza);
-}
-
-.sana-tanlagich:focus-within {
-  outline: 2px solid var(--harakat);
-  outline-offset: 2px;
+  transition: border-color var(--tez) var(--egri), box-shadow var(--tez) var(--egri);
 }
 
 .sana-matni {
@@ -398,21 +767,37 @@ body {
   cursor: pointer;
 }
 
+/* Halqa oʻramda turadi (`.sana-tanlagich:focus-within`) — shaffof kirit uni takrorlamaydi. */
+.sana-kirit:focus,
+.sana-kirit:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
 /* ── Tugmalar ─────────────────────────────────────────────────────────────── */
 
+/*
+ * Tugmalarning hammasi pill (999 px) — bu tizimning aniqlovchi shakli. Matni
+ * Hanken Grotesk 600 (uslub: «Tugmalar»).
+ */
 .matn-havola {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bosh-2);
   height: var(--barmoq);
   padding: 0;
   border: 0;
   background: transparent;
   color: var(--harakat);
   font: inherit;
+  font-weight: 600;
   cursor: pointer;
 }
 
 /*
- * Pastda yopishib turgan panel: balandligi 72 px (12 + 48 + 12), soyasi faqat shu yerda
- * va «qaytarish» panelida boʻladi (uslub: «Ranglar»).
+ * Pastda yopishib turgan panel: balandligi 72 px (12 + 48 + 12), ustida soch chizigʻi
+ * va yengil soya (uslub: «Pastdagi tugma paneli»).
  */
 .panel-past {
   position: sticky;
@@ -420,20 +805,32 @@ body {
   margin-top: auto;
   padding: var(--bosh-3) 0;
   background: var(--fon);
-  box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.06);
+  border-top: 1px solid var(--chegara);
+  box-shadow: var(--soya-yengil);
 }
 
+/* Asosiy tugma — ekrandagi yagona toʻldirilgan koʻk moment. */
 .asosiy-tugma {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bosh-2);
   width: 100%;
   height: var(--maydon-balandligi);
   border: 0;
-  border-radius: var(--radius);
+  border-radius: var(--r-pill);
   background: var(--harakat);
   color: #ffffff;
   font: inherit;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 150ms;
+  transition: background-color var(--tez) var(--egri), transform var(--tez) var(--egri);
+}
+
+@media (hover: hover) {
+  .asosiy-tugma:hover:not(:disabled) {
+    background: var(--harakat-toq);
+  }
 }
 
 /* ── «Yozuvlar» ekrani ────────────────────────────────────────────────────── */
@@ -444,17 +841,24 @@ body {
   padding-bottom: var(--panel-balandligi);
 }
 
-/* Kun sarlavhasi aylantirilganda tepada yopishib turadi. */
+/*
+ * Kun sarlavhasi aylantirilganda tepada yopishib turadi. Mono `yorliq` roli: u sana
+ * yorligʻi, kontent emas — mono uni pul ustuni bilan bitta oilaga qoʻshadi va oq fonda
+ * kulrang fonsiz ham ajralib turadi (layout 1-boʻlim).
+ */
 .kun-sarlavhasi {
   position: sticky;
   top: 0;
   z-index: 1;
   margin: 0;
-  padding: var(--bosh-2) var(--bosh-4);
-  background: var(--fon);
-  font-size: 14px;
+  padding: var(--bosh-2) var(--yon);
+  background: var(--yuza);
+  border-bottom: 1px solid var(--chegara);
+  font-family: var(--shrift-mono);
+  font-size: var(--t-yorliq);
   font-weight: 400;
-  line-height: 1.4;
+  line-height: 1.3;
+  letter-spacing: 0.06em;
   color: var(--matn-ikkinchi);
 }
 
@@ -471,6 +875,15 @@ body {
   border-bottom: 1px solid var(--chegara);
 }
 
+/*
+ * Guruhning oxirgi qatorida chiziq qoʻyilmaydi (uslub: «Roʻyxat qatori»): kun guruhi
+ * pastdan oʻz-oʻzidan tugaydi, keyingi kun sarlavhasining oʻz chizigʻi bor.
+ */
+.qatorlar > li:last-child > .yozuv-qator,
+.qatorlar > li:last-child > .kontakt-qator {
+  border-bottom: 0;
+}
+
 .qator-tugma {
   flex: 1;
   min-width: 0;
@@ -478,13 +891,22 @@ body {
   align-items: center;
   gap: var(--bosh-3);
   min-height: 64px;
-  padding: var(--bosh-3) var(--bosh-4);
+  padding: var(--bosh-3) var(--yon);
   border: 0;
   background: transparent;
   color: var(--matn);
   font: inherit;
   text-align: left;
   cursor: pointer;
+}
+
+/* Kompyuterda qator ustiga kelinganda fon tintga oʻtadi (uslub: «Roʻyxat qatori»). */
+@media (hover: hover) {
+  .yozuv-qator:hover,
+  .kontakt-qator:hover,
+  .kategoriya-qatori:hover {
+    background: var(--yuza-past);
+  }
 }
 
 .qator-chap {
@@ -511,10 +933,16 @@ body {
   text-overflow: ellipsis;
 }
 
+/*
+ * Roʻyxat qatoridagi summa — `summa` roli: Space Mono 700, 15 px. Mono raqamlar tabiiy
+ * tabular: ustundagi summalar bir-birining ostida tik turadi, `−` va `+` bir chiziqda
+ * qatorlashadi. Bu daftarning imzosi (uslub: «Shrift»).
+ */
 .qator-summa {
   flex: none;
-  font-size: 17px;
-  font-weight: 600;
+  font-family: var(--shrift-mono);
+  font-size: var(--t-summa);
+  font-weight: 700;
   line-height: 1.2;
   font-variant-numeric: tabular-nums;
 }
@@ -538,17 +966,23 @@ body {
  */
 .ochirish-tugma {
   position: absolute;
-  right: var(--bosh-4);
+  right: var(--yon);
   top: 50%;
   transform: translateY(-50%);
   height: var(--barmoq);
-  padding: 0 var(--bosh-3);
-  border: 1px solid var(--chiqim);
-  border-radius: var(--radius);
+  padding: 0 var(--bosh-4);
+  border: 1.5px solid var(--chiqim);
+  border-radius: var(--r-pill);
   background: var(--yuza);
   color: var(--chiqim);
   font: inherit;
+  font-weight: 600;
   cursor: pointer;
+}
+
+/* Bosilgan holat qatordagi joylashuvni buzmasin: siljish saqlanadi, ustiga scale. */
+.ochirish-tugma:active {
+  transform: translateY(-50%) scale(0.97);
 }
 
 /* Boʻsh holat: ekranning oʻrtasidan biroz yuqorida. */
@@ -559,8 +993,29 @@ body {
   align-items: center;
   justify-content: center;
   gap: var(--bosh-2);
-  padding: var(--bosh-8) var(--bosh-4) 20vh;
+  padding: var(--bosh-8) var(--yon) 20vh;
   text-align: center;
+}
+
+/*
+ * Ekranning oʻz boʻsh holati (Yozuvlar): ustki boʻshliq 15vh (layout 1). Kartochka yoki
+ * tana ichidagi boʻsh holatlar (Kontakt, Qarz daftari, bosh sahifa) bunga kirmaydi —
+ * ular oʻz blokining ichida turadi.
+ */
+.ekran > .bosh-holat {
+  justify-content: flex-start;
+  padding-top: 15vh;
+  padding-bottom: var(--bosh-8);
+}
+
+/*
+ * Kartochka ichidagi boʻsh holat (bosh sahifadagi «Oxirgi yozuvlar») — kartochkaning
+ * oʻz oʻlchovida: ekran balandligiga bogʻlangan `20vh` bu yerda ~160 px boʻsh joy
+ * qoldirardi va matn kartochka «markazida» turmasdi (`design/dashboard.md` 7a).
+ * Yon chekka ham kerak emas — kartochka oʻzi beradi.
+ */
+.kartochka .bosh-holat {
+  padding: var(--bosh-6) 0;
 }
 
 .bosh-birinchi {
@@ -577,31 +1032,34 @@ body {
   color: var(--matn-ikkinchi);
 }
 
-/* «Qaytarish» paneli — 7 soniya turadi (0048); soya faqat shu yerda va pastki panelda. */
+/*
+ * «Qaytarish» paneli — 7 soniya turadi (0048). Butun ilovadagi **yagona toʻq blok**
+ * (`ink-navy`, uslub: «Asos»). Eni koʻpi bilan 480 px va markazda.
+ */
 .qaytarish-paneli {
   position: fixed;
-  left: var(--bosh-4);
-  right: var(--bosh-4);
+  left: var(--yon);
+  right: var(--yon);
   bottom: calc(var(--bosh-4) + env(safe-area-inset-bottom, 0px));
-  max-width: calc(var(--ustun-eni) - var(--bosh-4) * 2);
+  max-width: 480px;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--bosh-3);
   padding: var(--bosh-2) var(--bosh-2) var(--bosh-2) var(--bosh-4);
-  border-radius: var(--radius);
+  border-radius: var(--r-panel);
   background: var(--qora-panel);
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
+  box-shadow: var(--soya-orta);
 }
 
 .qaytarish-tugma {
   flex: none;
   height: var(--barmoq);
-  padding: 0 var(--bosh-3);
-  border: 0;
-  border-radius: var(--radius-ich);
+  padding: 0 var(--bosh-4);
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  border-radius: var(--r-pill);
   background: transparent;
   color: #ffffff;
   font: inherit;
@@ -627,7 +1085,19 @@ body {
 .kategoriya-tanasi > .segment,
 .qoshish-qatori,
 .kategoriya-bosh {
-  margin: 0 var(--bosh-4);
+  margin: 0 var(--yon);
+}
+
+/*
+ * «Yangi kategoriya» / «Yangi kontakt» / «Kontaktni tahrirlash» — sahifa ichida
+ * ochiladigan blok qolipi: tint fon, radius 16, ichki chekka 16, chegarasiz
+ * (uslub: «Sahifa ichida ochiladigan blok»).
+ */
+.qoshish-qatori {
+  padding: var(--bosh-4);
+  background: var(--yuza-past);
+  border-radius: var(--r-panel);
+  animation: sonish var(--normal) var(--egri);
 }
 
 .qoshish-boshi {
@@ -636,21 +1106,50 @@ body {
   gap: var(--bosh-2);
 }
 
+/*
+ * «Kategoriyalar» segmenti **rangsiz**: bu yerda «Chiqim»/«Kirim» yozuvning turi emas,
+ * roʻyxat tanlagichi. Rang berilsa uch belgi qoidasi maʼnosini yoʻqotardi — bu yerda
+ * tanlov pul haqida hech narsa aytmaydi (layout 7). Tanlangan boʻlak — oq pill + soya.
+ */
+.kategoriya-tanasi > .segment > .segment-bolak.tanlangan-chiqim,
+.kategoriya-tanasi > .segment > .segment-bolak.tanlangan-kirim {
+  background: var(--yuza);
+  color: var(--matn);
+  font-weight: 600;
+  box-shadow: var(--soya-yengil);
+}
+
 .qoshish-boshi .maydon {
   flex: 1;
   min-width: 0;
 }
 
+/* Ikkinchi tugma — oq pill, 1.5 px chegara; hover'da siyoh fon + oq matn (HEAD ghost). */
 .ikkinchi-tugma {
   flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bosh-2);
   height: var(--maydon-balandligi);
-  padding: 0 var(--bosh-4);
-  border: 1px solid var(--chegara);
-  border-radius: var(--radius);
+  padding: 0 var(--bosh-6);
+  border: 1.5px solid var(--chegara-kuchli);
+  border-radius: var(--r-pill);
   background: var(--yuza);
   color: var(--matn);
   font: inherit;
+  font-weight: 600;
   cursor: pointer;
+  transition: background-color var(--tez) var(--egri), border-color var(--tez) var(--egri),
+    color var(--tez) var(--egri), transform var(--tez) var(--egri);
+}
+
+@media (hover: hover) {
+  .ikkinchi-tugma:hover:not(:disabled) {
+    background: var(--matn);
+    border-color: var(--matn);
+    color: var(--yuza);
+  }
 }
 
 .qoshish-qatori .xato-matni {
@@ -669,9 +1168,14 @@ body {
   justify-content: space-between;
   gap: var(--bosh-3);
   min-height: 64px;
-  padding: var(--bosh-3) var(--bosh-4);
+  padding: var(--bosh-3) var(--yon);
   background: var(--yuza);
   border-bottom: 1px solid var(--chegara);
+}
+
+/* Guruhning oxirgi qatorida chiziq qoʻyilmaydi (uslub: «Roʻyxat qatori»). */
+.kategoriya-royxati > .kategoriya-qatori:last-child {
+  border-bottom: 0;
 }
 
 .kategoriya-nomi {
@@ -679,18 +1183,30 @@ body {
   overflow-wrap: anywhere;
 }
 
-/* Oʻchiq rang faqat shu boshqaruv ekranida ishlatiladi (dizayn). */
+/*
+ * Yashirilgan kategoriya nomi. `--matn-ochiq` matn tashimaydi (oq fonda 3.3:1 — AA
+ * yetmaydi), shuning uchun nom `matn-ikkinchi` bilan yoziladi: yashirilganlik
+ * allaqachon «Yashirilgan» sarlavhasi va «Koʻrsatish» tugmasi bilan aytilgan — rang
+ * faqat tinchroq boʻlishi kerak, oʻqilmas emas (uslub: «Tokenlar → Rang»).
+ */
 .ochiq-rang {
-  color: var(--matn-ochiq);
+  color: var(--matn-ikkinchi);
 }
 
+/*
+ * «Yashirilgan» va «Yopilgan qarzlar» sarlavhalari — `yorliq` roli (mono 13), foni oq,
+ * ustida 1 px soch chizigʻi (layout 7).
+ */
 .yashirilgan-sarlavhasi {
   margin: 0;
-  padding: var(--bosh-2) var(--bosh-4);
-  background: var(--fon);
-  font-size: 14px;
+  padding: var(--bosh-4) var(--yon) var(--bosh-2);
+  background: var(--yuza);
+  border-top: 1px solid var(--chegara);
+  font-family: var(--shrift-mono);
+  font-size: var(--t-yorliq);
   font-weight: 400;
-  line-height: 1.4;
+  line-height: 1.3;
+  letter-spacing: 0.06em;
   color: var(--matn-ikkinchi);
 }
 
@@ -705,20 +1221,95 @@ body {
 
 /* Bu ekranda pastki panel `.ekran` ning bevosita bolasi — yon chekkasi oʻzida. */
 .panel-past-yon {
-  padding-left: var(--bosh-4);
-  padding-right: var(--bosh-4);
+  padding-left: var(--yon);
+  padding-right: var(--yon);
+}
+
+/* ── Ikonka (0068/5) ─────────────────────────────────────────────────────── */
+
+/*
+ * Inline SVG oʻlchami va tekislanishi. Rangi `currentColor` — matn bilan bir xil.
+ * `flex: none` — pill tugma ichida siqilib ketmasin.
+ */
+.ic {
+  flex: none;
+  display: block;
+}
+
+/*
+ * Tugma nomidagi belgi (`＋`, `‹`, `›`) koʻrinmaydi, lekin yordamchi daraxtda qoladi:
+ * tugmaning nomi oʻzgarmasin (`design/uslub.md` → «Belgi matnning oʻrnini olganda»).
+ * Retsept `.fayl-kirit` bilan bir xil; `display: none` va `visibility: hidden`
+ * ISHLATILMAYDI — ular belgini nomdan ham oʻchiradi.
+ */
+.faqat-oquvchiga {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* ── Holatlar ─────────────────────────────────────────────────────────────── */
 
+/*
+ * Fokus hech qachon olib tashlanmaydi (HEAD). Tugma, chip va havolada — 2 px `harakat`
+ * outline, 2 px offset va tashqarisida 4 px `harakat-fon` halqa.
+ */
 button:focus-visible,
 input:focus-visible {
   outline: 2px solid var(--harakat);
   outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--harakat-fon);
 }
 
-button:active {
-  filter: brightness(0.92);
+/*
+ * Maydonda halqa outline bilan emas, chegaraning oʻzi bilan beriladi: 1 px chegara
+ * ustiga 1 px soya — koʻrinishi 2 px `harakat`, lekin maydon kattalashib sakramaydi.
+ */
+.maydon:focus-visible,
+.summa-maydon:focus-within,
+.sana-tanlagich:focus-within {
+  outline: none;
+  border-color: var(--harakat);
+  box-shadow: 0 0 0 1px var(--harakat), 0 0 0 5px var(--harakat-fon);
+}
+
+/* Bosilgan: oʻlcham bilan aytiladi, rang chaqnashi yoʻq (uslub: «Holatlar»). */
+button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/*
+ * Oʻchiq: matni `matn-ochiq`, foni `yuza-past`, kursor oʻzgarmaydi. Bu holat saqlash
+ * tugmalarida ham uchraydi — saqlash ketayotgan bir lahzada tugma oʻchiq turadi, bitta
+ * niyat bitta yozuv boʻlsin. Yangi rang, matn yoki belgi qoʻshilmaydi.
+ */
+.asosiy-tugma:disabled,
+.ikkinchi-tugma:disabled,
+.xavfli-tugma:disabled,
+.ochirish-tugma:disabled {
+  background: var(--yuza-past);
+  border-color: transparent;
+  color: var(--matn-ochiq);
+  cursor: default;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+/* Harakatni kamaytirishni soʻraganlar uchun hamma animatsiya oʻchadi (uslub: «Motion»). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }
 
 /* ── Navigatsiya paneli (0067) ───────────────────────────────────────────── */
@@ -753,6 +1344,9 @@ button:active {
  * ikki qator 13 px shu 56 px ichiga sigʻadi, panel balandligi oʻzgarmaydi.
  */
 .nav-bolak {
+  position: relative;
+  /* Faol pill `::before` bilan chiziladi — u boʻlakning ichida qolsin. */
+  z-index: 0;
   min-height: var(--nav-balandligi);
   padding: 0 var(--bosh-1);
   line-height: 1.2;
@@ -764,6 +1358,7 @@ button:active {
   font: inherit;
   font-weight: 400;
   cursor: pointer;
+  transition: color var(--tez) var(--egri);
 }
 
 /* Oʻlchamning yagona manbai — `navMatnSinfi` (boʻlaklar sonidan hisoblanadi). */
@@ -775,10 +1370,30 @@ button:active {
   font-size: 13px;
 }
 
-/* Faol boʻlim faqat rang bilan emas — qalinlik bilan ham ajratiladi (uslub). */
+/*
+ * Faol boʻlim uch belgi bilan aytiladi: rang, qalinlik va ortidagi pill — rang
+ * koʻrmaydigan odam ham koʻradi.
+ *
+ * **Faol band koʻk EMAS** (uslub: «Navigatsiya paneli»): (1) toʻldirilgan koʻk ekranda
+ * bitta boʻlishi kerak va u — ekranning asosiy tugmasi; (2) HEAD ning oʻz navigatsiyasida
+ * faol band aynan shunday — siyoh matn va tint pill.
+ */
 .nav-bolak.faol {
-  color: var(--harakat);
+  color: var(--matn);
   font-weight: 600;
+}
+
+/*
+ * Pill boʻlakning ichida, chekkalaridan 6 px ichkarida turadi: bosiladigan joy butun
+ * boʻlak boʻlib qoladi, pill esa panelga tegib ketmaydi.
+ */
+.nav-bolak.faol::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 6px var(--bosh-1);
+  border-radius: var(--r-pill);
+  background: var(--yuza-past);
 }
 
 /*
@@ -804,6 +1419,170 @@ button:active {
   padding-bottom: calc(var(--panel-balandligi) + var(--nav-toliq));
 }
 
+/*
+ * `≥960` — navigatsiya pastdan yuqoriga koʻchadi va pill boʻladi (uslub: «Navigatsiya
+ * paneli»). Nega: kompyuterda barmoq yoʻq va ekranning pastki chekkasi kontentdan
+ * uzoqda — pastki panel telefon izi boʻlib qoladi.
+ *
+ * `--nav-toliq: 0px` shu yerda — pastdagi panellar navigatsiya uchun joy qoldirmaydi;
+ * qolgan qoidalar oʻz-oʻzidan toʻgʻrilanadi.
+ */
+@media (min-width: 960px) {
+  .navigatsiya {
+    top: var(--bosh-4);
+    bottom: auto;
+    padding-bottom: 0;
+    background: none;
+    border-top: 0;
+    /* Pill atrofidagi shaffof yoʻlak ostidagi sahifani bosishga xalaqit qilmasin. */
+    pointer-events: none;
+  }
+
+  .navigatsiya-ichi {
+    pointer-events: auto;
+    width: max-content;
+    max-width: calc(100% - var(--yon) * 2);
+    grid-auto-columns: auto;
+    padding: 6px;
+    background: var(--yuza);
+    border: 1px solid var(--chegara);
+    border-radius: var(--r-pill);
+    box-shadow: var(--soya-yengil);
+  }
+
+  .nav-bolak {
+    min-height: 40px;
+    padding: 0 var(--bosh-4);
+    white-space: nowrap;
+  }
+
+  /* Oʻlchamning yagona manbai `navMatnSinfi` — desktopda ikkalasi ham bir xil. */
+  .nav-matn-kichik,
+  .nav-matn-mayda {
+    font-size: 14.5px;
+  }
+
+  .nav-bolak.faol::before {
+    inset: 0;
+  }
+
+  /* Sahifaga yuqoridan joy: 52 px panel + 16 px chekka + 20 px havo. */
+  .nav-bor .ekran {
+    padding-top: 88px;
+  }
+
+  /* Pastda faqat «qaytarish» paneli qoladi — u pastdan 24 px, markazda. */
+  .nav-bor .qaytarish-paneli {
+    bottom: calc(var(--bosh-6) + env(safe-area-inset-bottom, 0px));
+  }
+
+  /*
+   * Yopishib turgan sarlavhalar yuqoridagi nav pill ostidan oʻtmasin: pill 16 px dan
+   * boshlanadi va 52 px, demak eng past nuqtasi 68 px — sticky qatorlar 72 px da
+   * toʻxtaydi (layout 0.4 eslatmasi).
+   */
+  .nav-bor .kun-sarlavhasi,
+  .nav-bor .davr-qatori {
+    top: 72px;
+  }
+}
+
+/* ── `≥960`: sarlavha qatoriga koʻchadigan asosiy tugma (layout 0.4) ─────── */
+
+/*
+ * DOM oʻzgarmaydi: `.ekran` grid boʻladi va `.panel-past` sarlavha bilan bitta qatorga
+ * tushadi. Qoida faqat **sahifa sarlavhasi** bor ekranlarga tegishli (Bosh, Yozuvlar,
+ * Qarz daftari, Hisobot, Zaxira) — shuning uchun selektor 0.3 dagi bilan bir xil
+ * belgiga tayanadi: yuqori panelda tugma yoʻq.
+ *
+ * Istisnolar oʻz-oʻzidan chetda qoladi:
+ * — formalarda `.panel-past` `.forma` ning ichida (`.ekran` ning bolasi emas) va
+ *   panelda `×` tugmasi bor;
+ * — «Kategoriyalar» va «Kontakt» da panelda tugma bor, demak grid qoʻllanmaydi.
+ *
+ * Selektor **`:not(:has())`** shaklida yozilgan, `:has(… :not(:has(…)))` emas: CSS da
+ * `:has()` ning ichiga yana `:has()` qoʻyib boʻlmaydi — bunday selektor xato sanaladi va
+ * brauzer uni **jim** tashlab yuboradi (qoida ekranda tekshirilgan).
+ */
+@media (min-width: 960px) {
+  .ekran:not(:has(> .panel-tepa > button)) {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-content: start;
+  }
+
+  /* Tana (roʻyxat, kartochkalar, davr qatori …) ikkala ustunni qamraydi. */
+  .ekran:not(:has(> .panel-tepa > button)) > * {
+    grid-column: 1 / -1;
+  }
+
+  .ekran:not(:has(> .panel-tepa > button)) > .panel-tepa {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .ekran:not(:has(> .panel-tepa > button)) > .panel-past {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    position: static;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border-top: 0;
+    box-shadow: none;
+  }
+
+  .ekran:not(:has(> .panel-tepa > button)) > .panel-past .asosiy-tugma {
+    width: auto;
+    padding: 0 var(--bosh-6);
+  }
+
+  /*
+   * Pastdagi panel yoʻqolgach roʻyxat oxiridagi 72 px boʻsh joy ham keraksiz boʻladi.
+   */
+  .ekran:not(:has(> .panel-tepa > button)) .royxat,
+  .ekran:not(:has(> .panel-tepa > button)) .qarz-tanasi,
+  .ekran:not(:has(> .panel-tepa > button)) .dashboard-tanasi {
+    padding-bottom: var(--bosh-6);
+  }
+
+  /*
+   * «Kontakt» — istisno (layout 0.4): yuqori panelning oʻng katagida allaqachon
+   * «Tahrirlash» turadi, shuning uchun «＋ Yangi qarz» sarlavha qatoriga chiqmaydi,
+   * balki panel **ostidagi** qatorda oʻngga tekislanadi. `order` bilan: DOM da panel
+   * tanadan keyin turadi, ekranda esa tanadan oldin.
+   */
+  .ekran:has(> .panel-tepa > .panel-ong) > * {
+    order: 3;
+  }
+
+  .ekran:has(> .panel-tepa > .panel-ong) > .panel-tepa {
+    order: 1;
+  }
+
+  .ekran:has(> .panel-tepa > .panel-ong) > .panel-past {
+    order: 2;
+    position: static;
+    display: flex;
+    justify-content: flex-end;
+    margin: 0;
+    padding: var(--bosh-4) var(--yon) 0;
+    background: none;
+    border-top: 0;
+    box-shadow: none;
+  }
+
+  .ekran:has(> .panel-tepa > .panel-ong) > .panel-past .asosiy-tugma {
+    width: auto;
+    padding: 0 var(--bosh-6);
+  }
+
+  .ekran:has(> .panel-tepa > .panel-ong) .kontakt-tanasi {
+    padding-bottom: var(--bosh-6);
+  }
+}
+
 /* ── «Qarz daftari» — kontaktlar roʻyxati ────────────────────────────────── */
 
 .qarz-tanasi,
@@ -816,7 +1595,7 @@ button:active {
 }
 
 .kontakt-bloki {
-  margin: 0 var(--bosh-4);
+  margin: 0 var(--yon);
 }
 
 /* Blok ikki qatorli: `×` va tugma maydonlarning yuqorisiga tekislanadi. */
@@ -858,7 +1637,7 @@ button:active {
   flex-direction: column;
   gap: var(--bosh-1);
   min-height: 64px;
-  padding: var(--bosh-3) var(--bosh-4);
+  padding: var(--bosh-3) var(--yon);
   border: 0;
   border-bottom: 1px solid var(--chegara);
   background: var(--yuza);
@@ -897,15 +1676,23 @@ button:active {
   gap: var(--bosh-2);
 }
 
+/*
+ * «olaman» / «beraman» / «hisob teng» — summaning yorligʻi va u bilan bitta qatorda
+ * turadi. Mono ikkovini bitta blok qilib bogʻlaydi (layout 2).
+ */
 .netto-sozi {
-  font-size: 14px;
-  line-height: 1.4;
+  font-family: var(--shrift-mono);
+  font-size: var(--t-yorliq);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0.06em;
   color: var(--matn-ikkinchi);
 }
 
 .netto-summa {
-  font-size: 17px;
-  font-weight: 600;
+  font-family: var(--shrift-mono);
+  font-size: var(--t-summa);
+  font-weight: 700;
   line-height: 1.2;
   font-variant-numeric: tabular-nums;
 }
@@ -915,7 +1702,16 @@ button:active {
   display: flex;
   flex-direction: column;
   gap: var(--bosh-4);
-  padding: 0 var(--bosh-4);
+  padding: 0 var(--yon);
+}
+
+/* `≥600`: ikki valyuta boʻlsa netto bloklari yonma-yon turadi (layout 3). */
+@media (min-width: 600px) {
+  .netto-bloklar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
 }
 
 .netto-blok {
@@ -924,11 +1720,15 @@ button:active {
   gap: var(--bosh-1);
 }
 
+/* `raqam-katta` roli — Space Grotesk 600, 30–40 px (uslub: «Matn oʻlchamlari roli»). */
 .netto-katta {
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 1.2;
+  font-family: var(--shrift-sarlavha);
+  font-size: var(--t-raqam-katta);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
 }
 
 /*
@@ -951,26 +1751,28 @@ button:active {
 
 .kontakt-telefon,
 .ochiq-qarz-yoq {
-  margin: 0 var(--bosh-4);
+  margin: 0 var(--yon);
   font-size: 14px;
   line-height: 1.4;
   color: var(--matn-ikkinchi);
 }
 
 .kontakt-ochirish {
-  margin: 0 var(--bosh-4);
+  margin: 0 var(--yon);
 }
 
-/* Uslub: «Xavfli tugma» — matni va chegarasi `chiqim`, foni `yuza`. */
+/* Uslub: «Xavfli tugma» — matni va 1.5 px chegarasi `chiqim`, foni `yuza`, pill. */
 .xavfli-tugma {
   width: 100%;
   height: var(--maydon-balandligi);
-  border: 1px solid var(--chiqim);
-  border-radius: var(--radius);
+  border: 1.5px solid var(--chiqim);
+  border-radius: var(--r-pill);
   background: var(--yuza);
   color: var(--chiqim);
   font: inherit;
+  font-weight: 600;
   cursor: pointer;
+  transition: background-color var(--tez) var(--egri), transform var(--tez) var(--egri);
 }
 
 .kontakt-ochirish .xato-matni {
@@ -981,19 +1783,21 @@ button:active {
 
 .qarzlar {
   margin: 0;
-  padding: 0 var(--bosh-4);
+  padding: 0 var(--yon);
   list-style: none;
   display: flex;
   flex-direction: column;
   gap: var(--bosh-3);
 }
 
-.qarz-kartochka {
-  background: var(--yuza);
-  border: 1px solid var(--chegara);
-  border-radius: var(--radius);
-  padding: var(--bosh-3) var(--bosh-4);
+/* Kartochkalar orasi: 12 px (baza) → 16 px (`≥600`) (layout 3). */
+@media (min-width: 600px) {
+  .qarzlar {
+    gap: var(--bosh-4);
+  }
 }
+
+/* Oʻlchamlari umumiy «Kartochka» qoidasidan keladi — bu yerda faqat ichki tartib. */
 
 .kartochka-boshi {
   position: relative;
@@ -1030,17 +1834,24 @@ button:active {
 
 .qarz-qoldiq {
   flex: none;
-  font-size: 17px;
-  font-weight: 600;
+  font-family: var(--shrift-mono);
+  font-size: var(--t-summa);
+  font-weight: 700;
   line-height: 1.2;
   font-variant-numeric: tabular-nums;
 }
 
-/* Yopilgan qarzda raqam oʻrnida soʻz turadi — mikro-qoldiq koʻrsatilmaydi (0052, 0056). */
+/*
+ * Yopilgan qarzda raqam oʻrnida soʻz turadi — mikro-qoldiq koʻrsatilmaydi (0052, 0056).
+ * «Yopilgan» soʻzi raqam oʻrnida turgani uchun `yorliq` rolida: mono ustun buzilmaydi.
+ */
 .qarz-yopilgan {
   flex: none;
-  font-size: 14px;
-  line-height: 1.4;
+  font-family: var(--shrift-mono);
+  font-size: var(--t-yorliq);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0.06em;
   color: var(--matn-ikkinchi);
 }
 
@@ -1064,9 +1875,11 @@ button:active {
 
 /* ── Toʻlov qatorlari ────────────────────────────────────────────────────── */
 
+/* Toʻlovlar qarz kartochkasining tafsiloti — ustida soch chizigʻi bilan ajraladi. */
 .tolovlar {
-  margin: var(--bosh-3) 0 0;
-  padding: 0;
+  margin: var(--bosh-4) 0 0;
+  padding: var(--bosh-4) 0 0;
+  border-top: 1px solid var(--chegara);
   list-style: none;
 }
 
@@ -1090,11 +1903,17 @@ button:active {
   color: var(--matn-ikkinchi);
 }
 
-/* Toʻlov summasi rang olmaydi: `−` bu yerda «qoldiqdan ayirildi» degani (dizayn). */
+/*
+ * Toʻlov summasi rang olmaydi: `−` bu yerda «qoldiqdan ayirildi» degani (dizayn).
+ * Mono **400**: qarz qoldigʻi (700) bilan bitta ustunda turadi, lekin yengilroq — toʻlov
+ * qarzning tafsiloti, uning oʻzi emas (layout 3).
+ */
 .tolov-summa {
   flex: none;
   margin-left: auto;
-  font-size: 16px;
+  font-family: var(--shrift-mono);
+  font-size: var(--t-summa);
+  font-weight: 400;
   line-height: 1.2;
   font-variant-numeric: tabular-nums;
 }
@@ -1106,8 +1925,13 @@ button:active {
   color: var(--matn-ikkinchi);
 }
 
+/*
+ * «＋ Toʻlov» — oʻz qatorida turadi, lekin ichida belgi va matn **yonma-yon**:
+ * `.matn-havola` ning `inline-flex` i saqlanadi, aks holda SVG bilan matn ikki qatorga
+ * boʻlinib ketadi.
+ */
 .tolov-havola {
-  display: block;
+  display: inline-flex;
   margin-top: var(--bosh-2);
 }
 
@@ -1119,10 +1943,17 @@ button:active {
   gap: var(--bosh-1);
 }
 
+/*
+ * «Kontakt: Akmal» va «Qarz qoldigʻi: 700 000 soʻm» — `yorliq` roli (layout 6.3).
+ * Qoldiq qatori ham mono: undagi summa mono ustunning bir qismi.
+ */
 .qarz-kontakt {
   margin: 0;
-  font-size: 14px;
-  line-height: 1.4;
+  font-family: var(--shrift-mono);
+  font-size: var(--t-yorliq);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0.06em;
   color: var(--matn-ikkinchi);
 }
 
@@ -1132,7 +1963,8 @@ button:active {
  * `matn-oʻchiq`, foni `fon`, kursor oʻzgarmaydi.
  */
 .chip-ochiq {
-  background: var(--fon);
+  background: var(--yuza-past);
+  border-color: transparent;
   color: var(--matn-ochiq);
 }
 
@@ -1151,14 +1983,86 @@ button:active {
   display: flex;
   flex-direction: column;
   gap: var(--bosh-4);
-  padding: var(--bosh-4);
+  padding: var(--bosh-4) var(--yon);
 }
 
 .nav-bor .hisobot-tanasi {
   padding-bottom: calc(var(--bosh-4) + var(--nav-toliq));
 }
 
-/* Davr qatori yuqori panel ostida yopishib turadi — surilganda ham koʻrinsin. */
+/*
+ * `≥600`: «Chiqim — …» va «Kirim — …» kartochkalari yonma-yon; jami va qarz bloklari
+ * toʻliq enda (layout 4). Joylashuv **oxiridan** sanaladi: oxirgi uchta bola har doim
+ * chiqim → kirim → qarz tartibida keladi, boshidagi «yoʻl» qatori esa shartli.
+ */
+@media (min-width: 600px) {
+  /*
+   * `align-content: start` shart: `.hisobot-tanasi` `flex: 1` bilan ekranning qolgan
+   * balandligini egallaydi, grid esa avtomatik qatorlarni shu balandlikka choʻzib
+   * yuborardi — kartochkalar orasida sunʼiy boʻshliq paydo boʻlardi.
+   */
+  .hisobot-tanasi {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    align-content: start;
+  }
+
+  .hisobot-tanasi > .jami-kartochka,
+  .hisobot-tanasi > .hisobot-yol,
+  .hisobot-tanasi > :last-child {
+    grid-column: 1 / -1;
+  }
+
+  .hisobot-tanasi > :nth-last-child(3) {
+    grid-column: 1;
+  }
+
+  .hisobot-tanasi > :nth-last-child(2) {
+    grid-column: 2;
+  }
+}
+
+/*
+ * `≥960`: ikki ustunli grid — chapda hisobning oʻzi («Jami» → «Chiqim — …»), oʻngda
+ * jamiga kirmaydigan pul harakati («Qarz») va «Kirim — …». Ikkalasi yonma-yon turganda
+ * «qarz jamiga qoʻshilmagan» degan izoh koʻz bilan ham koʻrinadi (layout 4).
+ */
+@media (min-width: 960px) {
+  .hisobot-tanasi {
+    gap: var(--bosh-6);
+  }
+
+  .hisobot-tanasi > .hisobot-yol {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .hisobot-tanasi > .jami-kartochka {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .hisobot-tanasi > :last-child {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .hisobot-tanasi > :nth-last-child(3) {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .hisobot-tanasi > :nth-last-child(2) {
+    grid-column: 2;
+    grid-row: 3;
+  }
+}
+
+/*
+ * Davr qatori yuqori panel ostida yopishib turadi — surilganda ham koʻrinsin. Foni oq:
+ * kulrang fon olib tashlandi, ajratishni 1 px soch chizigʻi qiladi (layout 4).
+ */
 .davr-qatori {
   position: sticky;
   top: 0;
@@ -1166,8 +2070,8 @@ button:active {
   display: flex;
   flex-direction: column;
   gap: var(--bosh-1);
-  padding: var(--bosh-2) var(--bosh-4);
-  background: var(--fon);
+  padding: var(--bosh-3) var(--yon);
+  background: var(--yuza);
   border-bottom: 1px solid var(--chegara);
 }
 
@@ -1178,20 +2082,47 @@ button:active {
   gap: var(--bosh-4);
 }
 
+/*
+ * `≥600`: davr qatori bitta qator boʻladi — oy tanlagich markazda, «Davr tanlash» oʻng
+ * chekkada (layout 4 sxemasi). Bazada joy yetmagani uchun ular ustma-ust turadi.
+ */
+@media (min-width: 600px) {
+  .davr-qatori {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--bosh-4);
+  }
+
+  .davr-qatori > .oy-tanlagich,
+  .davr-qatori > .davr-matni {
+    flex: 1;
+  }
+
+  .davr-havola {
+    align-self: center;
+  }
+}
+
+/* Oy nomi — ekranning mavzusi: Space Grotesk 600, 20 px (layout 4). */
 .oy-nomi {
   min-width: 140px;
   text-align: center;
-  font-size: 16px;
+  font-family: var(--shrift-sarlavha);
+  font-size: 20px;
   font-weight: 600;
-  line-height: 1.4;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
 }
 
 .davr-matni {
   text-align: center;
-  font-size: 16px;
+  font-family: var(--shrift-sarlavha);
+  font-size: var(--t-forma-sarlavha);
   font-weight: 600;
-  line-height: 1.4;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
 }
 
 /* Havola oʻngga tekislanadi (dizayn 2-boʻlim). */
@@ -1205,15 +2136,20 @@ button:active {
   cursor: default;
 }
 
+/*
+ * «Davr tanlash» — sahifa ichida ochiladigan blok qolipi: tint fon, radius 16,
+ * chegarasiz (uslub: «Sahifa ichida ochiladigan blok»).
+ */
 .davr-bloki {
   display: flex;
   flex-direction: column;
   gap: var(--bosh-3);
-  margin: var(--bosh-3) var(--bosh-4) 0;
-  padding: var(--bosh-3);
-  background: var(--yuza);
-  border: 1px solid var(--chegara);
-  border-radius: var(--radius);
+  margin: var(--bosh-3) var(--yon) 0;
+  padding: var(--bosh-4);
+  background: var(--yuza-past);
+  border: 0;
+  border-radius: var(--r-panel);
+  animation: sonish var(--normal) var(--egri);
 }
 
 .davr-maydon {
@@ -1240,18 +2176,39 @@ button:active {
 
 /* ── Kartochkalar ────────────────────────────────────────────────────────── */
 
-.kartochka {
-  padding: var(--bosh-3) var(--bosh-4);
+/*
+ * Kartochka — radius 24 px, 1 px soch chizigʻi, **soyasiz**: tuzilishni soya emas,
+ * chiziq va boʻshliq koʻrsatadi (uslub: «Kartochka»). Ichki chekka kattaroq — 24 px
+ * radius kichik chekka bilan «shishgan» koʻrinardi.
+ */
+.kartochka,
+.qarz-kartochka {
+  padding: 20px;
   background: var(--yuza);
   border: 1px solid var(--chegara);
-  border-radius: var(--radius);
+  border-radius: var(--r-kartochka);
+}
+
+@media (min-width: 600px) {
+  .kartochka,
+  .qarz-kartochka {
+    padding: var(--bosh-6);
+  }
+}
+
+@media (min-width: 960px) {
+  .kartochka {
+    padding: var(--bosh-8);
+  }
 }
 
 .kartochka-sarlavha {
   margin: 0 0 var(--bosh-2);
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 1.4;
+  font-family: var(--shrift-sarlavha);
+  font-size: var(--t-kartochka);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
 }
 
 .kartochka-izoh {
@@ -1263,7 +2220,7 @@ button:active {
 
 .kartochka-bosh {
   margin: 0;
-  padding: var(--bosh-3) var(--bosh-4);
+  padding: var(--bosh-3) 0;
   font-size: 14px;
   line-height: 1.4;
   color: var(--matn-ikkinchi);
@@ -1311,9 +2268,11 @@ button:active {
   gap: var(--bosh-1);
 }
 
+/* Kartochkadagi summa — `summa` roli: Space Mono 700, 15 px, oʻngga tekis. */
 .jami-summa {
-  font-size: 17px;
-  font-weight: 600;
+  font-family: var(--shrift-mono);
+  font-size: var(--t-summa);
+  font-weight: 700;
   line-height: 1.2;
   font-variant-numeric: tabular-nums;
 }
@@ -1326,10 +2285,15 @@ button:active {
   color: var(--chiqim);
 }
 
-/* Taxminiy raqam neytral rangda — haqiqiy raqamdek koʻrinmasin (dizayn 3-boʻlim). */
+/*
+ * Taxminiy raqam neytral rangda — haqiqiy raqamdek koʻrinmasin (dizayn 3-boʻlim).
+ * Mono **400**: u ham summa, lekin taxminiy (layout 4).
+ */
 .taxminiy-jami {
   margin: 0;
+  font-family: var(--shrift-mono);
   font-size: 16px;
+  font-weight: 400;
   line-height: 1.4;
   color: var(--matn);
   font-variant-numeric: tabular-nums;
@@ -1349,13 +2313,19 @@ button:active {
   color: var(--chiqim);
 }
 
-/* Kurs soʻrash bloki «≈ jami soʻmda» qatori turadigan joyda ochiladi. */
+/*
+ * Kurs soʻrash bloki «≈ jami soʻmda» qatori turadigan joyda ochiladi (modal yoʻq).
+ * Blok qolipi: tint fon, radius 16, ichki chekka 16 (uslub: «Kurs soʻrovi bloki»).
+ */
 .kurs-sorov {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: var(--bosh-1);
+  gap: var(--bosh-2);
   align-items: stretch;
+  padding: var(--bosh-4);
+  background: var(--yuza-past);
+  border-radius: var(--r-panel);
   text-align: left;
 }
 
@@ -1402,11 +2372,14 @@ button:active {
   overflow-wrap: anywhere;
 }
 
+/* «soʻm» / «dollar» guruh sarlavhasi — `yorliq` roli (mono 13). */
 .guruh-sarlavha {
   margin: var(--bosh-2) 0 0;
-  font-size: 14px;
+  font-family: var(--shrift-mono);
+  font-size: var(--t-yorliq);
   font-weight: 400;
-  line-height: 1.4;
+  line-height: 1.3;
+  letter-spacing: 0.06em;
   color: var(--matn-ikkinchi);
 }
 
@@ -1420,7 +2393,6 @@ button:active {
 }
 
 .hisobot-yol {
-  padding: 0 var(--bosh-4);
   text-align: center;
 }
 
@@ -1435,11 +2407,30 @@ button:active {
   display: flex;
   flex-direction: column;
   gap: var(--bosh-4);
-  padding: var(--bosh-4);
+  padding: var(--bosh-4) var(--yon);
 }
 
 .nav-bor .zaxira-tanasi {
   padding-bottom: calc(var(--bosh-4) + var(--nav-toliq));
+}
+
+/*
+ * `≥600`: ikkita kartochka yonma-yon. Ular ikkita mustaqil ish; ustma-ust turganda
+ * «Import» ekrandan tushib qoladi va odam uni topolmaydi (layout 5).
+ */
+@media (min-width: 600px) {
+  .zaxira-tanasi {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    align-content: start;
+  }
+}
+
+@media (min-width: 960px) {
+  .zaxira-tanasi {
+    gap: var(--bosh-6);
+  }
 }
 
 .zaxira-tanasi .kartochka {
@@ -1448,10 +2439,14 @@ button:active {
   gap: var(--bosh-2);
 }
 
+/* «Oxirgi zaxira: 16-avgust» — sana yorligʻi, `yorliq` roli (layout 5). */
 .zaxira-holat {
   margin: 0;
-  font-size: 14px;
-  line-height: 1.4;
+  font-family: var(--shrift-mono);
+  font-size: var(--t-yorliq);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0.06em;
   color: var(--matn-ikkinchi);
 }
 
@@ -1474,21 +2469,48 @@ button:active {
   line-height: 1.4;
 }
 
+/* «128 yozuv · 12 kontakt · 9 qarz · 14 toʻlov» — sanoq qatori, mono 400 (layout 5). */
 .zaxira-sanoq {
   margin: 0;
-  font-size: 14px;
+  font-family: var(--shrift-mono);
+  font-size: var(--t-kichik);
+  font-weight: 400;
   line-height: 1.4;
   color: var(--matn-ikkinchi);
   font-variant-numeric: tabular-nums;
 }
 
-/* Import oqimi kartochka ichida ochiladi — ekran almashmaydi (dizayn 3-boʻlim). */
+/*
+ * Import oqimi kartochka ichida ochiladi — ekran almashmaydi (dizayn 3-boʻlim).
+ * Blok qolipi: tint fon, radius 16, ichki chekka 16; ustki chiziq olib tashlandi.
+ */
 .zaxira-oqim {
   display: flex;
   flex-direction: column;
   gap: var(--bosh-2);
-  padding: var(--bosh-3) 0 0;
-  border-top: 1px solid var(--chegara);
+  margin-top: var(--bosh-2);
+  padding: var(--bosh-4);
+  background: var(--yuza-past);
+  border-radius: var(--r-panel);
+  animation: sonish var(--normal) var(--egri);
+}
+
+/*
+ * Fayl nomlari qatori mono: odam uni fayl tanlagichdagi nom bilan **belgi-belgi**
+ * solishtiradi (0041 tasdiq qadami). Qisqartirilmaydi va kesilmaydi.
+ *
+ * Selektor oʻrni boʻyicha ishlaydi (yangi sinf nomi qoʻshilmaydi, 0068/3):
+ * — oqimning birinchi qatori — tiklanadigan faylning nomi;
+ * — «Zaxira chiqarildi» dan keyingi qator — chiqarilgan faylning nomi;
+ * — «Eksport» tugmasidan keyingi qator — «Fayl yuklab olindi: …».
+ */
+.zaxira-oqim > .yordam:first-child,
+.zaxira-oqim > .zaxira-kuchli + .yordam,
+.zaxira-tanasi .asosiy-tugma + .yordam {
+  font-family: var(--shrift-mono);
+  font-size: var(--t-yorliq);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .zaxira-xato {
@@ -1499,6 +2521,19 @@ button:active {
 
 .zaxira-import {
   width: 100%;
+}
+
+/*
+ * `≥600`: kartochka ikki ustunning bittasida turadi — tugmalar mazmuni boʻyicha
+ * oʻlchanadi va choʻzilib ketmaydi (layout 5).
+ */
+@media (min-width: 600px) {
+  .zaxira-tanasi .asosiy-tugma,
+  .zaxira-tanasi .ikkinchi-tugma {
+    width: auto;
+    align-self: flex-start;
+    padding: 0 var(--bosh-6);
+  }
 }
 
 /*
@@ -1523,7 +2558,7 @@ button:active {
   display: flex;
   flex-direction: column;
   gap: var(--bosh-4);
-  padding: var(--bosh-4) var(--bosh-4) var(--panel-balandligi);
+  padding: var(--bosh-4) var(--yon) var(--panel-balandligi);
 }
 
 .nav-bor .dashboard-tanasi {
@@ -1531,37 +2566,83 @@ button:active {
 }
 
 /*
+ * `≥960`: kartochkalar ikki ustunda — chapda «Qoldiq» (ekranning yagona katta raqami,
+ * unga eng koʻp joy kerak), oʻngda «Joriy oy» va «Oxirgi yozuvlar» ustma-ust. Eslatma
+ * ikkala ustunni qamraydi (`design/dashboard.md` 9-boʻlim).
+ */
+@media (min-width: 960px) {
+  .dashboard-tanasi {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--bosh-6);
+    align-items: start;
+    align-content: start;
+  }
+
+  .dashboard-tanasi > .zaxira-eslatma {
+    grid-column: 1 / -1;
+  }
+
+  /*
+   * «Qoldiq» ikki qatorni qamraydi: oʻng ustundagi ikkita qisqa blok bir-birining
+   * ostida zich turadi va ular orasida boʻsh joy qolmaydi.
+   */
+  .dashboard-tanasi > section:nth-of-type(1) {
+    grid-column: 1;
+    grid-row: 2 / span 2;
+  }
+
+  .dashboard-tanasi > section:nth-of-type(2) {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .dashboard-tanasi > section:nth-of-type(3) {
+    grid-column: 2;
+    grid-row: 3;
+  }
+}
+
+/*
  * Zaxira eslatmasi — bir qatorlik, bosilmaydi (0024; spec Assumptions). Ohang neytral:
- * rang yolgʻiz maʼno tashimaydi (uslub) — yoʻlni matnning oʻzi aytadi.
+ * rang yolgʻiz maʼno tashimaydi (uslub) — yoʻlni matnning oʻzi aytadi. Koʻrinishi —
+ * «Zaxira eslatmasi» qolipi: tint fon, radius 16, chegarasiz.
  */
 .zaxira-eslatma {
   margin: 0;
   padding: var(--bosh-3) var(--bosh-4);
-  background: var(--yuza);
-  border: 1px solid var(--chegara);
-  border-radius: var(--radius);
-  font-size: 14px;
+  background: var(--yuza-past);
+  border: 0;
+  border-radius: var(--r-panel);
+  font-size: var(--t-kichik);
   line-height: 1.4;
   color: var(--matn-ikkinchi);
 }
 
-/* Umumiy qoldiq: soʻm `raqam-katta` (28/700), dollar `summa` (17/600) — uslub jadvali. */
+/*
+ * Umumiy qoldiq: soʻm `raqam-katta` (Space Grotesk 600, 30–40 px), dollar `summa`
+ * (Space Mono 700, 15 px) — `design/dashboard.md` 3-boʻlim.
+ */
 .qoldiq-jami {
   margin-bottom: var(--bosh-2);
 }
 
 .qoldiq-som {
   margin: 0;
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 1.2;
+  font-family: var(--shrift-sarlavha);
+  font-size: var(--t-raqam-katta);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
 }
 
 .qoldiq-dollar {
-  margin: var(--bosh-1) 0 0;
-  font-size: 17px;
-  font-weight: 600;
+  margin: var(--bosh-2) 0 0;
+  font-family: var(--shrift-mono);
+  font-size: var(--t-summa);
+  font-weight: 700;
   line-height: 1.2;
   font-variant-numeric: tabular-nums;
 }
@@ -1575,7 +2656,59 @@ button:active {
 }
 
 .hisob-summa {
+  font-family: var(--shrift-mono);
+  font-size: var(--t-summa);
+  font-weight: 700;
+  line-height: 1.2;
   font-variant-numeric: tabular-nums;
+}
+
+/*
+ * Naqd/karta ajratmasi bilan «≈ jami» qatori orasida 1 px chiziq: taxminiy raqam
+ * haqiqiy raqamlardan ajralib tursin (`design/dashboard.md` 3-boʻlim). Chiziq
+ * roʻyxatning tagida turadi — kurs soʻrovi bloki ochilganda ham, «hisoblanmadi» xato
+ * qatori chiqqanda ham **xuddi shu joyda** qoladi: uchchalasi «≈» qatorining oʻrnida
+ * turadi (`design/dashboard.md` 8-boʻlim), demak ajratgich ham oʻsha joyda qoladi.
+ * Chiziq roʻyxatga berilgan, blokka emas — kurs soʻrovi blokining tint foni chiziqqa
+ * yopishmasin. Faqat bosh sahifadagi «Qoldiq» kartochkasi: boshqa ajratmalardan keyin
+ * bu qatorlar kelmaydi. Bu istisno uslubdagi «kartochka ichida qator chizigʻi yoʻq»
+ * qoidasini buzmaydi — chiziq qatorlar orasida emas, ikki xil raqam (haqiqiy va
+ * taxminiy) orasida turadi.
+ */
+.dashboard-tanasi .ajratma:has(+ .taxminiy-jami),
+.dashboard-tanasi .ajratma:has(+ .taxminiy-xato),
+.dashboard-tanasi .ajratma:has(+ .kurs-sorov) {
+  padding-bottom: var(--bosh-3);
+  border-bottom: 1px solid var(--chegara);
+  margin-bottom: var(--bosh-3);
+}
+
+/*
+ * Bosh sahifadagi «Naqd», «Karta», «Kirim», «Chiqim» — summaning **yorligʻi**, kontent
+ * emas: `yorliq` roli (mono 13). Hisobotdagi `.ajratma-nomi` esa kategoriya nomi va
+ * `matn` boʻlib qoladi — shuning uchun qoida bosh sahifaning tanasi bilan cheklangan.
+ */
+.dashboard-tanasi .ajratma-nomi {
+  font-family: var(--shrift-mono);
+  font-size: var(--t-yorliq);
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  color: var(--matn-ikkinchi);
+}
+
+/*
+ * `≥600` (planshet): «Naqd»/«Karta» va «Kirim»/«Chiqim» qatorlari ikki ustunga
+ * boʻlinadi — yorliq va summa oʻz ustunida qoladi (`design/dashboard.md` 9-boʻlim).
+ * `≥960` da kartochka ikki ustunning bittasiga tushadi va qatorlar yana ustma-ust
+ * turadi. «Oxirgi yozuvlar» roʻyxati bunga kirmaydi: unda `.ajratma-nomi` yoʻq.
+ */
+@media (min-width: 600px) and (max-width: 959px) {
+  .dashboard-tanasi .ajratma:has(.ajratma-nomi) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--bosh-4);
+    align-items: start;
+  }
 }
 
 /* Kartochka sarlavhasi va «Hammasi ›» bitta qatorda turadi. */

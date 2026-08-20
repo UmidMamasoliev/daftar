@@ -29,6 +29,7 @@ import {
   sanaYorligi,
   summaniShakllantir,
 } from './format.ts'
+import { Ikonka } from './Ikonka.tsx'
 import { FORMA, OGOHLANTIRISH, xatoMatni } from './matnlar.ts'
 
 /** Chip boʻlib chiqadigan kategoriya — doʻkondagi `Kategoriya` ning oʻzi. */
@@ -360,10 +361,11 @@ export function YozuvForma({
   const kursXatosi = xatoniTop('kurs')
 
   return (
-    <div className="ekran">
+    // `ekran-forma` — `≥600` da forma 560 px li kartochkaga oʻtadi (layout 6.2).
+    <div className="ekran ekran-forma">
       <header className="panel-tepa">
         <button type="button" className="belgi-tugma" aria-label={FORMA.yopish} onClick={yop}>
-          ×
+          <Ikonka nom="x" olcham={20} />
         </button>
         <h1 className="sarlavha">{tahrir ? FORMA.sarlavhaTahrir : FORMA.sarlavhaYangi}</h1>
       </header>

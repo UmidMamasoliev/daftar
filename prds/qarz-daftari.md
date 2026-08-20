@@ -332,7 +332,8 @@ bilan yopdi:
 - «Berdim»/«Oldim» uchun standart qiymat → **0062**: yoʻq (6a-band, 45–46-mezonlar).
 - Qarz formasida kurs maydoni yoʻq degan oʻqilish tasdiqlandi — bu yangi qaror emas, 0044 dan
   chiqadi (15d-band, 47-mezon).
-- Bosh sahifadan «Qarz daftari» ga havola → **0063**: dashboard 3.10 gacha qurilmaydi, ungacha
-  vaqtinchalik pastki navigatsiya paneli ishlaydi (`prds/daftar-prd.md` 3a-band).
+- Bosh sahifadan «Qarz daftari» ga havola → **0063 → 0067**: dashboard bosh sahifa boʻldi,
+  «Qarz daftari» ga pastki navigatsiya panelining oʻz bandidan kiriladi
+  (`prds/daftar-prd.md` 3a-band).
 
 Bu specda ochiq savol qolmadi.

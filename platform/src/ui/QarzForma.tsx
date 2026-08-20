@@ -40,6 +40,7 @@ import {
   sanaYorligi,
   summaniShakllantir,
 } from './format.ts'
+import { Ikonka } from './Ikonka.tsx'
 import {
   FORMA,
   OGOHLANTIRISH,
@@ -293,7 +294,8 @@ export function QarzForma({
   const summaXatosi = xatoniTop('summa')
 
   return (
-    <div className="ekran">
+    // `ekran-forma` — `≥600` da forma 560 px li kartochkaga oʻtadi (layout 6.2).
+    <div className="ekran ekran-forma">
       <header className="panel-tepa">
         <button
           type="button"
@@ -301,7 +303,7 @@ export function QarzForma({
           aria-label={QARZ_FORMA.yopish}
           onClick={yop}
         >
-          ×
+          <Ikonka nom="x" olcham={20} />
         </button>
         <h1 className="sarlavha">
           {tahrir ? QARZ_FORMA.sarlavhaTahrir : QARZ_FORMA.sarlavhaYangi}

@@ -26,6 +26,7 @@ import {
   qatorIzohi,
   summaKorinishi,
 } from './format.ts'
+import { TugmaMatni } from './Ikonka.tsx'
 import { KursSorov } from './KursSorov.tsx'
 import { DASHBOARD, HISOBOT, taxminiyIzohi, taxminiyMatni } from './matnlar.ts'
 import type { KategoriyaNomi } from './Yozuvlar.tsx'
@@ -94,7 +95,8 @@ export function Dashboard({
   }
 
   return (
-    <div className="ekran">
+    // `ekran-keng` — kartochka gridi `≥960` da 1040 px ustunda (layout 0.2).
+    <div className="ekran ekran-keng">
       <header className="panel-tepa">
         <h1 className="sarlavha">{DASHBOARD.sarlavha}</h1>
       </header>
@@ -200,7 +202,7 @@ export function Dashboard({
             </h2>
             {oxirgilar.length === 0 ? null : (
               <button type="button" className="matn-havola" onClick={hammasi}>
-                {DASHBOARD.hammasi}
+                <TugmaMatni matn={DASHBOARD.hammasi} />
               </button>
             )}
           </div>
@@ -238,7 +240,7 @@ export function Dashboard({
       {/* «＋ Yozuv» — doim koʻrinib turadi (PRD 27; mezon 19), navigatsiya ustida. */}
       <div className="panel-past panel-past-yon">
         <button type="button" className="asosiy-tugma" onClick={yangiYozuv}>
-          {DASHBOARD.yangiYozuv}
+          <TugmaMatni matn={DASHBOARD.yangiYozuv} />
         </button>
       </div>
     </div>

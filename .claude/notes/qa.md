@@ -1,5 +1,39 @@
 # QA eslatmalari — Daftar (loyiha)
 
+## 2026-08-20 — Redesign tekshiruvi (0068, HEAD_WEB; preview 4370)
+- Darvozalar: Vitest 2× = 1066/1066, `tsc --noEmit` + `npm run build` (tsc -b) toza,
+  Playwright 12/12 (3 oflayn). Matn muzlatilishi: `git diff effe397 -- matnlar.ts` da
+  faqat HISOBOT.boshIkkinchi (redesign commit qilinmagan — HEAD==effe397, `..HEAD` boʻsh diff beradi).
+- **TOPILMA (oʻrta, shrift):** `Space Mono|100 900` va `Space Grotesk|100 900` belgilar
+  face'lari Chromium'da HECH QACHON yuklanmaydi (status unloaded) — asosiy face'lar tor
+  weight deskriptorli (SM 400/700, SG 300 700) boʻlgani uchun 100 900 belgilar face
+  style-match'da chetda qoladi; faqat Hanken (100 900 == 100 900) ishlaydi. Natija: mono
+  kontekstlarda `ʻ` 0.601em (tizim mono, kutilgan 0.25em), `≈` 0.549em (tizim sans).
+- **Probe usuli (glif):** haqiqiy manba faqat DOM Range bilan aniqlanadi —
+  TreeWalker'da belgini top, `Range.getBoundingClientRect().width / fontSize` = em;
+  0.25 = SG belgilar, 0.60 = tizim mono, 0.55 = tizim sans. `document.fonts.check`
+  ishonchsiz; canvas measureText ham ishlaydi lekin fallback oilasi DOM'dagidan farqlaydi.
+- **Probe tuzoqlari (3 ta yangi):** (1) nav faol pill `::before` da —
+  `getComputedStyle(el,'::before').backgroundColor` oʻqilsin, elementning oʻzi shaffof.
+  (2) `.fayl-kirit` klip-inputlari (top≈20, h=1) kartochkaning «oxirgi bolasi» gap
+  oʻlchovini aldaydi (205px soxta gap) — input/klip elementlarni filtrlash shart.
+  (3) Segment rangini bosishdan keyin darhol oʻqimaslik — 180ms transition boshida fon
+  rgba(0,0,0,0); 400ms kut. Kategoriyalar ekranida yashirin forma DOM'da qoladi —
+  `.segment` ni `offsetParent !== null` bilan chegarala (yashil «soxta» segment tutdim).
+- **TOPILMA (oʻrta, layout):** `.bosh-holat` standart `padding-bottom: 20vh` dashboard
+  kartochkasi ichida ham qoʻllanadi (`.ekran > .bosh-holat` istisnosi faqat toʻgʻridan
+  bolaga) — boʻsh «Oxirgi yozuvlar» 390 da ~169px, 1280×800 da ~160px ortiqcha pastki
+  boʻshliq, matn «markazda» emas (dashboard.md 7a ga zid). Maʼlumotli kartochkalarda gap
+  hamma joyda = spec ichki chekka (20/24/32 + 1px chegara) — «ortiqcha boʻshliq» nomzodi
+  faqat boʻsh holatda tasdiqlandi.
+- Jonli tasdiqlanganlar: har ekranda koʻk toʻliq-fill roʻyxati aynan spec jadvalidek
+  (Yozuvlar/Hisobot 0, qolganlarida 1); nav faol tint-pill; kartochka 24/hairline/soyasiz;
+  qaytarish paneli #0B1330; kirim/chiqim rgb(0,128,63)/rgb(217,32,32), eski qiymatlar
+  src'da yoʻq; mono ustun oʻng chekkasi tekis (374,374,374); hisobot 1280 grid 2 ustun;
+  sticky top 72px ≥ nav pasti 70; forma ≥600 kartochka 560/24px; kontrast 8.22/5.05/5.03;
+  segment tanlanganlari (qizil/yashil + oq 600), Kategoriyalar segmenti rangsiz oq pill;
+  accessible-name'lar (＋/‹/› belgilari `.faqat-oquvchiga` bilan) exact:true da topiladi.
+
 ## 2026-08-19 — Dashboard tekshiruvi (3.10, Spec Kit; qisqartirilgan jonli rejim)
 - Darvozalar: Vitest 3× = 1065/1065 har safar (flake yoʻq), `tsc -b` toza, build OK,
   Playwright 12/12 (yangi `e2e/dashboard.spec.ts` + 3 oflayn).

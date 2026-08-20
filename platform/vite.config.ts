@@ -12,6 +12,12 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       devOptions: { enabled: false },
+      // Oflayn birinchi ochilishda shrift ham joyida boʻlishi kerak (0003, 0068/4):
+      // shuning uchun `woff2` ham precache'ga kiradi. Qolgan turlar — workbox'ning
+      // oʻz roʻyxati, u yerdan hech narsa olib tashlanmadi.
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+      },
       manifest: {
         name: 'Daftar',
         short_name: 'Daftar',
@@ -26,7 +32,7 @@ export default defineConfig({
         // bilan bir xil, shunda ilova ochilganda rang sakramaydi.
         // `theme_color` — brauzer paneli rangi: sahifadagi
         // `<meta name="theme-color">` bilan aynan bir xil qiymat turishi shart.
-        background_color: '#F4F5F7',
+        background_color: '#FFFFFF',
         theme_color: '#FFFFFF',
         icons: [
           { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },

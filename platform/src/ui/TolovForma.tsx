@@ -39,6 +39,7 @@ import {
   sanaYorligi,
   summaniShakllantir,
 } from './format.ts'
+import { Ikonka } from './Ikonka.tsx'
 import {
   FORMA,
   OGOHLANTIRISH,
@@ -268,7 +269,8 @@ export function TolovForma({ kontakt, qarz, tolovlar, saqla, yop }: TolovFormaPr
   const kursXatosi = xatoniTop('kurs')
 
   return (
-    <div className="ekran">
+    // `ekran-forma` — `≥600` da forma 560 px li kartochkaga oʻtadi (layout 6.2).
+    <div className="ekran ekran-forma">
       <header className="panel-tepa">
         <button
           type="button"
@@ -276,7 +278,7 @@ export function TolovForma({ kontakt, qarz, tolovlar, saqla, yop }: TolovFormaPr
           aria-label={TOLOV_FORMA.yopish}
           onClick={yop}
         >
-          ×
+          <Ikonka nom="x" olcham={20} />
         </button>
         <h1 className="sarlavha">{TOLOV_FORMA.sarlavha}</h1>
       </header>

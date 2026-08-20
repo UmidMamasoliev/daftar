@@ -5,7 +5,7 @@ Bu fayl — umumiy sifat tekshiruvi (QA) uchun yozma koʻrsatma. Tekshiruvchi tu
 
 ## 1. Nima tekshiriladi
 
-Toʻrt qism va hujjatlar:
+Besh qism va hujjatlar:
 
 | Qism | Spec | Dizayn | Holat |
 |---|---|---|---|
@@ -13,7 +13,10 @@ Toʻrt qism va hujjatlar:
 | Qarz daftari | `prds/qarz-daftari.md` | `design/qarz-daftari.md` | qurilgan |
 | Oylik hisobot | `prds/oylik-hisobot.md` | `design/oylik-hisobot.md` | qurilgan |
 | Zaxira (eksport/import) | `prds/zaxira.md` | `design/zaxira.md` | qurilgan |
-| Dashboard (bosh sahifa) | `prds/dashboard.md` + `specs/001-dashboard/` | `design/uslub.md` («Navigatsiya paneli») | qurilgan (3.10, Spec Kit bilan; 0067) |
+| Dashboard (bosh sahifa) | `prds/dashboard.md` + `specs/001-dashboard/` | `design/dashboard.md` (+ `design/uslub.md` «Navigatsiya paneli») | qurilgan (3.10, Spec Kit bilan; 0067) |
+
+Koʻrinish uchun umumiy asos — `design/uslub.md` (v2, HEAD_WEB) va `design/redesign/layout.md`
+(0068). Redesign xulqni oʻzgartirmaydi: matn, mezon va oqimlar oʻsha-oʻsha.
 
 Hujjat tomoni: `platform/KELISHUV.md` koddagi haqiqatga mos turishi, spec ↔ qaror ↔ kod
 orasida ziddiyat yoʻqligi.
@@ -23,7 +26,7 @@ orasida ziddiyat yoʻqligi.
 1. `AGENTS.md` — qoidalar va «nima qilinmaydi» roʻyxati (specda yoʻq narsa — kamchilik emas).
 2. `lessons/qoidalar.md` — qaytmasligi kerak boʻlgan xatolar.
 3. `memory/` dagi eng yangi fayl — qayerda toʻxtaganimiz.
-4. `decisions/` — 0001–0067, hammasi majburiy.
+4. `decisions/` — 0001–0068, hammasi majburiy.
 5. Har specdagi **«Qanday tekshiramiz»** boʻlimi — tekshiruv roʻyxatining asosi.
 6. `.claude/notes/qa.md` — oldingi tekshiruvlarning saboqlari va probe usullari.
 
@@ -31,7 +34,7 @@ orasida ziddiyat yoʻqligi.
 
 Tartib bilan, har birining **haqiqiy chiqishi** koʻrsatiladi — «oʻtdi» deb aytish yetarli emas (0022):
 
-1. `npm test` — Vitest (kutilgan: 1065 test). Barqarorlik uchun kamida 3 marta toʻliq
+1. `npm test` — Vitest (kutilgan: 1066 test). Barqarorlik uchun kamida 3 marta toʻliq
    ishga tushiriladi. Chiqishni `tail` bilan kesmaslik — flake tafsiloti yoʻqoladi.
    **Flake chiqsa test oʻchirilmaydi yoki qayta yozilmaydi — ildizi izlanadi**: oxirgi
    regressiyada flake ortidan haqiqiy mahsulot xatosi chiqqan.

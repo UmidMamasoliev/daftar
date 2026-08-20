@@ -615,11 +615,13 @@ describe('boʻsh holatlar (dizayn 8-boʻlim; mezon 17)', () => {
     expect(screen.queryByText('Hali bitta ham yozuv yoʻq.')).toBeNull()
   })
 
-  it('daftar butunlay boʻsh boʻlsa ikkita qator turadi (0063 matni bilan)', () => {
+  it('daftar butunlay boʻsh boʻlsa ikkita qator turadi (0067 matni bilan)', () => {
     chiz({ hisobot: yasa({}) })
     expect(screen.getByText('Hali bitta ham yozuv yoʻq.')).toBeDefined()
+    // Bitta holat — bitta matn: «Yozuvlar» va bosh sahifadagi qator bilan bir xil.
+    // Navigatsiyada «Yozuv» bandi yoʻq (0067), shuning uchun eski matn yoʻl koʻrsatmasdi.
     expect(
-      screen.getByText('Birinchi yozuvni pastdagi «Yozuv» boʻlimi bilan qoʻshasiz.'),
+      screen.getByText('Birinchi yozuvni bosh sahifadagi «＋ Yozuv» tugmasi bilan qoʻshasiz.'),
     ).toBeDefined()
     expect(screen.queryByText('Boshqa davrni yuqoridan tanlang.')).toBeNull()
   })

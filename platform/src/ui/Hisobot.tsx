@@ -28,6 +28,7 @@ import { QARZ_QATORLARI, QARZ_QATOR_ISHORASI, davrTogrimi } from '../domain/hiso
 import { bugun, sananiTekshir } from '../domain/sana.ts'
 import type { Valyuta } from '../domain/turlar.ts'
 import { davrMatni, kursMatni, nettoMatni, nettoSinfi, oyMatni, sanaMatni } from './format.ts'
+import { Ikonka } from './Ikonka.tsx'
 import { KursSorov } from './KursSorov.tsx'
 import type { KategoriyaNomi } from './Yozuvlar.tsx'
 import { HISOBOT, taxminiyIzohi, taxminiyMatni, xatoMatni } from './matnlar.ts'
@@ -327,7 +328,8 @@ export function Hisobot({
 
   return (
     <div
-      className="ekran"
+      // `ekran-keng` — kartochka gridi `≥960` da 1040 px ustunda (layout 0.2).
+      className="ekran ekran-keng"
       onClick={() => {
         // «Blokdan tashqariga tegish» — davr bloki yopiladi, tanlangani unutiladi.
         if (davrOchiq) {
@@ -360,7 +362,7 @@ export function Hisobot({
                   oyniSur(-1)
                 }}
               >
-                ‹
+                <Ikonka nom="chevron-left" olcham={20} />
               </button>
               <span className="oy-nomi">{oyMatni(oy, joriyYil)}</span>
               <button
@@ -373,7 +375,7 @@ export function Hisobot({
                   oyniSur(1)
                 }}
               >
-                ›
+                <Ikonka nom="chevron-right" olcham={20} />
               </button>
             </div>
             <button
@@ -453,7 +455,7 @@ export function Hisobot({
               aria-label={HISOBOT.yopish}
               onClick={davrniYop}
             >
-              ×
+              <Ikonka nom="x" olcham={20} />
             </button>
             <button
               type="button"

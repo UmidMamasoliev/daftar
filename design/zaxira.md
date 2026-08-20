@@ -6,7 +6,7 @@ yerda ular nom bilan ataladi: `matn-ikkinchi`, `kichik`, `asosiy tugma`). Naqsh 
 sahifa ichida ochiladigan blok): oʻsha qoidalar shu yerda takrorlanmaydi, faqat farqi va yangi
 matnlar yoziladi.
 Qarorlar: 0003, 0004, 0006, 0007, 0009, 0014, 0021, 0024, 0027, 0028, 0029, 0041, 0043, 0047,
-0053, 0054, 0055, 0063, 0065.
+0053, 0054, 0055, 0063 → 0067, 0065.
 
 Bitta ekran: **Zaxira**. Ichida ikkita ish — **eksport** (butun daftarni faylga chiqarish) va
 **import** (fayldan tiklash). Uchinchi ish yoʻq: sozlama, parol, jurnal, bulut va jadval
@@ -14,14 +14,14 @@ boʻyicha zaxira qurilmaydi (0006, 0007, 0014).
 
 Ekrandagi matnlar shu faylda aynan yozilgan — frontend oʻshani koʻchiradi, oʻzgartirmaydi.
 
-**Navigatsiya:** ekranga pastdagi vaqtinchalik navigatsiya panelining **«Zaxira»** boʻlimidan
-kiriladi (0063; panel tavsifi `design/uslub.md`). Boshqa kirish yoʻli yoʻq. Bu ekran
-navigatsiyaning oʻz boʻlimi, shuning uchun yuqori panelda **«‹ Orqaga» havolasi yoʻq**.
+**Navigatsiya (0067):** ekranga navigatsiya panelining **«Zaxira»** boʻlimidan kiriladi
+(panel tavsifi `design/uslub.md`). Boshqa kirish yoʻli yoʻq. Bu ekran navigatsiyaning oʻz
+boʻlimi, shuning uchun yuqorida **«‹ Orqaga» havolasi yoʻq**.
 
 Spec 16-band «foydalanuvchi sozlamalardan tanlaydi» deydi — ilovada alohida «Sozlamalar»
-ekrani yoʻq va qurilmaydi (specda yoʻq): shu ekranning oʻzi oʻsha joy. Dashboard 3.10 da
-qurilganda zaxira eslatmasi (0024) aynan shu ekranga olib keladi (spec 28) va navigatsiya
-qayta koʻriladi (0063).
+ekrani yoʻq va qurilmaydi (specda yoʻq): shu ekranning oʻzi oʻsha joy. Bosh sahifadagi
+zaxira eslatmasi (0024) shu boʻlimga soʻz bilan yoʻnaltiradi — u bosilmaydi (0067), demak
+bu yerga kirish yoʻli baribir bitta: navigatsiyadagi «Zaxira» bandi.
 
 **Bu ekranda modal oyna, tasdiq oynasi va kutish aylanasi yoʻq** (0029 ruhi; uslub: kutish
 holati yoʻq). Import oqimi sahifa ichidagi blokda ketadi, ekran almashmaydi.
@@ -292,7 +292,7 @@ Shu bilan birga:
 
 - **«Zaxira olish» kartochkasidagi holat qatori fayldagi qiymatga almashadi** (0053; 21b-band):
   40 kun oldingi zaxira tiklansa qator **«Oxirgi zaxira: 8-iyul»** boʻlib qoladi. Bu toʻgʻri
-  holat: tiklangan daftarning yangi zaxirasi hali olinmagan, va dashboard qurilganda eslatma
+  holat: tiklangan daftarning yangi zaxirasi hali olinmagan, va bosh sahifadagi eslatma
   darhol chiqadi (0024, 0053; 11a-mezon). Bu ekranda eslatma takrorlanmaydi.
 - Hamma boshqa ekran yangi maʼlumotni koʻrsatadi: qoldiqlar, qarz qoldiqlari va hisobot
   fayldan **qayta hisoblanadi**, fayldan hisoblangan qiymat olinmaydi (spec 24, 25).

@@ -1,5 +1,8 @@
 # 0063 — Vaqtinchalik navigatsiya: dashboard qurilgunicha pastki panel
 
+> **Holat: bajarildi va 0067 bilan almashtirildi (2026-08-19).** Quyidagi matn tarix uchun
+> qoladi; joriy navigatsiya — `decisions/0067-dashboard-navigatsiya.md`.
+
 Sana: 2026-08-17
 **Bosh agent vakolat bilan tanladi (0058)**
 

@@ -13,10 +13,10 @@ oflayn ishlaydigan, serversiz veb-sayt (0003).
 2. `lessons/qoidalar.md` — takrorlanmasligi kerak boʻlgan xatolar.
 3. `memory/` dagi eng yangi fayl — qayerda toʻxtaganimiz.
 4. `discovery/` — ochiq savollar (boʻsh boʻlishi mumkin).
-5. `decisions/` — 0001 dan 0067 gacha. **Hammasi majburiy va bahsga tushmaydi.**
+5. `decisions/` — 0001 dan 0068 gacha. **Hammasi majburiy va bahsga tushmaydi.**
 6. `prds/daftar-prd.md` — mahsulot chegarasi.
 7. Oʻz qismingiz speci: `prds/kirim-chiqim.md`, `prds/qarz-daftari.md`,
-   `prds/oylik-hisobot.md`, `prds/dashboard.md`.
+   `prds/oylik-hisobot.md`, `prds/dashboard.md`, `prds/zaxira.md`.
 
 ## Loyihaning chegarasi — nima QILINMAYDI
 
@@ -50,6 +50,11 @@ Roʻyxatda yoʻq narsani «foydali boʻlardi» deb qoʻshmang. Kerak boʻlsa —
   qilinganda avtomatik deploy (0003, 0025, 0046).
 - Hamma maʼlumot faqat foydalanuvchi qurilmasida (0004).
 - Interfeys faqat oʻzbekcha, lotin yozuvida (0009).
+- Koʻrinish **HEAD_WEB dizayn tizimida**: rang, shrift, shakl va joylashuv `design/uslub.md`
+  (v2) da; ilova 320 px dan responsive, xulq va ekran matnlari redesignda oʻzgarmadi (0068).
+- Shriftlar oʻzimizda — `platform/public/fonts/` (woff2, PWA precache'ga kiradi), CDN'dan
+  yuklanmaydi (0068, 0003). Ikonka kutubxonasi qoʻshilmaydi: sanoqli inline Lucide SVG
+  (`platform/src/ui/Ikonka.tsx`) (0068).
 - Pul summalari butun sonda saqlanadi: dollar sentda, soʻm soʻmda (0008, 0033). Mahsulotda
   yuqori chegara yoʻq, lekin xavfsiz butun son chegarasidan (`Number.MAX_SAFE_INTEGER`) oshgan
   summa, kurs yoki aylantirish natijasi saqlanmaydi — texnik zarurat (0008, 0033;
@@ -141,11 +146,11 @@ Roʻyxatda yoʻq narsani «foydali boʻlardi» deb qoʻshmang. Kerak boʻlsa —
 4. Har feature `prds/` dagi spec asosida quriladi — spec yoʻq boʻlsa, avval spec.
 5. Qarorlar orasida boʻshliq koʻrsangiz, oʻzingiz xulosa chiqarmang — savol qilib bering
    (`lessons/qoidalar.md`).
-   **Vaqtinchalik istisno (0058):** qarz-daftari, oylik-hisobot va zaxira qurilishi hamda 3.9
-   syomkasiga tayyorgarlik davomida boʻshliqni bosh agent oʻzi hal qiladi — lekin qarorni
-   baribir `decisions/` ga yozadi va «bosh agent vakolat bilan tanladi (0058)» deb belgilaydi.
-   Mavjud qarorga (0001–0057) zid tanlov chiqsa — baribir odamga savol. Muddati: 3.9 syomkasi
-   boshlanguncha.
+   **Vaqtinchalik istisno (0058) — muddati tugagan (3.9 yakunlandi, 2026-08-19):** qarz-daftari,
+   oylik-hisobot va zaxira qurilishi hamda 3.9 syomkasiga tayyorgarlik davomida boʻshliqni bosh
+   agent oʻzi hal qilardi — qarorni baribir `decisions/` ga yozib, «bosh agent vakolat bilan
+   tanladi (0058)» deb belgilab. **Endi asosiy qoida ishlaydi: boʻshliq — odamga savol.** Band
+   tarix uchun turibdi: 0058 belgisi bor qarorlar (0063–0066) shu istisno davrida yozilgan.
 6. Foydalanuvchi sizni tuzatsa — `lessons/` ga qoida yozing, ikkinchi marta takrorlanmasin.
 
 ## Ish tugaganda nima yoziladi

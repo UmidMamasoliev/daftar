@@ -48,6 +48,7 @@ import {
   tolovMatni,
   tolovTafsiloti,
 } from './format.ts'
+import { Ikonka, TugmaMatni } from './Ikonka.tsx'
 import { KONTAKT, qarzTafsiloti, xatoMatni } from './matnlar.ts'
 import { QAYTARISH_MUDDATI, QaytarishPaneli } from './QaytarishPaneli.tsx'
 
@@ -283,7 +284,7 @@ function QarzKartochkasi({
             tolovQosh(qarz)
           }}
         >
-          {KONTAKT.yangiTolov}
+          <TugmaMatni matn={KONTAKT.yangiTolov} />
         </button>
       )}
     </li>
@@ -478,7 +479,7 @@ export function Kontakt({
     >
       <header className="panel-tepa">
         <button type="button" className="matn-havola" onClick={orqaga}>
-          {KONTAKT.orqaga}
+          <TugmaMatni matn={KONTAKT.orqaga} />
         </button>
         <h1 className="sarlavha sarlavha-kesik">{holat.kontakt.ism}</h1>
         <button type="button" className="matn-havola panel-ong" onClick={tahrirniAlmashtir}>
@@ -502,7 +503,7 @@ export function Kontakt({
                 aria-label={KONTAKT.yopish}
                 onClick={tahrirniYop}
               >
-                ×
+                <Ikonka nom="x" olcham={20} />
               </button>
               <div className="kontakt-maydonlar">
                 <input
@@ -600,7 +601,7 @@ export function Kontakt({
             yangiQarz()
           }}
         >
-          {KONTAKT.yangiQarz}
+          <TugmaMatni matn={KONTAKT.yangiQarz} />
         </button>
       </div>
 
